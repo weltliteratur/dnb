@@ -5,7 +5,7 @@ We want to weigh the books in the [[http://www.dnb.de/][German National Library]
 
 1. extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
 2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
-3. match the writer list against the list of books using the GND id
+3. joining the writer list with the list of books using the GND id
 
 ** extracting writers from WikiData
 
@@ -157,6 +157,65 @@ Let us download the actual data:
 #+END_SRC
 
 The result is in [[file:wikidata_writer_subclass_gndid.tsv][wikidata_writer_subclass_gndid.tsv]].
+
+*** checking the data
+
+Let us check the data by searching for Goethe:
+
+#+BEGIN_SRC sh
+  grep Goethe wikidata_writer_subclass_gndid.tsv
+#+END_SRC
+
+#+RESULTS:
+| <http://www.wikidata.org/entity/Q1586540> | Wolfgang Maximilian von Goethe | 118717928 |
+| <http://www.wikidata.org/entity/Q1585819> | Johann Caspar Goethe           | 118695940 |
+
+Unfortunately, Johann Wolfgang von Goethe is not contained, although
+[[https://www.wikidata.org/wiki/Q5879][he]] has a GND ID and as occupation (among others) [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]]
+which is a subclass of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]. *What has happened?*
+
+
+** downloading linked data from DNB
+
+#+BEGIN_SRC sh :results silent
+  curl --output GND.ttl.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=GND.ttl.gz"
+#+END_SRC
+
+It contains entries like these:
+
+#+BEGIN_SRC ttl
+<http://d-nb.info/1057803898> a bibo:Document ;
+        dcterms:medium <http://rdvocab.info/termList/RDACarrierType/1044> ;
+        owl:sameAs <http://hub.culturegraph.org/resource/DNB-1057803898> ;
+        dc:identifier "(DE-101)1057803898" ;
+        bibo:isbn13 "9783150186329" ;
+        rdau:P60521 "kart. : EUR 3.60" ;
+        dc:identifier "(OCoLC)890646150" ;
+        dcterms:language <http://id.loc.gov/vocabulary/iso639-2/ger> ;
+        dc:title "Die Leiden des jungen Werthers" ;
+        dcterms:creator <http://d-nb.info/gnd/118540238> ;
+        rdau:P60163 "Stuttgart" ;
+        dc:publisher "Reclam" ;
+        rdau:P60333 "Stuttgart : Reclam, 2014" ;
+        isbd:P1053 "140 S." ;
+        dcterms:bibliographicCitation "Reclams Universal-Bibliothek ; Nr. 18632" ;
+        dcterms:issued "2014" ;
+        rdau:P60493 "erste Fassung 1774" ;
+        bibo:authorList _:node1ashhhff1x4370327 .
+#+END_SRC
+
+We find the GND id 118540238 in the URL http://d-nb.info/gnd/118540238
+of the ~dcterms:creator~ property. It points to 
+
+#+BEGIN_SRC sh
+  grep 118540238 wikidata_writer_subclass_gndid.tsv
+#+END_SRC
+
+#+RESULTS:
+
+** joining writers and books
+
+
 
 * scratch
 

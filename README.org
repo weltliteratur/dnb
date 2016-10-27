@@ -26,7 +26,7 @@ We will use the following WikiData items:
 First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] is
 [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%2520wd%253AQ36180%2520.%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A%250A][SPARQL]]):
 
-#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?item ?itemLabel
   WHERE
   {
@@ -56,7 +56,7 @@ First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Pro
 Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
 ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
 
-#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?item ?itemLabel
   WHERE
   {
@@ -85,7 +85,7 @@ Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279]
 
 Third, we ensure that the item has a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%2520%253Fgndid%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520%253Fitem%2520p%253AP227%2520%253Fgndid%2520.%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520with%2520a%2520GND%2520ID%2528P227%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
 
-#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?item ?itemLabel ?gndid
   WHERE
   {
@@ -117,7 +117,7 @@ Unfortunately, we do not get the GND id but a reference to a
 We have to resolve this statement to get the actual GND id ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%2520%253Fgndid%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%2520wd%253AQ36180%2520.%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%250A%2520%2520%2520%2520%253Fitem%2520p%253AP227%2520%253Fwds%2520.%2520%250A%2520%2520%2520%2520%253Fwds%2520%253Fv%2520%253Fgndid%2520.%250A%2520%2520%2520%2520%253FwdP%2520wikibase%253Aclaim%2520p%253AP227%2520.%250A%2520%2520%2520%2520%253FwdP%2520wikibase%253AstatementProperty%2520%253Fv%2520.%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]],
 inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#Awarded_Chemistry_Nobel_Prizes][an example query for awarded Chemistry Nobel Prizes]]):
 
-#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?item ?itemLabel ?gndid
   WHERE
   {
@@ -146,6 +146,16 @@ inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/querie
 | wd:Q4128 | Louis Aragon       |  118503774 |
 | wd:Q4340 | Andreas Capellanus |  118502905 |
 
+Let us download the actual data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclass_gndid.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
 * scratch
 
 *** subclasses of writer
@@ -153,7 +163,7 @@ inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/querie
 Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer
 (Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
 
-#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?s ?desc
   WHERE
   {

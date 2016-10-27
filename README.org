@@ -3,9 +3,9 @@
 We want to weigh the books in the [[http://www.dnb.de/][German National Library]]
 (DNB). Therefore, we
 
-- extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
-- download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
-- match the writer list against the list of books using the GND id
+1. extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
+2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
+3. match the writer list against the list of books using the GND id
 
 ** extracting writers from WikiData
 

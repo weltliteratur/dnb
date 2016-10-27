@@ -166,7 +166,6 @@ Let us check the data by searching for Goethe:
   grep Goethe wikidata_writer_subclass_gndid.tsv
 #+END_SRC
 
-#+RESULTS:
 | <http://www.wikidata.org/entity/Q1586540> | Wolfgang Maximilian von Goethe | 118717928 |
 | <http://www.wikidata.org/entity/Q1585819> | Johann Caspar Goethe           | 118695940 |
 

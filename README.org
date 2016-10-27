@@ -156,6 +156,8 @@ Let us download the actual data:
        'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
 #+END_SRC
 
+The result is in [[file:wikidata_writer_subclass_gndid.tsv][wikidata_writer_subclass_gndid.tsv]].
+
 * scratch
 
 *** subclasses of writer

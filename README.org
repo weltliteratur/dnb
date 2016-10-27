@@ -53,8 +53,8 @@ First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Pro
 
 *** occupation is writer or a subclass
 
-Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] of [[https://www.wikidata.org/wiki/Q36180][writer
-(Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
+Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
   SELECT ?item ?itemLabel
@@ -145,3 +145,82 @@ inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/querie
 | wd:Q1151 | Hector Berlioz     |  118509675 |
 | wd:Q4128 | Louis Aragon       |  118503774 |
 | wd:Q4340 | Andreas Capellanus |  118502905 |
+
+* scratch
+
+*** subclasses of writer
+
+Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer
+(Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+  SELECT ?s ?desc
+  WHERE
+  {
+    ?s wdt:P279 wd:Q36180 .
+    OPTIONAL {
+      ?s rdfs:label ?desc filter (lang(?desc) = "en").
+    }
+  }
+  ORDER BY ?desc
+#+END_SRC
+
+
+| s            | desc                   |
+|--------------+------------------------|
+| wd:Q152182   |                        |
+| wd:Q21140478 |                        |
+| wd:Q26203955 |                        |
+| wd:Q26260814 |                        |
+| wd:Q4938203  | Boholano writers       |
+| wd:Q16637669 | Félibresse             |
+| wd:Q764233   | Geoponici              |
+| wd:Q20532870 | Uzbek writers          |
+| wd:Q864380   | biographer             |
+| wd:Q4853732  | children's writer      |
+| wd:Q27431213 | cookery writer         |
+| wd:Q11500768 | cooking expert         |
+| wd:Q14466416 | copywriter             |
+| wd:Q3589290  | correspondent          |
+| wd:Q21036234 | crime writer           |
+| wd:Q10297252 | detective writer       |
+| wd:Q22811127 | devotional writer      |
+| wd:Q487596   | dramaturge             |
+| wd:Q11774202 | essayist               |
+| wd:Q3064032  | fabulist               |
+| wd:Q623386   | ghostwriter            |
+| wd:Q5689489  | head writer            |
+| wd:Q8178443  | librettist             |
+| wd:Q18533509 | medical writer         |
+| wd:Q24387326 | mythographer           |
+| wd:Q15980158 | non-fiction writer     |
+| wd:Q6625963  | novelist               |
+| wd:Q16254673 | pamphleteer            |
+| wd:Q551835   | physician writer       |
+| wd:Q214917   | playwright             |
+| wd:Q49757    | poet                   |
+| wd:Q12144794 | prosaist               |
+| wd:Q18844224 | science fiction writer |
+| wd:Q28389    | screenwriter           |
+| wd:Q15949613 | short story writer     |
+| wd:Q175301   | speechwriter           |
+| wd:Q7596574  | staff writer           |
+| wd:Q15979013 | surrealist writer      |
+| wd:Q1568338  | technical writer       |
+| wd:Q381353   | woman of letters       |
+| wd:Q27212012 | young adult writer     |
+
+BTW: the query to get the subclasses of [[https://www.wikidata.org/wiki/Q7725634][literary work (Q7725634)]] is
+provided as [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#All_subclasses_of_.22Literary_Work.22][an example]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ7725634%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fs][SPARQL]]):
+
+#+BEGIN_SRC sparql
+  SELECT ?s ?desc
+  WHERE
+  {
+    ?s wdt:P279 wd:Q7725634 .
+    OPTIONAL {
+      ?s rdfs:label ?desc filter (lang(?desc) = "en").
+    }
+  }
+  ORDER BY ?s
+#+END_SRC

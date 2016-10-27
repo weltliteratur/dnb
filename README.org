@@ -1,1 +1,147 @@
-# weighing
+* weighing
+
+We want to weigh the books in the [[http://www.dnb.de/][German National Library]]
+(DNB). Therefore, we
+
+- extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
+- download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
+- match the writer list against the list of books using the GND id
+
+** extracting writers from WikiData
+
+We query WikiData's [[https://query.wikidata.org/][SPARQL endpoint]] to get a list of writers. Since
+SPARQL queries become quickly complex, we build the final query step
+by step.
+
+We will use the following WikiData items:
+- property [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]]
+- property [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]]
+- property [[https://www.wikidata.org/wiki/Property:P279][subclass of (P279)]]
+- entity [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+- potentially also the following subclasses of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]: [[https://www.wikidata.org/wiki/Q49757][poet
+  (Q49757)]], [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]], [[https://www.wikidata.org/wiki/Q15949613][short story writer (Q15949613)]]
+
+*** occupation is writer
+
+First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] is
+[[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%2520wd%253AQ36180%2520.%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A%250A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+  SELECT ?item ?itemLabel
+  WHERE
+  {
+    ?item wdt:P106 wd:Q36180 .              # occupation(P106) is writer(Q36180)
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item         | itemLabel                    |
+|--------------+------------------------------|
+| wd:Q3737990  | Fabrizio Corona              |
+| wd:Q10329870 | Miguel Temprano              |
+| wd:Q17639667 | Sébastien Valiela            |
+| wd:Q3335     | George Orwell                |
+| wd:Q23434    | Ernest Hemingway             |
+| wd:Q28658    | John F. Burns                |
+| wd:Q29344    | William T. Vollmann          |
+| wd:Q74465    | Friedrich Wilhelm Hackländer |
+| wd:Q75265    | Otto von Corvin              |
+| wd:Q77475    | Ludwig Ganghofer             |
+
+*** occupation is writer or a subclass
+
+Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] of [[https://www.wikidata.org/wiki/Q36180][writer
+(Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+  SELECT ?item ?itemLabel
+  WHERE
+  {
+    ?item wdt:P106/wdt:P279* wd:Q36180 .   # occupation(P106) is writer(Q36180) or a subclass(P279)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item         | itemLabel                    |
+|--------------+------------------------------|
+| wd:Q3737990  | Fabrizio Corona              |
+| wd:Q10329870 | Miguel Temprano              |
+| wd:Q17639667 | Sébastien Valiela            |
+| wd:Q3335     | George Orwell                |
+| wd:Q23434    | Ernest Hemingway             |
+| wd:Q28658    | John F. Burns                |
+| wd:Q29344    | William T. Vollmann          |
+| wd:Q74465    | Friedrich Wilhelm Hackländer |
+| wd:Q75265    | Otto von Corvin              |
+| wd:Q77475    | Ludwig Ganghofer             |
+
+*** occupation is writer or a subclass and has GND id
+
+Third, we ensure that the item has a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%2520%253Fgndid%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520%253Fitem%2520p%253AP227%2520%253Fgndid%2520.%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520with%2520a%2520GND%2520ID%2528P227%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+  SELECT ?item ?itemLabel ?gndid
+  WHERE
+  {
+    ?item wdt:P106/wdt:P279* wd:Q36180 .  # occupation(P106) is writer(Q36180) or a subclass(P279)
+    ?item p:P227 ?gndid .                 # ... with a GND ID(P227)
+    SERVICE wikibase:label {              # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item    | itemLabel        | gndid                                                  |
+|---------+------------------+--------------------------------------------------------|
+| wd:Q42  | Douglas Adams    | wd:statement/q42-8AA8CCC1-86CE-4C66-88FC-267621A81EA0  |
+| wd:Q272 | Paul Morand      | wd:statement/q272-9373E898-F2B0-4BF8-871A-B09A3A055577 |
+| wd:Q303 | Elvis Presley    | wd:statement/q303-44C100BC-71C3-4D4F-881D-6729D4B58D28 |
+| wd:Q392 | Bob Dylan        | wd:statement/q392-0190B28E-161C-4BA9-99D4-4B7C27B6F4FD |
+| wd:Q489 | Bill Maher       | wd:statement/q489-79FF5E0D-6C59-48AE-8266-775105133852 |
+| wd:Q765 | Dario Fo         | wd:statement/q765-5FD4C8D5-2258-4091-87AB-C4112FE30CE3 |
+| wd:Q835 | Mikhail Bulgakov | wd:statement/q835-94A1550F-D43D-4C6F-A80F-563889002835 |
+| wd:Q853 | Andrei Tarkovsky | wd:statement/q853-A2E1C3C3-2F32-4A0B-B091-2DBB06BCEF18 |
+| wd:Q882 | Charlie Chaplin  | wd:statement/q882-A7EB6AB3-8F42-4405-8B47-6E78D2C1E2C1 |
+| wd:Q892 | J. R. R. Tolkien | wd:statement/q892-122F7562-51B2-4A14-82D6-6202DB5A79ED |
+
+Unfortunately, we do not get the GND id but a reference to a
+[[https://www.wikidata.org/wiki/Help:Statements][statement]]. 
+# Explain in detail what this means? 
+We have to resolve this statement to get the actual GND id ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%2520%253Fgndid%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%2520wd%253AQ36180%2520.%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%250A%2520%2520%2520%2520%253Fitem%2520p%253AP227%2520%253Fwds%2520.%2520%250A%2520%2520%2520%2520%253Fwds%2520%253Fv%2520%253Fgndid%2520.%250A%2520%2520%2520%2520%253FwdP%2520wikibase%253Aclaim%2520p%253AP227%2520.%250A%2520%2520%2520%2520%253FwdP%2520wikibase%253AstatementProperty%2520%253Fv%2520.%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]],
+inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#Awarded_Chemistry_Nobel_Prizes][an example query for awarded Chemistry Nobel Prizes]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql?query=SPARQL :format text/csv
+  SELECT ?item ?itemLabel ?gndid
+  WHERE
+  {
+    ?item wdt:P106 wd:Q36180 .              # occupation(P106) is writer(Q36180)
+    ?item p:P227 ?wds . 
+    ?wds ?v ?gndid .
+    ?wdP wikibase:claim p:P227 .
+    ?wdP wikibase:statementProperty ?v .
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item     | itemLabel          |      gndid |
+|----------+--------------------+------------|
+| wd:Q4498 | Beatritz de Dia    |  134832809 |
+| wd:Q42   | Douglas Adams      |  119033364 |
+| wd:Q377  | Yanka Kupala       |  118640267 |
+| wd:Q501  | Charles Baudelaire |  118507184 |
+| wd:Q555  | Rachel Maddow      | 1022390589 |
+| wd:Q747  | Pierre Corneille   |  118522175 |
+| wd:Q926  | Roald Amundsen     |  118502670 |
+| wd:Q1151 | Hector Berlioz     |  118509675 |
+| wd:Q4128 | Louis Aragon       |  118503774 |
+| wd:Q4340 | Andreas Capellanus |  118502905 |

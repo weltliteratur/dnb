@@ -1,11 +1,15 @@
-* weighing
+* weighing (i.e., measuring)
 
-We want to weigh the books in the [[http://www.dnb.de/][German National Library]]
+We want to measure the size (number of pages) of novels (i.e., fictional literary works) in the [[http://www.dnb.de/][German National Library]]
 (DNB). Therefore, we
 
 1. extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
 2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
 3. joining the writer list with the list of books using the GND id
+
+** context
+
+It's not trivial to extract all novels from a big catalogue like that of the German National library. "Librarians estimate that genre information is present in the expected MARC field for less than a quarter of the volumes in HathiTrust Digital Library," ([Underwood et al. 2013](https://arxiv.org/abs/1309.3323)) and we encounter the same problem which calls for an innovative solution.
 
 ** extracting writers from WikiData
 

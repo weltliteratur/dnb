@@ -54,7 +54,7 @@ First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Pro
 *** occupation is writer or a subclass
 
 Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
-([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fitem%2520%253FitemLabel%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fitem%2520wdt%253AP106%252Fwdt%253AP279*%2520wd%253AQ36180%2520.%2520%2520%2520%2523%2520occupation%2528P106%2529%2520is%2520writer%2528Q36180%2529%2520or%2520a%2520subclass%2528P279%2529%250A%2520%2520%2520%2520SERVICE%2520wikibase%253Alabel%2520{%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2523%2520...%2520include%2520the%2520labels%250A%2520%2520%2520%2520%2520%2520bd%253AserviceParam%2520wikibase%253Alanguage%2520%2522en%2522%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520LIMIT%252010%250A][SPARQL]]):
+([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?item ?itemLabel

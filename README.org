@@ -85,11 +85,57 @@ Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279]
 | wd:Q75265    | Otto von Corvin              |
 | wd:Q77475    | Ludwig Ganghofer             |
 
+Let us download the actual data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclass.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+The result is in [[file:wikidata_writer_subclass.tsv][wikidata_writer_subclass.tsv]].
+
+*** checking the data
+
+Let us check the data by searching for Goethe:
+
+#+BEGIN_SRC sh
+  wc -l wikidata_writer_subclass.tsv
+#+END_SRC
+
+- 73796
+
+#+BEGIN_SRC sh
+  grep Goethe wikidata_writer_subclass.tsv
+#+END_SRC
+
+| <http://www.wikidata.org/entity/Q4322238> | Nicole Van Goethem         |
+| <http://www.wikidata.org/entity/Q5879>    | Johann Wolfgang von Goethe |
+
+That looks good at first sight, but at least [[http://www.wikidata.org/entity/Q1586540][Wolfgang Maximilian von
+Goethe]] and [[http://www.wikidata.org/entity/Q1585819][Johann Caspar Goethe]] are missing. Furthermore, the
+following query returns a count of 358703 (on 2016-12-15) instead of
+73796:
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT (COUNT(DISTINCT ?item) AS ?count)
+  WHERE
+  {
+    ?item wdt:P106/wdt:P279* wd:Q36180 .   # occupation(P106) is writer(Q36180) or a subclass(P279)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+It seems that not all writers are returned which probably is due to
+problems with the query, since [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries#Querying_a_class_tree][path queries]] are expensive.
+
 *** occupation is writer or a subclass and has GND id
 
-Third, we ensure that the item has a
-[[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]]
-property ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fgndid%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20with%20a%20GND%20ID%28P227%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
+Third, we ensure that the item has a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fgndid%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20with%20a%20GND%20ID%28P227%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?item ?itemLabel ?gndid
@@ -106,7 +152,6 @@ property ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20
 
 *TODO*: ~FILTER(BOUND(?gndid))~?
 
-
 | item    | itemLabel        | gndid                                                  |
 |---------+------------------+--------------------------------------------------------|
 | wd:Q42  | Douglas Adams    | wd:statement/q42-8AA8CCC1-86CE-4C66-88FC-267621A81EA0  |
@@ -121,7 +166,7 @@ property ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20
 | wd:Q892 | J. R. R. Tolkien | wd:statement/q892-122F7562-51B2-4A14-82D6-6202DB5A79ED |
 
 Unfortunately, we do not get the GND id but a reference to a
-[[https://www.wikidata.org/wiki/Help:Statements][statement]]. 
+[[https://www.wikidata.org/wiki/Help:Statements][statement]].
 # Explain in detail what this means? 
 We have to resolve this statement to get the actual GND id ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]],
 inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#Awarded_Chemistry_Nobel_Prizes][an example query for awarded Chemistry Nobel Prizes]]):
@@ -172,6 +217,12 @@ The result is in [[file:wikidata_writer_subclass_gndid.tsv][wikidata_writer_subc
 Let us check the data by searching for Goethe:
 
 #+BEGIN_SRC sh
+  wc -l wikidata_writer_subclass_gndid.tsv
+#+END_SRC
+
+- 57495
+
+#+BEGIN_SRC sh
   grep Goethe wikidata_writer_subclass_gndid.tsv
 #+END_SRC
 
@@ -181,6 +232,142 @@ Let us check the data by searching for Goethe:
 Unfortunately, Johann Wolfgang von Goethe is not contained, although
 [[https://www.wikidata.org/wiki/Q5879][he]] has a GND ID and as occupation (among others) [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]]
 which is a subclass of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]. *What has happened?*
+
+** downloading the different parts and joining them
+
+Presumably due to the size of the data, we struggle to put all pieces
+together within Wikidata. Therefore, we here try to download the
+different bits and pieces and put them together manually (well, with
+some simple tools):
+
+- all entities with an "occupation" (P106) property
+- all subclasses of "writer" (Q36180)
+- all entities with a "GND id" (P227) property
+
+We can then join the resulting three files and get a list of writers
+together with their GND id.
+
+*** entity has an occupation property
+
+#+BEGIN_SRC sparql
+  SELECT ?item ?occupation
+  WHERE
+  {
+    ?item wdt:P106 ?occupation              # occupation(P106)
+  }
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_occupation.tsv \
+      --globoff \
+'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20}'
+#+END_SRC
+
+#+BEGIN_SRC sh 
+  wc -l wikidata_occupation.tsv
+#+END_SRC
+
+- 3053738 
+
+Impressive!
+
+*** all subclasses of writer
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?subclass
+  WHERE
+  {
+    ?subclass wdt:P279* wd:Q36180
+  }
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclasses.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=%23added%20before%202016-10%0ASELECT%20%3Fsubclass%0AWHERE%0A{%0A%20%20%3Fsubclass%20wdt%3AP279*%20wd%3AQ36180%0A}'
+#+END_SRC
+
+*** entity has a GND id
+
+We download all entities which have a GND id:
+
+#+BEGIN_SRC sparql
+  SELECT ?item ?gndid
+  WHERE
+  {
+    ?item p:P227 ?wds . 
+    ?wds ?v ?gndid .
+    ?wdP wikibase:claim p:P227 .
+    ?wdP wikibase:statementProperty ?v .
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_gndid.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+#+BEGIN_SRC sh
+  wc -l wikidata_gndid.tsv
+#+END_SRC
+
+- 449396
+
+This is close to the count of 447551 returned by a [[https://query.wikidata.org/#%20%20SELECT%20%28COUNT%28DISTINCT%20%3Fitem%29%20AS%20%3Fcount%29%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A][COUNT query]].
+
+*** joining the files
+
+We want to join the following three files:
+
+- ~wikidata_occupation.tsv~
+- ~wikidata_writer_subclasses.tsv~
+- ~wikidata_gndid.tsv~
+
+Preparation: let's sort all files:
+
+#+BEGIN_SRC sh
+  sort -k1 wikidata_writer_subclasses.tsv > wd_ws
+  sort -k2 wikidata_occupation.tsv > wd_o
+  sort -k1 wikidata_gndid.tsv > wd_g
+#+END_SRC
+
+We start by joining ~wikidata_occupation.tsv~ (column 2) with
+ ~wikidata_writer_subclasses.tsv~ (column1) using the occupation:
+
+#+BEGIN_SRC sh
+  join -1 1 -2 2 wd_ws wd_o | cut -d' ' -f2 | sort > wd_w
+#+END_SRC
+
+We now join this with the GND ids:
+
+#+BEGIN_SRC sh
+  join wd_g wd_w > wd_result
+  wc -l wd_result
+#+END_SRC
+
+- 163701
+
+So we have at least more results than we got directly from
+Wikidata. Let's check for Goethe:
+
+#+BEGIN_SRC sh
+  grep "Q5879>" wd_result
+#+END_SRC
+
+Still not contained. :-(
+
+Next step: find out why.
+
 
 
 ** downloading linked data from DNB

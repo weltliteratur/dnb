@@ -321,7 +321,7 @@ Impressive!
 We download all entities which have a GND id:
 
 #+BEGIN_SRC sparql
-  SELECT ?item ?gndid
+  SELECT ?item ?itemLabel ?gndid
   WHERE
   {
     ?item p:P227 ?wds . 
@@ -339,7 +339,7 @@ We download all entities which have a GND id:
       --header "Accept: text/tab-separated-values" \
       --output wikidata_gndid.tsv \
       --globoff \
-       'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+       'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
 #+END_SRC
 
 #+BEGIN_SRC sh
@@ -349,6 +349,12 @@ We download all entities which have a GND id:
 - 449396
 
 This is close to the count of 447551 returned by a [[https://query.wikidata.org/#%20%20SELECT%20%28COUNT%28DISTINCT%20%3Fitem%29%20AS%20%3Fcount%29%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A][COUNT query]].
+
+(Note: The ~itemLabel~ was later added to the query but Wikidata
+struggled to deliver the complete results. Hence, when less results
+are returned, try removing the ~itemLabel~ from the ~SELECT~
+statement.)
+
 
 *** joining the files
 
@@ -507,13 +513,49 @@ parse the data:
 | http://d-nb.info/975731858 |  123182301 | Opfer rechtsextremer Gewalt                    | 176 S.      |
 | http://d-nb.info/975778269 |  170750345 | Nachhaltigkeit und Betriebswirtschaftslehre    | 598 S.      |
 
-It is slow but it works pretty well. 
+It is slow but it works pretty well. In the last column we can already
+see that processing the page numbers will require some effort.
 
 *** joining writers and books
 
-We extend the Python code to check for each GND whether it appears or
-list from Wikidata (~wd_results~):
+We extend the Python code to check for each GND whether it appears in
+the writer list ~wd_result~ from Wikidata (and we add support to read
+the gzip compressed file from the DNB):
 
+#+BEGIN_SRC python :results output
+  import rdflib
+  import gzip
+  from rdflib.namespace import DCTERMS, DC
+
+  # read Wikidata GND ids of writers
+  writers = set()
+  with open('wd_result', 'r') as f:
+      for line in f:
+          entity, gndid = line.strip().split()
+          writers.add(gndid)
+
+  # read DNB data
+  g = rdflib.Graph()
+  g.parse(gzip.open('DNBTitel.ttl.gz', 'rt'), format='n3')
+  isbd = rdflib.Namespace("http://iflastandards.info/ns/isbd/elements/")
+
+  fout = open('dnb_pages.tsv', 'wt')
+
+  for s, o in g.subject_objects(DCTERMS["creator"]):
+      # property with linked GND id found, extract GND id
+      url, gndid = o.rsplit('/', 1)
+      # check whether this is a writer
+      if gndid in writers:
+          # get title and page number
+          title = g.value(s, DC["title"], None)
+          pages = g.value(s, isbd["P1053"], None)
+          print(s, gndid, title, pages, sep='\t', file=fout)
+
+  fout.close()
+#+END_SRC
+
+Don't try this at home kids! This loads the whole DNB RDF graph into
+memory and thus requires an enormous amount of main memory.
 
 * scratch
 

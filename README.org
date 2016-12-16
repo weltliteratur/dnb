@@ -258,7 +258,7 @@ Therefore, we must find another way to extract the data from
 Wikidata. One option is to avoid the expensive joins and instead
 extract separate datasets and join them manually.
 
-** downloading the different parts and joining them
+** downloading the individual parts and joining them
 
 Presumably due to the size of the data and the complexity of path
 queries and joins, we struggle to put all pieces together within

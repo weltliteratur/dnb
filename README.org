@@ -1,15 +1,20 @@
-* weighing (i.e., measuring)
+* measuring
 
-We want to measure the size (number of pages) of novels (i.e., fictional literary works) in the [[http://www.dnb.de/][German National Library]]
+We want to measure the size (number of pages) of novels (i.e.,
+fictional literary works) in the [[http://www.dnb.de/][German National Library]]
 (DNB). Therefore, we
-
 1. extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
 2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
 3. joining the writer list with the list of books using the GND id
 
 ** context
 
-It's not trivial to extract all novels from a big catalogue like that of the German National library. "Librarians estimate that genre information is present in the expected MARC field for less than a quarter of the volumes in HathiTrust Digital Library," ([Underwood et al. 2013](https://arxiv.org/abs/1309.3323)) and we encounter the same problem which calls for an innovative solution.
+It's not trivial to extract all novels from a big catalogue like that
+of the German National library. "Librarians estimate that genre
+information is present in the expected MARC field for less than a
+quarter of the volumes in HathiTrust Digital Library," ([Underwood et
+al. 2013](https://arxiv.org/abs/1309.3323)) and we encounter the same
+problem which calls for an innovative solution.
 
 ** extracting writers from WikiData
 
@@ -97,7 +102,7 @@ Let us download the actual data:
 
 The result is in [[file:wikidata_writer_subclass.tsv][wikidata_writer_subclass.tsv]].
 
-*** checking the data
+**** checking the data
 
 Let us check the data by searching for Goethe:
 
@@ -221,7 +226,7 @@ Let us download the actual data:
 
 The result is in [[file:wikidata_writer_subclass_gndid.tsv][wikidata_writer_subclass_gndid.tsv]].
 
-*** checking the data
+**** checking the data
 
 Let us check the data by searching for Goethe:
 
@@ -437,14 +442,12 @@ of the ~dcterms:creator~ property. It points to
 
 ** joining writers and books
 
-
-
 * scratch
 
 *** subclasses of writer
 
-Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer
-(Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
+Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]]
+[[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?s ?desc
@@ -457,7 +460,6 @@ Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P27
   }
   ORDER BY ?desc
 #+END_SRC
-
 
 | s            | desc                   |
 |--------------+------------------------|
@@ -502,6 +504,280 @@ Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P27
 | wd:Q1568338  | technical writer       |
 | wd:Q381353   | woman of letters       |
 | wd:Q27212012 | young adult writer     |
+
+And now let us respect transitivity:
+
+#+BEGIN_SRC sparql :url http://query.wikidata.org/sparql :format text/csv
+  SELECT ?s ?desc
+  WHERE
+  {
+    ?s wdt:P279* wd:Q36180 .
+    OPTIONAL {
+      ?s rdfs:label ?desc filter (lang(?desc) = "en").
+    }
+  }
+  ORDER BY ?desc
+#+END_SRC
+
+| s            | desc                                      |
+|--------------+-------------------------------------------|
+| wd:Q152182   |                                           |
+| wd:Q1456208  |                                           |
+| wd:Q2325224  |                                           |
+| wd:Q2393424  |                                           |
+| wd:Q2781593  |                                           |
+| wd:Q3477303  |                                           |
+| wd:Q3531683  |                                           |
+| wd:Q3765898  |                                           |
+| wd:Q3765897  |                                           |
+| wd:Q11301725 |                                           |
+| wd:Q11598626 |                                           |
+| wd:Q11711601 |                                           |
+| wd:Q16681315 |                                           |
+| wd:Q18059311 |                                           |
+| wd:Q18222085 |                                           |
+| wd:Q21140478 |                                           |
+| wd:Q22929895 |                                           |
+| wd:Q24812704 |                                           |
+| wd:Q25277824 |                                           |
+| wd:Q26203955 |                                           |
+| wd:Q26234215 |                                           |
+| wd:Q26260814 |                                           |
+| wd:Q779388   | Akhmatova's Orphans                       |
+| wd:Q2632248  | Akhoond                                   |
+| wd:Q2870087  | Atthidographer                            |
+| wd:Q4938203  | Boholano writers                          |
+| wd:Q670974   | Bollandist                                |
+| wd:Q2936875  | Cantore al liuto                          |
+| wd:Q1107241  | Coirpre                                   |
+| wd:Q14466416 | Copywriter                                |
+| wd:Q2354449  | Dichter des Vaderlands                    |
+| wd:Q5338722  | Editor-at-large                           |
+| wd:Q22888258 | Edward James Bennell                      |
+| wd:Q744738   | Encyclopédistes                           |
+| wd:Q16637669 | Félibresse                                |
+| wd:Q764233   | Geoponici                                 |
+| wd:Q767975   | Goliard                                   |
+| wd:Q4529715  | Hittitologist                             |
+| wd:Q6296256  | Journalist                                |
+| wd:Q956365   | Liedermacher                              |
+| wd:Q1133078  | Logographer                               |
+| wd:Q3296111  | Marxist historian                         |
+| wd:Q156624   | Paparazzi                                 |
+| wd:Q7207430  | Poet Laureate of the District of Columbia |
+| wd:Q41775    | Poète maudit                              |
+| wd:Q3403391  | Prince des poètes                         |
+| wd:Q7459839  | Sha'ir                                    |
+| wd:Q20002503 | Story artist                              |
+| wd:Q19346706 | US american journalist                    |
+| wd:Q20532870 | Uzbek writers                             |
+| wd:Q6399436  | VJ                                        |
+| wd:Q23038345 | Wikipedian                                |
+| wd:Q3809586  | Wikipedian in Residence                   |
+| wd:Q17486321 | agrarian historian                        |
+| wd:Q794686   | aoidos                                    |
+| wd:Q3606216  | aphorist                                  |
+| wd:Q619553   | apologist                                 |
+| wd:Q17486326 | architectural historian                   |
+| wd:Q17391659 | architectural theoretician                |
+| wd:Q17391654 | architecture critic                       |
+| wd:Q4164507  | art critic                                |
+| wd:Q1792450  | art historian                             |
+| wd:Q17391638 | art theorist                              |
+| wd:Q18814623 | autobiographer                            |
+| wd:Q215144   | bard                                      |
+| wd:Q10429346 | bibliographer                             |
+| wd:Q864380   | biographer                                |
+| wd:Q24705156 | broadcast journalist                      |
+| wd:Q26233771 | building researcher                       |
+| wd:Q26132815 | byzantinist                               |
+| wd:Q13391399 | chansonnier                               |
+| wd:Q15986551 | chess journalist                          |
+| wd:Q15958307 | chess theoretician                        |
+| wd:Q4853732  | children's writer                         |
+| wd:Q3330547  | chronicler                                |
+| wd:Q1743122  | church historian                          |
+| wd:Q15983985 | classical archaeologist                   |
+| wd:Q16267607 | classical philologist                     |
+| wd:Q2468727  | classical scholar                         |
+| wd:Q3276037  | color commentator                         |
+| wd:Q1086863  | columnist                                 |
+| wd:Q11914886 | comedy writer                             |
+| wd:Q21207686 | comics critic                             |
+| wd:Q20669602 | contemporary historian                    |
+| wd:Q2995513  | contemporary historian                    |
+| wd:Q876864   | contributing editor                       |
+| wd:Q27431213 | cookery writer                            |
+| wd:Q11500768 | cooking expert                            |
+| wd:Q1155838  | correspondent                             |
+| wd:Q3589290  | correspondent                             |
+| wd:Q21036234 | crime writer                              |
+| wd:Q6430706  | critic                                    |
+| wd:Q21286455 | critic of religions                       |
+| wd:Q20020377 | cultural critic                           |
+| wd:Q15462162 | cultural historian                        |
+| wd:Q19765978 | dance critic                              |
+| wd:Q10297252 | detective writer                          |
+| wd:Q22811127 | devotional writer                         |
+| wd:Q3026032  | dialogue writer                           |
+| wd:Q18939491 | diarist                                   |
+| wd:Q23117687 | dithyrambic poet                          |
+| wd:Q487596   | dramaturge                                |
+| wd:Q17488363 | economic historian                        |
+| wd:Q589298   | editor-in-chief                           |
+| wd:Q3024627  | editorial cartoonist                      |
+| wd:Q17342450 | editorial columnist                       |
+| wd:Q1350189  | egyptologist                              |
+| wd:Q16314501 | encyclopedist                             |
+| wd:Q22917056 | engraved gem researcher                   |
+| wd:Q26237228 | epigrammatist                             |
+| wd:Q15632632 | epigrapher                                |
+| wd:Q11774202 | essayist                                  |
+| wd:Q20743624 | etruscologist                             |
+| wd:Q3064032  | fabulist                                  |
+| wd:Q4220892  | film critic                               |
+| wd:Q20971250 | film historian                            |
+| wd:Q17391605 | film theorist                             |
+| wd:Q1495660  | food critic                               |
+| wd:Q18190897 | foreign correspondent                     |
+| wd:Q22662561 | game show host                            |
+| wd:Q8963721  | genealogist                               |
+| wd:Q623386   | ghostwriter                               |
+| wd:Q5615122  | guest host                                |
+| wd:Q17166634 | hagiographer                              |
+| wd:Q5689489  | head writer                               |
+| wd:Q19967350 | hellenist                                 |
+| wd:Q18916625 | hellenist                                 |
+| wd:Q516463   | heraldist                                 |
+| wd:Q201788   | historian                                 |
+| wd:Q17504989 | historian of Eastern Europe               |
+| wd:Q17488392 | historian of cartography                  |
+| wd:Q20873384 | historian of classical antiquity          |
+| wd:Q17486330 | historian of mathematics                  |
+| wd:Q17488357 | historian of religion                     |
+| wd:Q16063546 | historian of science                      |
+| wd:Q17505002 | historian of student                      |
+| wd:Q17486338 | historian of technology                   |
+| wd:Q17489339 | historian of the modern age               |
+| wd:Q5905231  | horror host                               |
+| wd:Q20738773 | hymnwriter                                |
+| wd:Q256876   | improvvisatore                            |
+| wd:Q15931838 | investigative reporter                    |
+| wd:Q1930187  | journalist                                |
+| wd:Q17598791 | latinist                                  |
+| wd:Q2135538  | legal historian                           |
+| wd:Q16012028 | legal scholar                             |
+| wd:Q8178443  | librettist                                |
+| wd:Q11236655 | light novel writer                        |
+| wd:Q2617025  | list of Muslim historians                 |
+| wd:Q4263842  | literary critic                           |
+| wd:Q13570226 | literary historian                        |
+| wd:Q15962340 | literary theorist                         |
+| wd:Q1595570  | local historian                           |
+| wd:Q822146   | lyricist                                  |
+| wd:Q19251029 | media critic                              |
+| wd:Q8175949  | media historian                           |
+| wd:Q15985128 | medical historian                         |
+| wd:Q18533509 | medical writer                            |
+| wd:Q3332711  | medievalist                               |
+| wd:Q11774156 | memoirist                                 |
+| wd:Q1493121  | military historian                        |
+| wd:Q18932086 | military theorist                         |
+| wd:Q11781549 | minnesänger                               |
+| wd:Q1350157  | music critic                              |
+| wd:Q20198542 | music historian                           |
+| wd:Q20669622 | music journalist                          |
+| wd:Q16031530 | music theorist                            |
+| wd:Q12270170 | mutakallim                                |
+| wd:Q26425137 | mykenologist                              |
+| wd:Q24387326 | mythographer                              |
+| wd:Q17351648 | newspaper editor                          |
+| wd:Q15980158 | non-fiction writer                        |
+| wd:Q6625963  | novelist                                  |
+| wd:Q2004963  | numismatist                               |
+| wd:Q21272406 | paleoanthropologist                       |
+| wd:Q16254673 | pamphleteer                               |
+| wd:Q16267158 | papyrologist                              |
+| wd:Q24265174 | philosophy historian                      |
+| wd:Q957729   | photojournalist                           |
+| wd:Q551835   | physician writer                          |
+| wd:Q214917   | playwright                                |
+| wd:Q49757    | poet                                      |
+| wd:Q1209498  | poet lawyer                               |
+| wd:Q12901590 | poetaster                                 |
+| wd:Q4992409  | political editor                          |
+| wd:Q15973695 | political journalist                      |
+| wd:Q15994177 | political theorist                        |
+| wd:Q15958642 | political writer                          |
+| wd:Q17488316 | prehistorian                              |
+| wd:Q12144794 | prosaist                                  |
+| wd:Q16755977 | racial theorist                           |
+| wd:Q24702769 | radio journalist                          |
+| wd:Q3406651  | radio producer                            |
+| wd:Q17488465 | regional historian                        |
+| wd:Q24262594 | religious writer                          |
+| wd:Q42909    | reporter                                  |
+| wd:Q936371   | rhapsode                                  |
+| wd:Q15978391 | satirist                                  |
+| wd:Q18844224 | science fiction writer                    |
+| wd:Q17433421 | science journalist                        |
+| wd:Q3745071  | science writer                            |
+| wd:Q28389    | screenwriter                              |
+| wd:Q839935   | script doctor                             |
+| wd:Q7458488  | sex columnist                             |
+| wd:Q15949613 | short story writer                        |
+| wd:Q7508381  | sideline reporter                         |
+| wd:Q15981299 | singer-lyricist                           |
+| wd:Q488205   | singer-songwriter                         |
+| wd:Q947305   | skald                                     |
+| wd:Q2293636  | slam poet                                 |
+| wd:Q1366909  | soccer commentator                        |
+| wd:Q15978337 | social critic                             |
+| wd:Q17504992 | social historian                          |
+| wd:Q753110   | songwriter                                |
+| wd:Q175301   | speechwriter                              |
+| wd:Q17504998 | sport historian                           |
+| wd:Q7579803  | sports analyst                            |
+| wd:Q15941595 | sports columnist                          |
+| wd:Q2986228  | sports commentator                        |
+| wd:Q13219447 | sports journalist                         |
+| wd:Q11313148 | sportswriter                              |
+| wd:Q7596574  | staff writer                              |
+| wd:Q27915504 | story by                                  |
+| wd:Q7620399  | story editor                              |
+| wd:Q1771040  | stringer                                  |
+| wd:Q15979013 | surrealist writer                         |
+| wd:Q18668527 | talk show host                            |
+| wd:Q11122954 | tanka poet                                |
+| wd:Q1568338  | technical writer                          |
+| wd:Q19607300 | television columnist                      |
+| wd:Q18810130 | television critic                         |
+| wd:Q22976182 | television journalist                     |
+| wd:Q947873   | television presenter                      |
+| wd:Q17337766 | theatre critic                            |
+| wd:Q1234713  | theologian                                |
+| wd:Q16270720 | theoretical biologist                     |
+| wd:Q19350898 | theoretical physicist                     |
+| wd:Q18931911 | theorist                                  |
+| wd:Q22073916 | tragedy writer                            |
+| wd:Q23055218 | travel guide writer                       |
+| wd:Q3579035  | travel writer                             |
+| wd:Q1747339  | trobairitz                                |
+| wd:Q186370   | troubadour                                |
+| wd:Q1996467  | trouvère                                  |
+| wd:Q189459   | ulama                                     |
+| wd:Q3476620  | video game writer                         |
+| wd:Q619514   | video journalist                          |
+| wd:Q164236   | war correspondent                         |
+| wd:Q11496048 | war photographer                          |
+| wd:Q2556193  | wine critic                               |
+| wd:Q381353   | woman of letters                          |
+| wd:Q3589292  | women letter writer                       |
+| wd:Q36180    | writer                                    |
+| wd:Q27212012 | young adult writer                        |
+
+This list is amazing and disturbing at the same time.
+
 
 BTW: the query to get the subclasses of [[https://www.wikidata.org/wiki/Q7725634][literary work (Q7725634)]] is
 provided as [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#All_subclasses_of_.22Literary_Work.22][an example]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ7725634%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fs][SPARQL]]):

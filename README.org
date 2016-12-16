@@ -1,38 +1,41 @@
 * measuring
-
 We want to measure the size (number of pages) of novels (i.e.,
-fictional literary works) in the [[http://www.dnb.de/][German National Library]]
-(DNB). Therefore, we
-1. extract a list of writers from [[https://www.wikidata.org/][WikiData]] together with their GND id
-2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
-3. joining the writer list with the list of books using the GND id
+fictional literary works) in the [[http://www.dnb.de/][German National Library]] (DNB).
 
-** context
-
-It's not trivial to extract all novels from a big catalogue like that
+It is not trivial to extract all novels from a big catalogue like that
 of the German National library. "Librarians estimate that genre
 information is present in the expected MARC field for less than a
-quarter of the volumes in HathiTrust Digital Library," ([Underwood et
-al. 2013](https://arxiv.org/abs/1309.3323)) and we encounter the same
-problem which calls for an innovative solution.
+quarter of the volumes in HathiTrust Digital Library," ([[https://arxiv.org/abs/1309.3323][Underwood et
+al. 2013]]) and we encounter the same problem, which calls for an
+innovative solution.
 
-** extracting writers from WikiData
+Our approach is to
+1. extract a list of writers from [[https://www.wikidata.org/][Wikidata]] together with their GND id
+2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
+3. join the writer list with the list of books using the GND id
 
-We query WikiData's [[https://query.wikidata.org/][SPARQL endpoint]] to get a list of writers. Since
-[[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries][SPARQL queries]] become quickly complex, we build the final query step
+This page documents the evolution of this process, which turned out to
+be not as straightforward as it seems. One reason is the size of the
+data and the complexity of path traversal queries (more on that
+later). Therefore, our final solution relies on rather simple SPARQL
+queries to Wikidata and manual joins of the retrieved datasets.
+
+** extracting writers from Wikidata
+We query Wikidata's [[https://query.wikidata.org/][SPARQL endpoint]] to get a list of writers. Since
+[[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries][SPARQL queries]] become complex quickly, we build the final query step
 by step.
 
-We will use the following WikiData items:
+We will use the following Wikidata items:
 - property [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]]
 - property [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]]
 - property [[https://www.wikidata.org/wiki/Property:P279][subclass of (P279)]]
-- entity [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+- class [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
 - potentially also the following subclasses of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]: [[https://www.wikidata.org/wiki/Q49757][poet
   (Q49757)]], [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]], [[https://www.wikidata.org/wiki/Q15949613][short story writer (Q15949613)]]
 
 *** occupation is writer
 
-First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] is
+First, we query for all Wikidata items whose [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] is
 [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A%0A][SPARQL]]):
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
@@ -61,6 +64,14 @@ First, we query for all WikiData items whose [[https://www.wikidata.org/wiki/Pro
 | wd:Q77475    | Ludwig Ganghofer             |
 
 *** occupation is writer or a subclass
+
+/Background:/ Not all people which we consider to be a "writer" have
+as occupation property the class [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] but instead a
+subclass of it, for instance [[https://www.wikidata.org/wiki/Q49757][poet (Q49757)]] or [[https://www.wikidata.org/wiki/Q18844224][science fiction writer
+(Q18844224)]] (see the [[subclasses of writer]]). Since subclasses can have
+further subclasses, we need to traverse the whole subclass tree (the
+transitive closure of the subclass relation) to find all people who
+can be subsumed as writers. (see [[transitive subclasses of writer]]).
 
 Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
 ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
@@ -100,11 +111,10 @@ Let us download the actual data:
        'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
 #+END_SRC
 
-The result is in [[file:wikidata_writer_subclass.tsv][wikidata_writer_subclass.tsv]].
+**** checking the result
 
-**** checking the data
-
-Let us check the data by searching for Goethe:
+Let us check the result by comparing its size and searching for
+Goethe:
 
 #+BEGIN_SRC sh
   wc -l wikidata_writer_subclass.tsv
@@ -135,8 +145,8 @@ following query returns a count of 358703 (on 2016-12-15) instead of
   }
 #+END_SRC
 
-We can see the reason for this problem by checking the end of
-[[file:wikidata_writer_subclass.tsv][wikidata_writer_subclass.tsv]]:
+We can see the reason for this problem by checking the end of the
+result file:
 
 #+BEGIN_SRC sh
   grep Exception wikidata_writer_subclass.tsv | head -n1
@@ -144,10 +154,13 @@ We can see the reason for this problem by checking the end of
 
 : java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: org.openrdf.query.QueryInterruptedException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: com.bigdata.bop.engine.QueryTimeoutException: Query deadline is expired.
 
-Not all writers are returned due to a query timeout which is likely be
-caused by the expensive [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries#Querying_a_class_tree][path query]].
+Not all writers are returned due to a query timeout which is likely
+caused by the expensive [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries#Querying_a_class_tree][path query]] to get all subclasses of writer.
 
 *** occupation is writer or a subclass and has GND id
+/Background:/ It is clear by now that the path query will not return
+all results but for the sake of completeness, we continue with this
+approach to explain how it works in principle.
 
 Third, we ensure that the item has a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fgndid%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20with%20a%20GND%20ID%28P227%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
 
@@ -224,11 +237,9 @@ Let us download the actual data:
        'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
 #+END_SRC
 
-The result is in [[file:wikidata_writer_subclass_gndid.tsv][wikidata_writer_subclass_gndid.tsv]].
-
-**** checking the data
-
-Let us check the data by searching for Goethe:
+**** checking the result
+Let us again check the result comparing its size and searching for
+Goethe:
 
 #+BEGIN_SRC sh
   wc -l wikidata_writer_subclass_gndid.tsv
@@ -244,7 +255,7 @@ Let us check the data by searching for Goethe:
 | <http://www.wikidata.org/entity/Q1585819> | Johann Caspar Goethe           | 118695940 |
 
 Unfortunately, Johann Wolfgang von Goethe is not contained, although
-[[https://www.wikidata.org/wiki/Q5879][he]] has a GND ID and as occupation (among others) [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]]
+[[https://www.wikidata.org/wiki/Q5879][he]] has a GND id and as occupation (among others) [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]]
 which is a subclass of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]. The reason is again a query
 timeout:
 
@@ -259,21 +270,21 @@ Wikidata. One option is to avoid the expensive joins and instead
 extract separate datasets and join them manually.
 
 ** downloading the individual parts and joining them
-
 Presumably due to the size of the data and the complexity of path
 queries and joins, we struggle to put all pieces together within
 Wikidata. Therefore, we here try to download the different bits and
 pieces and put them together manually (well, with some simple tools):
 
-- all entities with an "occupation" (P106) property
-- all subclasses of "writer" (Q36180)
-- all entities with a "GND id" (P227) property
+- all items with an [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] property
+- all [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+- all items with a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property
 
-We can then join the resulting three files and get a list of writers
+We then join the resulting three files and get a list of writers
 together with their GND id.
 
-*** entity has an occupation property
-
+*** item has an occupation property
+This is quite simple: we get all items which have an occupation
+property together with the value of that property ([[https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20}][SPARQL]]):
 #+BEGIN_SRC sparql
   SELECT ?item ?occupation
   WHERE
@@ -282,6 +293,8 @@ together with their GND id.
   }
 #+END_SRC
 
+Let us download the data:
+
 #+BEGIN_SRC sh :results silent
   curl \
       --header "Accept: text/tab-separated-values" \
@@ -289,6 +302,8 @@ together with their GND id.
       --globoff \
 'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20}'
 #+END_SRC
+
+and count the number of items:
 
 #+BEGIN_SRC sh 
   wc -l wikidata_occupation.tsv
@@ -299,6 +314,9 @@ together with their GND id.
 Impressive!
 
 *** all subclasses of writer
+
+This is the expensive path query, except that we avoid to join any
+large amounts of data such that the result is quite small:
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?subclass
@@ -316,15 +334,16 @@ Impressive!
        'https://query.wikidata.org/sparql?query=%23added%20before%202016-10%0ASELECT%20%3Fsubclass%0AWHERE%0A{%0A%20%20%3Fsubclass%20wdt%3AP279*%20wd%3AQ36180%0A}'
 #+END_SRC
 
-*** entity has a GND id
+We get a list of all [[transitive subclasses of writer]].
 
-We download all entities which have a GND id:
+*** item has a GND id
+We download all items which have a GND id:
 
 #+BEGIN_SRC sparql
   SELECT ?item ?itemLabel ?gndid
   WHERE
   {
-    ?item p:P227 ?wds . 
+    ?item p:P227 ?wds .                     # has property occupation(P227)
     ?wds ?v ?gndid .
     ?wdP wikibase:claim p:P227 .
     ?wdP wikibase:statementProperty ?v .
@@ -350,21 +369,26 @@ We download all entities which have a GND id:
 
 This is close to the count of 447551 returned by a [[https://query.wikidata.org/#%20%20SELECT%20%28COUNT%28DISTINCT%20%3Fitem%29%20AS%20%3Fcount%29%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A][COUNT query]].
 
-(Note: The ~itemLabel~ was later added to the query but Wikidata
-struggled to deliver the complete results. Hence, when less results
-are returned, try removing the ~itemLabel~ from the ~SELECT~
-statement.)
+**** TODO struggles with the itemLabel
 
+The ~itemLabel~ was later added to the query but Wikidata struggled to
+deliver the complete results. Hence, when less results are returned,
+try removing the ~itemLabel~ from the ~SELECT~ statement.
+
+Another alternative is to retrieve the labels for the items using the
+query where an [[item has an occupation property]].
+
+We then also need to adopt the columns which are joined in the next
+section.
 
 *** joining the files
-
 We want to join the following three files:
 
 1. ~wikidata_occupation.tsv~
 2. ~wikidata_writer_subclasses.tsv~
 3. ~wikidata_gndid.tsv~
 
-Due to [[https://unix.stackexchange.com/questions/12942/join-file-2-not-in-sorted-order][an incompatibility]] between my ~sort~ and ~join~ program, we
+Due to [[https://unix.stackexchange.com/questions/12942/join-file-2-not-in-sorted-order][an incompatibility]] between the ~sort~ and ~join~ program, we
 have to ensure that all operations use the same collation. In our
 example we use ~en_EN~.
 
@@ -417,7 +441,6 @@ from Wikidata with the records from the DNB
 #+END_SRC
 
 *** checks
-
 It contains entries like these:
 
 #+BEGIN_SRC ttl
@@ -453,9 +476,8 @@ of the ~dcterms:creator~ property. It points to
 Goethe!
 
 *** extraction
-
 We want to find all entries in that file with a GND id from our
-Wikidata entities.
+Wikidata items.
 
 To have some smaller data to play around, we extract some entries:
 #+BEGIN_SRC sh :results silent
@@ -531,7 +553,7 @@ the gzip compressed file from the DNB):
   writers = set()
   with open('wd_result', 'r') as f:
       for line in f:
-          entity, gndid = line.strip().split()
+          item, gndid = line.strip().split()
           writers.add(gndid)
 
   # read DNB data
@@ -557,26 +579,26 @@ the gzip compressed file from the DNB):
 Don't try this at home kids! This loads the whole DNB RDF graph into
 memory and thus requires an enormous amount of main memory.
 
-* scratch
+** additional information
 
 *** subclasses of writer
 
-Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]]
-[[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
+Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer
+(Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
 
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
-  SELECT ?s ?desc
+  SELECT ?item ?itemLabel
   WHERE
   {
-    ?s wdt:P279 wd:Q36180 .
-    OPTIONAL {
-      ?s rdfs:label ?desc filter (lang(?desc) = "en").
+    ?item wdt:P279 wd:Q36180 .             # subclass(P279) of writer(Q36180)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
     }
   }
-  ORDER BY ?desc
+  ORDER BY ?itemLabel
 #+END_SRC
 
-| s            | desc                   |
+| item         | itemLabel              |
 |--------------+------------------------|
 | wd:Q152182   |                        |
 | wd:Q21140478 |                        |
@@ -620,21 +642,23 @@ Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P27
 | wd:Q381353   | woman of letters       |
 | wd:Q27212012 | young adult writer     |
 
+*** transitive subclasses of writer
+
 And now let us respect transitivity:
 
 #+BEGIN_SRC sparql :url http://query.wikidata.org/sparql :format text/csv
-  SELECT ?s ?desc
+  SELECT ?item ?itemLabel
   WHERE
   {
-    ?s wdt:P279* wd:Q36180 .
-    OPTIONAL {
-      ?s rdfs:label ?desc filter (lang(?desc) = "en").
+    ?item wdt:P279* wd:Q36180 .            # subclass(P279) (transitive) of writer(Q36180)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
     }
   }
-  ORDER BY ?desc
+  ORDER BY ?itemLabel
 #+END_SRC
 
-| s            | desc                                      |
+| item         | itemLabel                                 |
 |--------------+-------------------------------------------|
 | wd:Q152182   |                                           |
 | wd:Q1456208  |                                           |

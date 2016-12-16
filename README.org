@@ -130,8 +130,17 @@ following query returns a count of 358703 (on 2016-12-15) instead of
   }
 #+END_SRC
 
-It seems that not all writers are returned which probably is due to
-problems with the query, since [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries#Querying_a_class_tree][path queries]] are expensive.
+We can see the reason for this problem by checking the end of
+[[file:wikidata_writer_subclass.tsv][wikidata_writer_subclass.tsv]]:
+
+#+BEGIN_SRC sh
+  grep Exception wikidata_writer_subclass.tsv | head -n1
+#+END_SRC
+
+: java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: org.openrdf.query.QueryInterruptedException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: com.bigdata.bop.engine.QueryTimeoutException: Query deadline is expired.
+
+Not all writers are returned due to a query timeout which is likely be
+caused by the expensive [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries#Querying_a_class_tree][path query]].
 
 *** occupation is writer or a subclass and has GND id
 
@@ -231,14 +240,25 @@ Let us check the data by searching for Goethe:
 
 Unfortunately, Johann Wolfgang von Goethe is not contained, although
 [[https://www.wikidata.org/wiki/Q5879][he]] has a GND ID and as occupation (among others) [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]]
-which is a subclass of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]. *What has happened?*
+which is a subclass of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]. The reason is again a query
+timeout:
+
+#+BEGIN_SRC sh
+  grep Exception wikidata_writer_subclass_gndid.tsv | head -n1
+#+END_SRC
+
+: java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: org.openrdf.query.QueryInterruptedException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: com.bigdata.bop.engine.QueryTimeoutException: Query deadline is expired.
+
+Therefore, we must find another way to extract the data from
+Wikidata. One option is to avoid the expensive joins and instead
+extract separate datasets and join them manually.
 
 ** downloading the different parts and joining them
 
-Presumably due to the size of the data, we struggle to put all pieces
-together within Wikidata. Therefore, we here try to download the
-different bits and pieces and put them together manually (well, with
-some simple tools):
+Presumably due to the size of the data and the complexity of path
+queries and joins, we struggle to put all pieces together within
+Wikidata. Therefore, we here try to download the different bits and
+pieces and put them together manually (well, with some simple tools):
 
 - all entities with an "occupation" (P106) property
 - all subclasses of "writer" (Q36180)
@@ -329,48 +349,55 @@ This is close to the count of 447551 returned by a [[https://query.wikidata.org/
 
 We want to join the following three files:
 
-- ~wikidata_occupation.tsv~
-- ~wikidata_writer_subclasses.tsv~
-- ~wikidata_gndid.tsv~
+1. ~wikidata_occupation.tsv~
+2. ~wikidata_writer_subclasses.tsv~
+3. ~wikidata_gndid.tsv~
 
-Preparation: let's sort all files:
+Due to [[https://unix.stackexchange.com/questions/12942/join-file-2-not-in-sorted-order][an incompatibility]] between my ~sort~ and ~join~ program, we
+have to ensure that all operations use the same collation. In our
+example we use ~en_EN~.
 
-#+BEGIN_SRC sh
+To join the files, they need to be sorted. Therefore, we first sort
+them using the ~en_EN~ collation:
+
+#+BEGIN_SRC sh :results silent
+  export LANG=en_EN
   sort -k1 wikidata_writer_subclasses.tsv > wd_ws
   sort -k2 wikidata_occupation.tsv > wd_o
   sort -k1 wikidata_gndid.tsv > wd_g
 #+END_SRC
 
-We start by joining ~wikidata_occupation.tsv~ (column 2) with
- ~wikidata_writer_subclasses.tsv~ (column1) using the occupation:
+We can now join ~wikidata_occupation.tsv~ (column 2) with
+~wikidata_writer_subclasses.tsv~ (column1) using the occupation:
 
-#+BEGIN_SRC sh
-  join -1 1 -2 2 wd_ws wd_o | cut -d' ' -f2 | sort > wd_w
+#+BEGIN_SRC sh :results silent
+  export LANG=en_EN
+  join -1 1 -2 2 wd_ws wd_o | cut -d' ' -f2 | sort -u > wd_w
 #+END_SRC
 
 We now join this with the GND ids:
 
 #+BEGIN_SRC sh
+  export LANG=en_EN
   join wd_g wd_w > wd_result
   wc -l wd_result
 #+END_SRC
 
-- 163701
+- 114872
 
-So we have at least more results than we got directly from
-Wikidata. Let's check for Goethe:
+So we have at least more results than we got directly from Wikidata.
+Let's check for Goethe:
 
 #+BEGIN_SRC sh
   grep "Q5879>" wd_result
 #+END_SRC
 
-Still not contained. :-(
+| <http://www.wikidata.org/entity/Q5879> | 118540238 |
 
-Next step: find out why.
+Success! Goethe is included. We can now continue and join the writers
+from Wikidata with the records from the DNB
 
-
-
-** downloading linked data from DNB
+** Linked Data from DNB
 
 #+BEGIN_SRC sh :results silent
   curl --output GND.ttl.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=GND.ttl.gz"

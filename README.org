@@ -404,9 +404,13 @@ from Wikidata with the records from the DNB
 
 ** Linked Data from DNB
 
+*** download
+
 #+BEGIN_SRC sh :results silent
   curl --output GND.ttl.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=GND.ttl.gz"
 #+END_SRC
+
+*** checks
 
 It contains entries like these:
 
@@ -435,12 +439,81 @@ We find the GND id 118540238 in the URL http://d-nb.info/gnd/118540238
 of the ~dcterms:creator~ property. It points to 
 
 #+BEGIN_SRC sh
-  grep 118540238 wikidata_writer_subclass_gndid.tsv
+  grep 118540238 wd_result
 #+END_SRC
 
-#+RESULTS:
+| <http://www.wikidata.org/entity/Q5879> | 118540238 |
 
-** joining writers and books
+Goethe!
+
+*** extraction
+
+We want to find all entries in that file with a GND id from our
+Wikidata entities.
+
+To have some smaller data to play around, we extract some entries:
+#+BEGIN_SRC sh :results silent
+ zcat DNBTitel.ttl.gz| head -n29999 > dnbtest.ttl
+#+END_SRC
+
+(We need almost 30000 lines to get some entries with a ~dc:creator~
+property below.)
+
+Now we need Python and [rdflib](https://github.com/RDFLib/rdflib) to
+parse the data:
+
+#+begin_src emacs-lisp :results none
+  (setq org-babel-python-command "python3")
+#+end_src
+
+#+BEGIN_SRC python :results output
+  import rdflib
+  from rdflib.namespace import DCTERMS, DC
+
+  g = rdflib.Graph()
+  g.parse('dnbtest.ttl', format='n3')
+  isbd = rdflib.Namespace("http://iflastandards.info/ns/isbd/elements/")
+   
+  for s, o in g.subject_objects(DCTERMS["creator"]):
+      # property with linked GND id found, extract GND id
+      url, gndid = o.rsplit('/', 1)
+      # get title and page number
+      title = g.value(s, DC["title"], None)
+      pages = g.value(s, isbd["P1053"], None)
+      print(s, gndid, title, pages, sep='|')
+#+END_SRC
+
+| http://d-nb.info/97559074X |  110717996 | Der Lehrprinz                                  | X, 528 S.   |
+| http://d-nb.info/968668267 | 1074145577 | Integrierte digitale Schaltungen               | XII, 711 S. |
+| http://d-nb.info/966102002 | 1030562091 | Brandschutzgeschichte                          | 250 S.      |
+| http://d-nb.info/973161485 |  117227242 | Der Logos des Spiegels                         | 366 S.      |
+| http://d-nb.info/969479468 |  121279723 | Tessloffs Aufklärungsbuch                      | 80 S.       |
+| http://d-nb.info/966102002 | 1049499417 | Brandschutzgeschichte                          | 250 S.      |
+| http://d-nb.info/963874004 |  121412636 | Durch Wüste und Steppe                         | 610 S.      |
+| http://d-nb.info/968668267 | 1074145798 | Integrierte digitale Schaltungen               | XII, 711 S. |
+| http://d-nb.info/972213066 |  123476879 | Modellfall für Deutschland?                    | 1382 S.     |
+| http://d-nb.info/970176384 | 1043946004 | Beck'sches Handbuch Umwandlungen international | XIV, 697 S. |
+| http://d-nb.info/972500502 |  118176900 | Gastling                                       | 103 S.      |
+| http://d-nb.info/975731858 |  128369078 | Opfer rechtsextremer Gewalt                    | 176 S.      |
+| http://d-nb.info/969479468 |  129025232 | Tessloffs Aufklärungsbuch                      | 80 S.       |
+| http://d-nb.info/972647988 |  121742660 | Produkthaftpflichtversicherung                 | XVI, 498 S. |
+| http://d-nb.info/966547403 |  118503901 | Trug doch die Nacht den Albatros               | 133 S.      |
+| http://d-nb.info/969932391 |  121102467 | Fichte lesen                                   | XV, 119 S.  |
+| http://d-nb.info/975731858 | 1043395121 | Opfer rechtsextremer Gewalt                    | 176 S.      |
+| http://d-nb.info/975192507 |  118509861 | Gedichte                                       | 601 Seiten  |
+| http://d-nb.info/96665241X |  118654292 | Luther                                         | 158 S.      |
+| http://d-nb.info/972721304 |  115881301 | Frank Bsirske macht Urlaub au Krk              | 315 S.      |
+| http://d-nb.info/972721304 |  141422114 | Frank Bsirske macht Urlaub au Krk              | 315 S.      |
+| http://d-nb.info/975731858 |  123182301 | Opfer rechtsextremer Gewalt                    | 176 S.      |
+| http://d-nb.info/975778269 |  170750345 | Nachhaltigkeit und Betriebswirtschaftslehre    | 598 S.      |
+
+It is slow but it works pretty well. 
+
+*** joining writers and books
+
+We extend the Python code to check for each GND whether it appears or
+list from Wikidata (~wd_results~):
+
 
 * scratch
 

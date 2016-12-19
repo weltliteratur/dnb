@@ -1129,3 +1129,5 @@ And creating a [[http://www.graphviz.org/][GraphViz]] file to plot it:
 #+END_SRC
 
 [[file:wikidata_writer_graph.svg]]
+
+https://raw.githubusercontent.com/weltliteratur/weighing/master/wikidata_writer_graph.png

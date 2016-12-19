@@ -765,6 +765,10 @@ Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P27
 | wd:Q381353   | woman of letters       |
 | wd:Q27212012 | young adult writer     |
 
+Some item labels are empty because the items do not have an English
+label. For instance, the first item [[https://www.wikidata.org/wiki/Q152182][wd:Q152182]] refers to the German
+concept "Literat" for which no English translation is provided. 
+
 *** transitive subclasses of writer
 
 And now let us respect transitivity:

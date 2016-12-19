@@ -1130,4 +1130,6 @@ And creating a [[http://www.graphviz.org/][GraphViz]] file to plot it:
 
 [[file:wikidata_writer_graph.svg]]
 
-https://raw.githubusercontent.com/weltliteratur/weighing/master/wikidata_writer_graph.png
+#+CAPTION: Graph of all subclasses of writer
+#+NAME:   fig:writer_graph
+[[https://raw.githubusercontent.com/weltliteratur/weighing/master/wikidata_writer_graph.png]]

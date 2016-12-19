@@ -1044,7 +1044,6 @@ And now let us respect transitivity:
 
 This list is amazing and disturbing at the same time.
 
-
 BTW: the query to get the subclasses of [[https://www.wikidata.org/wiki/Q7725634][literary work (Q7725634)]] is
 provided as [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#All_subclasses_of_.22Literary_Work.22][an example]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ7725634%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fs][SPARQL]]):
 
@@ -1059,3 +1058,74 @@ provided as [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/querie
   }
   ORDER BY ?s
 #+END_SRC
+
+
+*** the writer class hierarchy
+
+Let us visualise the subclasses of writer in a tree. First, we need to
+get pairs of subclasses ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3FotherItem%20%3FotherItemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP279%20%3FotherItem%20.%0A%20%20%20%20%3FotherItem%20wdt%3AP279*%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%23%20subclass%28P279%29%20%28transitive%29%20of%20writer%28Q36180%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20ORDER%20BY%20%3FitemLabel%0A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url http://query.wikidata.org/sparql :format text/csv
+  #defaultView:Graph
+  SELECT ?item ?itemLabel ?otherItem ?otherItemLabel
+  WHERE
+  {
+    ?item wdt:P279 ?otherItem .
+    ?otherItem wdt:P279* wd:Q36180 .            # subclass(P279) (transitive) of writer(Q36180)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+Downloading the data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_pairs.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3FotherItem%20%3FotherItemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP279%20%3FotherItem%20.%0A%20%20%20%20%3FotherItem%20wdt%3AP279*%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%23%20subclass%28P279%29%20%28transitive%29%20of%20writer%28Q36180%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+And creating a [[http://www.graphviz.org/][GraphViz]] file to plot it:
+
+#+BEGIN_SRC python :results silent
+  vertices = dict()
+  edges = []
+
+  with open("wikidata_writer_pairs.tsv", "rt") as f:
+      for line in f:
+          # ignore first line
+          if line[0] != "?":
+              item, itemLabel, otherItem, otherItemLabel = line.strip().split('\t')
+              # shorten item ids
+              item = item[len("<http://www.wikidata.org/entity/"):-1]
+              otherItem = otherItem[len("<http://www.wikidata.org/entity/"):-1]
+              # clean labels
+              if itemLabel[0] == "\"":
+                  itemLabel = itemLabel[1:-len("\"@en")]
+              if otherItemLabel[0] == "\"":
+                  otherItemLabel = otherItemLabel[1:-len("\"@en")]
+              # add vertices
+              vertices[item] = itemLabel
+              vertices[otherItem] = otherItemLabel
+              # add edge
+              edges.append((item, otherItem))
+  # print graph
+  with open("wikidata_writer_graph.dot", "wt") as f:
+      print("digraph writers {", file=f)
+      print("  graph [overlap=none, rankdir=RL];", file=f)
+      for v in vertices:
+          print("  ", v, " [label=\"", vertices[v], "\"];", sep='', file=f)
+      for d, e in edges:
+          print("  ", d, " -> ", e, ";", sep='', file=f)
+      print("}", file=f)
+#+END_SRC
+
+#+BEGIN_SRC sh
+  dot -Tpng -owikidata_writer_graph.png wikidata_writer_graph.dot
+  dot -Tsvg -owikidata_writer_graph.svg wikidata_writer_graph.dot
+#+END_SRC
+
+[[file:wikidata_writer_graph.svg]]

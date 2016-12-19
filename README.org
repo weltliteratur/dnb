@@ -286,10 +286,13 @@ together with their GND id.
 This is quite simple: we get all items which have an occupation
 property together with the value of that property ([[https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20}][SPARQL]]):
 #+BEGIN_SRC sparql
-  SELECT ?item ?occupation
+  SELECT ?item ?itemLabel ?occupation
   WHERE
   {
-    ?item wdt:P106 ?occupation              # occupation(P106)
+    ?item wdt:P106 ?occupation .            # occupation(P106)
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
   }
 #+END_SRC
 
@@ -300,7 +303,7 @@ Let us download the data:
       --header "Accept: text/tab-separated-values" \
       --output wikidata_occupation.tsv \
       --globoff \
-'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20}'
+'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20.%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
 #+END_SRC
 
 and count the number of items:
@@ -689,7 +692,15 @@ the longest works in our list:
 
 The names of the authors are missing for now but having a look at the
 corresponding DNB pages we can get an idea that something must be
-wrong here.
+wrong here:
+
+1. The page numbers seem to be too large to be true.
+2. The first book, "Tim", was published by Goldmann Verlag, a typical
+   paperback publisher. 
+3. The last book, "Flying Dutchmen" from the architect Kari Jormakka
+   is non-fiction.
+
+We will investigate these issues in the next steps.
 
 ** additional information
 

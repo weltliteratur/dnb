@@ -545,15 +545,20 @@ the writer list ~wd_result~ from Wikidata (and we add support to read
 the gzip compressed file from the DNB):
 
 #+BEGIN_SRC python :results output
+  from __future__ import print_function
   import rdflib
   import gzip
+  import codecs
+  import logging
   from rdflib.namespace import DCTERMS, DC
+
+  logging.basicConfig()
 
   # read Wikidata GND ids of writers
   writers = set()
   with open('wd_result', 'r') as f:
       for line in f:
-          item, gndid = line.strip().split()
+          entity, gndid = line.strip().split()
           writers.add(gndid)
 
   # read DNB data
@@ -571,13 +576,120 @@ the gzip compressed file from the DNB):
           # get title and page number
           title = g.value(s, DC["title"], None)
           pages = g.value(s, isbd["P1053"], None)
-          print(s, gndid, title, pages, sep='\t', file=fout)
+          if title == None:
+              title = ""
+          if pages == None:
+              pages = ""
+          
+          print(s.encode("utf-8"), gndid.encode("utf-8"), title.encode("utf-8"), pages.encode("utf-8"), sep='\t', file=fout)
 
   fout.close()
 #+END_SRC
 
 Don't try this at home kids! This loads the whole DNB RDF graph into
 memory and thus requires an enormous amount of main memory (142GB).
+
+** analysing the page numbers
+
+We finally have a result and can analyse ~dnb_pages.tsv~.
+
+*** syntax
+
+A quick look at the data immediately reveals that there are many
+different ways how page numbers are specified:
+
+#+BEGIN_SRC sh
+  cut -f4 dnb_pages.tsv | sed -e "s/[0-9][0-9]*/0/g"  | sort -u | wc -l
+#+END_SRC
+
+- 6903
+
+Impressive! Let's have a look at the most frequent examples:
+
+#+BEGIN_SRC sh
+  cut -f4 dnb_pages.tsv | sed -e "s/[0-9][0-9]*/0/g"  | sort | uniq -c | sort -nr | head
+#+END_SRC
+
+| 902634 | 0 S.       |
+| 116585 |            |
+|  18909 | 0 S.;      |
+|  18739 | [0] S.     |
+|  13436 | 0 Seiten   |
+|  13105 | 0 Bl.      |
+|   7168 | VIII, 0 S. |
+|   5758 | 0, [0] S.  |
+|   4643 | 0, 0 S.    |
+|   4224 | XII, 0 S.  |
+
+And the least frequent examples:
+
+#+BEGIN_SRC sh
+  cut -f4 dnb_pages.tsv | sed -e "s/[0-9][0-9]*/0/g"  | sort | uniq -c | sort -nr | tail
+#+END_SRC
+
+| 1 | 0, 0, 0, 0, 0, 0, 0, 0, 0 S. |
+| 1 | 0, [0], [0]                  |
+| 1 | [0] - 0                      |
+| 1 | 0, [0]                       |
+| 1 | 0-0.                         |
+| 1 | 0 (0)                        |
+| 1 | 0 0                          |
+| 1 | 0 0                          |
+| 1 | [0].                         |
+| 1 | 0,                           |
+
+*** counting
+
+Given the top list above, with the very simple regular expression
+~[0-9]+ S~ we can cover three of the most important cases and extract
+the longest works in our list:
+
+#+BEGIN_SRC python :results output
+  import re
+  import numpy as np
+
+  re_pages = re.compile("([0-9]+) S")
+
+  items = []
+  pagecounts = []
+
+  with open("dnb_pages.tsv", "rt") as f:
+      for line in f:
+          parts = line.strip().split('\t')
+          # ignore broken lines for now
+          if len(parts) == 4:
+              item, gndid, title, pages = parts
+              # parse pages
+              match = re_pages.search(pages)
+              if match:
+                  # store page and item
+                  pagecounts.append(int(match.group(1)))
+                  items.append(line.strip())
+
+  # get permutation to sort by pagecount
+  pagecounts_sorted = np.argsort(pagecounts)
+
+  # print top 10
+  for i in range(1,11):
+      print(pagecounts[pagecounts_sorted[-i]], items[pagecounts_sorted[-i]])
+#+END_SRC
+
+|  pages | item id                    |    GND id | title                                                                 | pages     |
+|--------+----------------------------+-----------+-----------------------------------------------------------------------+-----------|
+| 348333 | http://d-nb.info/920918131 | 119483823 | Tim                                                                   | 348333 S. |
+| 332331 | http://d-nb.info/930916484 | 118507591 | Selbstvergessenheit                                                   | 332331 S. |
+| 239240 | http://d-nb.info/920996760 | 118815202 | Denkzettel                                                            | 239240 S. |
+| 176150 | http://d-nb.info/880974125 | 118520520 | Die fünfte Freiheit                                                   | 176150 S. |
+| 137317 | http://d-nb.info/942067983 | 130671088 | Revolutionäre Psychologie                                             | 137317 S. |
+|  96104 | http://d-nb.info/959654496 | 115662863 | Die Malerei im Bietigheimer Hornmoldhaus                              | 96104 S.  |
+|  22522 | http://d-nb.info/951007475 | 118694316 | Dictionnaire universel, contenant generalement tous les mots françois | 22522 S.  |
+|  21920 | http://d-nb.info/820541613 | 11890423X | Die grünen Augen                                                      | 21920 S.  |
+|  13008 | http://d-nb.info/958168091 | 121276791 | Nicht mehr rauchen und dabei schlank bleiben                          | 13008 S.  |
+|   9306 | http://d-nb.info/964760746 | 128401370 | Flying Dutchmen                                                       | 9306 S.   |
+
+The names of the authors are missing for now but having a look at the
+corresponding DNB pages we can get an idea that something must be
+wrong here.
 
 ** additional information
 

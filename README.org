@@ -592,6 +592,43 @@ the gzip compressed file from the DNB):
 Don't try this at home kids! This loads the whole DNB RDF graph into
 memory and thus requires an enormous amount of main memory (200GB).
 
+Error output:
+
+: WARNING:rdflib.term:http://d-nb.info/gnd/11900951X  does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/104288744 ; 116055804 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/104288744 ; 116055804 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/104288744 ; 116055804 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/ 110148991 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/105112348; 116518308; 118667653 (3 Tp) does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/105112348; 116518308; 118667653 (3 Tp) does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/119193906 (VWForm) does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/116596376; 10083485X does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/ 113519834 does not look like a valid URI, trying to serialize this will break.
+
+The RDF extraction is also non-deterministic, since some properties
+have several values, for instance, this document has two values for
+the ~isbd:P1053~ property which holds the number of pages:
+
+#+BEGIN_SRC n3
+<http://d-nb.info/1010791265> a bibo:Document ;
+        dcterms:medium <http://rdvocab.info/termList/RDACarrierType/1044> ;
+        owl:sameAs <http://hub.culturegraph.org/resource/DNB-1010791265> ;
+        dc:identifier "(DE-101)1010791265" ;
+        rdau:P60521 "Lw. : Pta 125.00" ;
+        dc:identifier "(OCoLC)254209729" ;
+        dc:title "Los pájaros de Baden-Baden" ;
+        dcterms:creator <http://d-nb.info/gnd/118644491> ;
+        rdau:P60163 "Madrid" ;
+        dc:publisher "Ed. Cid" ;
+        rdau:P60333 "Madrid : Ed. Cid, 1965" ;
+        isbd:P1053 "263 S." , "8" ;
+        dcterms:issued "1965" ;
+        bibo:authorList _:node1ashhhfpkx8672282 .
+#+END_SRC
+
+In our implementation a random value is selected, such that either
+~263 S.~ or ~8~ will be extracted.
+
 ** analysing the page numbers
 
 We finally have a result and can analyse ~dnb_pages.tsv~.

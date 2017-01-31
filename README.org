@@ -337,7 +337,7 @@ large amounts of data such that the result is quite small:
        'https://query.wikidata.org/sparql?query=%23added%20before%202016-10%0ASELECT%20%3Fsubclass%0AWHERE%0A{%0A%20%20%3Fsubclass%20wdt%3AP279*%20wd%3AQ36180%0A}'
 #+END_SRC
 
-We get a list of all [[transitive subclasses of writer]].
+We get a list of all [[#transitive-subclasses-of-writer]].
 
 *** item has a GND id
 We download all items which have a GND id:

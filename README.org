@@ -490,8 +490,7 @@ To have some smaller data to play around, we extract some entries:
 (We need almost 30000 lines to get some entries with a ~dc:creator~
 property below.)
 
-Now we need Python and [rdflib](https://github.com/RDFLib/rdflib) to
-parse the data:
+Now we need Python and [[https://github.com/RDFLib/rdflib][rdflib]] to parse the data:
 
 #+begin_src emacs-lisp :results none
   (setq org-babel-python-command "python3")

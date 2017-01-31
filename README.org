@@ -589,7 +589,7 @@ the gzip compressed file from the DNB):
 #+END_SRC
 
 Don't try this at home kids! This loads the whole DNB RDF graph into
-memory and thus requires an enormous amount of main memory (200GB).
+memory and this requires an enormous amount of main memory (200GB).
 
 Error output:
 

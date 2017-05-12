@@ -440,7 +440,7 @@ from Wikidata with the records from the DNB
 *** download
 
 #+BEGIN_SRC sh :results silent
-  curl --output GND.ttl.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=GND.ttl.gz"
+  curl --output DNBTitel.rdf.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=DNBTitel.rdf.gz"
 #+END_SRC
 
 *** checks

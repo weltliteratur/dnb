@@ -59,15 +59,18 @@ def normalise_page(val):
     if m:
         return m.group(1)
     elif "," in val:
+        # match against first part after comma
         m = pages_re.match(val.split(",")[1].strip())
         if m:
             return m.group(1)
-    print(val)
     return None
 
 def normalise_pages(vals):
-    v1 = normalise_page(vals[0])
-    return v1
+    for v in vals:
+        vnorm = normalise_page(vals[0])
+        if vnorm is not None:
+            return vnorm
+    return None
 
 # normalise the value for the key using the provided method
 norm_set = {
@@ -86,6 +89,7 @@ def gen_items(lines):
 
 def normalise(items):
     for item in items:
+        newvals = {}
         for key in item:
             val = item[key]
             # distinguish between strings and lists
@@ -94,10 +98,11 @@ def normalise(items):
             else:
                 if key in norm_set:
                     # call dedicated function to convert set to string
-                    item[key] = norm_set[key](val)
+                    newvals[key + "_norm"] = norm_set[key](val)
                 else:
                     # normalise each value separately
                     item[key] = [normalise_val(key, v) for v in val]
+        item.update(newvals)
         yield item
 
 # normalise an individual value
@@ -128,4 +133,4 @@ if __name__ == '__main__':
     lines = gen_lines(args.input)
     items = gen_items(lines)
     items = normalise(items)
-    dump(items, "pages")
+    dump(items, "issued")

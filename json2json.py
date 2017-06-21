@@ -51,6 +51,8 @@ strip_prefix = {
 # | 0, [0] S.  |   5758 |
 # | 0, 0 S.    |   4643 |
 # | XII, 0 S.  |   4224 |
+# 
+# find more with: sed "s/[0-9]/0/g" pages | sed "s/00*/0/g" | sort -S4G | uniq -c | sort -nr | less
 pages_re = re.compile(r"\[?([0-9]+)\]? S(\.|eiten?);?")
 def normalise_page(val):
     m = pages_re.match(val)
@@ -113,7 +115,8 @@ def dump(items, key=None):
             print(json.dumps(item))
         else:
             if key in item:
-                print(item[key])
+                # print(item[key])
+                pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Normalise JSON.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)

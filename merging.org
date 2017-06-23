@@ -57,25 +57,30 @@ replot
 [[pages.png]]
 
 ** issued
-Check the date data for normalisation:
+Extract and normalise the patterns for the "issued" field:
 #+BEGIN_SRC sh :results silent
   ./json2json.py --norm --print "type,issued" DNBTitel.json.gz | sed "s/[0-9]/0/g" > issued.tsv
 #+END_SRC
 
-
+Let's have a look at the most frequent patterns:
 #+BEGIN_SRC sh
+  echo "type\tissued pattern\tfrequency"
   sort -S1G issued.tsv | uniq -c | sort -nr | head
+  echo "*distinct pairs\t\t*" $(sort -S1G -u issued.tsv| wc -l)
 #+END_SRC
 
-| type       | issued pattern | frequency |
-|------------+----------------+-----------|
-| Document   |              0 |  10559276 |
-| Issue      |              0 |   1470687 |
-| Article    |              0 |    981040 |
-| Collection |                |    381824 |
-| Periodical |      0000-0000 |    304933 |
-| Periodical |          0000- |    155810 |
-| Series     |          0000- |     62002 |
-| Series     |              0 |     42707 |
-| Document   |                |     41579 |
-| Periodical |              0 |     25939 |
+| type             | issued pattern | frequency |
+|------------------+----------------+-----------|
+| Document         |              0 |  10559276 |
+| Issue            |              0 |   1470687 |
+| Article          |              0 |    981040 |
+| Collection       |                |    381824 |
+| Periodical       |      0000-0000 |    304933 |
+| Periodical       |          0000- |    155810 |
+| Series           |          0000- |     62002 |
+| Series           |              0 |     42707 |
+| Document         |                |     41579 |
+| Periodical       |              0 |     25939 |
+|------------------+----------------+-----------|
+| *distinct pairs* |                |       105 |
+

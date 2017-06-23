@@ -66,3 +66,15 @@ Check the date data for normalisation:
 #+BEGIN_SRC sh
   sort -S1G issued.tsv | uniq -c | sort -nr | head
 #+END_SRC
+
+#+RESULTS:
+| 10559276 Document |         0 |
+| 1470687 Issue     |         0 |
+| 981040 Article    |         0 |
+| 381824 Collection |           |
+| 304933 Periodical | 0000-0000 |
+| 155810 Periodical |     0000- |
+| 62002 Series      |     0000- |
+| 42707 Series      |         0 |
+| 41579 Document    |           |
+| 25939 Periodical  |         0 |

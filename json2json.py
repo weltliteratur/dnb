@@ -4,14 +4,17 @@
 #
 # Normalise JSON:
 # - strip common prefixes for URLs
-# - normalise white space
-# -
+# - normalise date
 #
 # Usage:
 #
 # Author: rja
 #
 # Changes:
+# 2017-06-23 (rja)
+# - added comments
+# - ignoring None values for new normalised values
+# - added parameter -e to enclose each item by {"index": ... }
 # 2017-06-21 (rja)
 # - initial version
 
@@ -21,7 +24,7 @@ import os
 import gzip
 import re
 
-version = "0.0.1"
+version = "0.0.2"
 
 # strip the provided prefix from the value of the corresponding key
 strip_prefix = {
@@ -87,21 +90,30 @@ def gen_items(lines):
     for line in lines:
         yield json.loads(line)
 
+def gen_elastic(items):
+    for item in items:
+        yield {"index" : item}
+
 def normalise(items):
     for item in items:
-        newvals = {}
+        newvals = {} # additional values
         for key in item:
             val = item[key]
             # distinguish between strings and lists
             if isinstance(val, str):
+                # strings are replaced by their normalised value
                 item[key] = normalise_val(key, val)
             else:
+                # either normalise individual list items or add new value
                 if key in norm_set:
                     # call dedicated function to convert set to string
-                    newvals[key + "_norm"] = norm_set[key](val)
+                    newval = norm_set[key](val)
+                    if newval:
+                        newvals[key + "_norm"] = newval
                 else:
                     # normalise each value separately
                     item[key] = [normalise_val(key, v) for v in val]
+        # update after iteration to not break iteration
         item.update(newvals)
         yield item
 
@@ -117,7 +129,8 @@ def normalise_val(key, val):
 def dump(items, key=None):
     for item in items:
         print(json.dumps(item))
-        
+
+# print columns as specified by cols (comma-separated list)
 def dump_cols(items, cols, sep):
     for item in items:
         result = []
@@ -132,8 +145,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Normalise JSON.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('input', type=str, help='(gzipped) input RDF file')
     parser.add_argument('-n', '--normalise', action="store_true", help="normalise")
+    parser.add_argument('-e', '--elastic', action="store_true", help="add JSON for Elastic")
     parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns instead of JSON")
-    parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator", default='\t')
+    parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator for --print", default='\t')
     parser.add_argument('-v', '--version', action="version", version="%(prog)s " + version)
 
     args = parser.parse_args()
@@ -145,4 +159,6 @@ if __name__ == '__main__':
     if args.print:
         dump_cols(items, args.print.split(","), args.sep)
     else:
+        if args.elastic:
+            items = gen_elastic(items)
         dump(items)

@@ -65,22 +65,33 @@ Extract and normalise the patterns for the "issued" field:
 Let's have a look at the most frequent patterns:
 #+BEGIN_SRC sh
   echo "type\tissued pattern\tfrequency"
-  sort -S1G issued.tsv | uniq -c | sort -nr | head
+  sort -S1G issued.tsv | uniq -c | sort -nr | head -n20
   echo "*distinct pairs\t\t*" $(sort -S1G -u issued.tsv| wc -l)
 #+END_SRC
 
 | type             | issued pattern | frequency |
 |------------------+----------------+-----------|
-| Document         |              0 |  10559276 |
-| Issue            |              0 |   1470687 |
-| Article          |              0 |    981040 |
+| Document         |           0000 |  10559276 |
+| Issue            |           0000 |   1470687 |
+| Article          |           0000 |    981040 |
 | Collection       |                |    381824 |
 | Periodical       |      0000-0000 |    304933 |
 | Periodical       |          0000- |    155810 |
 | Series           |          0000- |     62002 |
-| Series           |              0 |     42707 |
+| Series           |              - |     42707 |
 | Document         |                |     41579 |
-| Periodical       |              0 |     25939 |
+| Periodical       |              - |     25939 |
+| Document         |           00XX |     24172 |
+| Series           |      0000-0000 |     18156 |
+|                  |           0000 |     11070 |
+| Collection       |           0000 |      9181 |
+| Document         |      0000-0000 |      7250 |
+| Periodical       |                |      2849 |
+| Collection       |      0000-0000 |      2379 |
+| Periodical       |           0000 |       443 |
+| Article          |        0000/00 |       331 |
+| Article          |          /0000 |       138 |
 |------------------+----------------+-----------|
 | *distinct pairs* |                |       105 |
+
 

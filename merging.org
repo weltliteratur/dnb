@@ -54,7 +54,7 @@ set out 'pages.png'
 replot
 #+END_SRC
 
-[[pages.svg]]
+[[pages.png]]
 
 ** issued
 Check the date data for normalisation:
@@ -67,7 +67,6 @@ Check the date data for normalisation:
   sort -S1G issued.tsv | uniq -c | sort -nr | head
 #+END_SRC
 
-#+RESULTS:
 | 10559276 Document |         0 |
 | 1470687 Issue     |         0 |
 | 981040 Article    |         0 |

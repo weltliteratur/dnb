@@ -65,7 +65,7 @@ Extract and normalise the patterns for the "issued" field:
 Let's have a look at the most frequent patterns:
 #+BEGIN_SRC sh
   echo "type\tissued pattern\tfrequency"
-  sort -S1G issued.tsv | uniq -c | sort -nr | head -n20
+  sort -S1G issued.tsv | uniq -c | sed -r 's/([0-9]) /\1\t/' | awk -F'\t' '{print $2"\t"$3"\t"$1}' | sort -t$'\t' -nrk3 | head -n20
   echo "*distinct pairs\t\t*" $(sort -S1G -u issued.tsv| wc -l)
 #+END_SRC
 
@@ -95,3 +95,31 @@ Let's have a look at the most frequent patterns:
 | *distinct pairs* |                |       105 |
 
 
+Get the valid years for the "Document" type:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py --normalise --print "type,issued" DNBTitel.json.gz \
+      | grep -E '^Document\s+[0-9][0-9][0-9][0-9]$' \
+      | awk -F'\t' '{print $2}' | sort | uniq -c | awk '{print $2"\t"$1}' \
+                                                       > issued_document_distrib.tsv
+#+END_SRC
+
+Let's plot the years for the "Document" type:
+#+BEGIN_SRC gnuplot :results silent
+set term svg enhanced size 800,600
+set out 'issued.svg'
+set grid
+set xrange [1450:2050]
+set logscale y
+# set format y "10^%T"
+
+set xlabel 'year'
+set ylabel 'frequency'
+
+plot "issued_document_distrib.tsv" using 1:2 with lines title ''
+
+set term png enhanced size 800,600
+set out 'issued.png'
+replot
+#+END_SRC
+
+[[issued.png]]

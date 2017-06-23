@@ -1,0 +1,68 @@
+#+TITLE:
+#+AUTHOR: 
+#+EMAIL: 
+#+KEYWORDS:
+#+DESCRIPTION:
+#+TAGS:
+#+LANGUAGE: en
+#+OPTIONS: toc:nil ':t H:5
+#+STARTUP: hidestars overview
+#+LaTeX_CLASS: scrartcl
+#+LaTeX_CLASS_OPTIONS: [a4paper,11pt]
+#+PANDOC_OPTIONS:
+
+* merging DNB and Wikidata
+
+* convert RDF to JSON
+#+BEGIN_SRC sh
+  rdf2json.py DNBTitel.rdf.gz | gzip -c > DNBTitel.json.gz
+#+END_SRC
+
+* cleaning the DNB data
+
+** pages
+Let's have a look at the distribution of entries in the "pages"
+field. First, we dump the data:
+#+BEGIN_SRC sh
+  ./json2json.py -p pages DNBTitel.json.gz > pages.tsv
+#+END_SRC
+
+Now we can normalise the pages and extract those with meaningful
+information:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py --normalise --print "pages_norm" DNBTitel.json.gz \
+      | grep "^[0-9][0-9]*$" | sort -S1G | uniq -c \
+      | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
+#+END_SRC
+
+Let us plot the distribution:
+#+BEGIN_SRC gnuplot :results silent
+set term svg enhanced size 800,600
+set out 'pages.svg'
+set grid
+set xrange [0:4000]
+set logscale y
+set format y "10^%T"
+
+set xlabel 'number of pages'
+set ylabel 'frequency'
+
+plot 'pages_freq.tsv' using 1:2 with lines title ''
+
+set term png enhanced size 800,600
+set out 'pages.png'
+replot
+#+END_SRC
+
+[[pages.svg]]
+
+** issued
+Check the date data for normalisation:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py --norm --print "type,issued" DNBTitel.json.gz | sed "s/[0-9]/0/g" > issued.tsv
+#+END_SRC
+
+
+#+BEGIN_SRC sh
+  sort -S1G issued.tsv | uniq -c | sort -nr | head
+#+END_SRC

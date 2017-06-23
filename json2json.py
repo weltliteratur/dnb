@@ -51,18 +51,18 @@ strip_prefix = {
 # | 0, [0] S.  |   5758 |
 # | 0, 0 S.    |   4643 |
 # | XII, 0 S.  |   4224 |
-# 
+#
 # find more with: sed "s/[0-9]/0/g" pages | sed "s/00*/0/g" | sort -S4G | uniq -c | sort -nr | less
 pages_re = re.compile(r"\[?([0-9]+)\]? S(\.|eiten?);?")
 def normalise_page(val):
     m = pages_re.match(val)
     if m:
-        return m.group(1)
+        return int(m.group(1))
     elif "," in val:
         # match against first part after comma
         m = pages_re.match(val.split(",")[1].strip())
         if m:
-            return m.group(1)
+            return int(m.group(1))
     return None
 
 def normalise_pages(vals):
@@ -116,21 +116,33 @@ def normalise_val(key, val):
 
 def dump(items, key=None):
     for item in items:
-        if key is None:
-            print(json.dumps(item))
-        else:
-            if key in item:
-                # print(item[key])
-                pass
+        print(json.dumps(item))
+        
+def dump_cols(items, cols, sep):
+    for item in items:
+        result = []
+        for col in cols:
+            if col in item:
+                result.append(str(item[col]))
+            else:
+                result.append("")
+        print(sep.join(result))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Normalise JSON.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('input', type=str, help='(gzipped) input RDF file')
+    parser.add_argument('-n', '--normalise', action="store_true", help="normalise")
+    parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns instead of JSON")
+    parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator", default='\t')
     parser.add_argument('-v', '--version', action="version", version="%(prog)s " + version)
 
     args = parser.parse_args()
 
     lines = gen_lines(args.input)
     items = gen_items(lines)
-    items = normalise(items)
-    dump(items, "issued")
+    if args.normalise:
+        items = normalise(items)
+    if args.print:
+        dump_cols(items, args.print.split(","), args.sep)
+    else:
+        dump(items)

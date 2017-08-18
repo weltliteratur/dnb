@@ -1,6 +1,6 @@
 #+TITLE:
-#+AUTHOR: 
-#+EMAIL: 
+#+AUTHOR:
+#+EMAIL:
 #+KEYWORDS:
 #+DESCRIPTION:
 #+TAGS:
@@ -11,31 +11,40 @@
 #+LaTeX_CLASS_OPTIONS: [a4paper,11pt]
 #+PANDOC_OPTIONS:
 
-* merging DNB and Wikidata
+* download DNB dump
+#+BEGIN_SRC sh :results silent
+  curl --output DNBTitel.rdf.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=DNBTitel.rdf.gz"
+#+END_SRC
 
 * convert RDF to JSON
 #+BEGIN_SRC sh
   rdf2json.py DNBTitel.rdf.gz | gzip -c > DNBTitel.json.gz
 #+END_SRC
 
-* cleaning the DNB data
+* TODO normalise fields
 
+- TODO :: difference between ~pages~ and ~extent~?
+
+#+BEGIN_SRC sh
+  ./json2json.py --normalise DNBTitel.json.gz | gzip -c > DNBTitel_normalised.json.gz
+#+END_SRC
+
+* analyse fields
+We analyse the distribution of some metadata fields.
 ** pages
-Let's have a look at the distribution of entries in the "pages"
-field. First, we dump the data:
+Dump the data:
 #+BEGIN_SRC sh
   ./json2json.py -p pages DNBTitel.json.gz > pages.tsv
 #+END_SRC
 
-Now we can normalise the pages and extract those with meaningful
-information:
+Normalise and extract entries with meaningful (numerical) information:
 #+BEGIN_SRC sh :results silent
   ./json2json.py --normalise --print "pages_norm" DNBTitel.json.gz \
       | grep "^[0-9][0-9]*$" | sort -S1G | uniq -c \
       | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
 #+END_SRC
 
-Let us plot the distribution:
+Plot the distribution:
 #+BEGIN_SRC gnuplot :results silent
 set term svg enhanced size 800,600
 set out 'pages.svg'
@@ -55,6 +64,35 @@ replot
 #+END_SRC
 
 [[pages.png]]
+
+** TODO extent
+#+BEGIN_SRC sh :results silent
+  ./json2json.py --norm --print "pages_norm,extent" DNBTitel.json.gz | sed "s/[0-9]/0/g" | gzip -c > pages_extent.tsv
+#+END_SRC
+
+#+BEGIN_SRC sh :results raw
+  echo "pages_norm\textent\tfrequency"
+  zcat pages_extent.tsv.gz | sort -S1G | uniq -c | head -n20
+#+END_SRC
+
+(after some manual tweaking:)
+
+| pages_norm | extent | frequency |
+|------------+--------+-----------|
+|            |        |   5631051 |
+|        000 |        |   4332641 |
+|         00 |        |   2895689 |
+|            | 00 S.  |   1020134 |
+|          0 |        |    172825 |
+|       0000 |        |     33250 |
+|            | 000 S. |     16541 |
+|            | 0 S.   |        95 |
+|      00000 |        |        52 |
+|     000000 |        |        31 |
+
+*** TODO conclusion and task
+So the extent is only given when no (normalised) pages are given
+... -> set ~pages_norm~ to pages extracted from extent in those cases.
 
 ** issued
 Extract and normalise the patterns for the "issued" field:
@@ -123,3 +161,224 @@ replot
 #+END_SRC
 
 [[issued.png]]
+
+** medium
+
+#+BEGIN_SRC sh
+  ./json2json.py -n -p medium DNBTitel.json.gz | sort -S1G | uniq -c
+#+END_SRC
+
+| medium                                                  |   count |
+|---------------------------------------------------------+---------|
+|                                                         |  294526 |
+| http://iflastandards.info/ns/isbd/terms/mediatype/T1008 |   19783 |
+| RDACarrierType/1018                                     | 4001290 |
+| RDACarrierType/1044                                     | 9604425 |
+| RDAMediaType/1002                                       |   23059 |
+| RDAMediaType/1003                                       |  159226 |
+
+** place
+
+#+BEGIN_SRC sh
+  ./json2json.py -n -p place DNBTitel.json.gz | sort -S1G | uniq -c > place.tsv
+#+END_SRC
+
+#+BEGIN_SRC sh
+  head place.tsv
+#+END_SRC
+
+#+RESULTS:
+| 5106754 |             |          |                    |      |
+|       1 | ['010']     |          |                    |      |
+|       1 | ['0rleans'] |          |                    |      |
+|       1 | ['1']       |          |                    |      |
+|       1 | ['1010      | Wien,    | Blutgasse          | 3']  |
+|       1 | ['1010      | Wien,    | Schubertring       | 3']  |
+|       3 | ['10179     | Berlin'] |                    |      |
+|       1 | ['1037      | Wien,    | Daffingerstraße    | 1']  |
+|       1 | ['1050      | Wien,    | Kettenbrückengasse | 3']  |
+|       1 | ['1070      | Wien,    | Lindengasse        | 47'] |
+
+** price
+
+** publisher
+
+#+BEGIN_SRC sh
+  ./json2json.py -n -p publisher DNBTitel.json.gz | sort -S1G | uniq -c > publisher.tsv
+#+END_SRC
+
+** contributor
+
+#+BEGIN_SRC sh
+  ./json2json.py -n -p contributor DNBTitel.json.gz | sort -S1G | uniq -c > contributor.tsv
+#+END_SRC
+
+* TODO enrich with Wikidata
+By using the field ~creator~ (*or should we use ~contributor~?*).
+
+** clarify Wikidata properties
+From README.org:
+
+We will use the following Wikidata items:
+- property [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]]
+- property [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]]
+- property [[https://www.wikidata.org/wiki/Property:P279][subclass of (P279)]]
+- class [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+- potentially also the following subclasses of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]: [[https://www.wikidata.org/wiki/Q49757][poet
+  (Q49757)]], [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]], [[https://www.wikidata.org/wiki/Q15949613][short story writer (Q15949613)]]
+
+--> *occupation is writer or a subclass and has GND id*
+
+** get list of writers
+Our task of finding items whose /occupation is writer or a subclass
+and that have a GND id/ can be broken down as follows:
+1. find all subclasses of writer
+2. find all items which have an occupation property and a GND id
+3. after finishing 1. and 2., keep only those from 2, whose occupation
+   was found in 1
+
+*** all subclasses of writer
+We do this with curl as before:
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?subclass
+  WHERE
+  {
+    ?subclass wdt:P279* wd:Q36180
+  }
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclasses.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=SELECT%20%3Fsubclass%20%3FsubclassLabel%0AWHERE%0A%7B%0A%20%20%3Fsubclass%20wdt%3AP279*%20wd%3AQ36180%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%7D%0A%7D'
+#+END_SRC
+
+
+#+BEGIN_SRC sh
+  wc -l wikidata_writer_subclasses.tsv
+#+END_SRC
+
+#+RESULTS:
+: 279 wikidata_writer_subclasses.tsv
+
+*** TODO writers
+
+manually download (a part of) the Wikidata dump (since Java gets a 503
+and disk space is scarce):
+#+BEGIN_SRC sh
+  # this fixes 
+  zcat 20170814.json.gz_ORIG | head -n -2 | head -c -2 | sed -e "\$a]" | gzip -c > 20170814.json.gz 
+#+END_SRC
+
+*An entity can have several values for the occupation property - which
+one to check? All? The first?* Example: [[https://www.wikidata.org/wiki/Q23][George Washington]]
+And which one to output?
+
+Then we extract all information about writers using
+~WriterExtractor.java~ which creates the file ~gndwriter.json~:
+
+#+BEGIN_SRC sh :results raw
+  grep "Goethe" gndwriter.json | sed -e "s/^,/{/" -e "s/$/}/" | json_pp 
+#+END_SRC
+
+#+BEGIN_SRC json
+{
+   "118540238" : {
+      "id" : "Q5879",
+      "occupations" : [
+         {
+            "id" : "Q4164507",
+            "name" : "art critic"
+         },
+         {
+            "name" : "travel writer",
+            "id" : "Q3579035"
+         },
+         {
+            "id" : "Q49757",
+            "name" : "poet"
+         },
+         {
+            "id" : "Q1209498",
+            "name" : "poet lawyer"
+         },
+         {
+            "id" : "Q1350157",
+            "name" : "music critic"
+         },
+         {
+            "id" : "Q6625963",
+            "name" : "novelist"
+         },
+         {
+            "name" : "autobiographer",
+            "id" : "Q18814623"
+         },
+         {
+            "id" : "Q214917",
+            "name" : "playwright"
+         },
+         {
+            "id" : "Q3606216",
+            "name" : "aphorist"
+         },
+         {
+            "id" : "Q18939491",
+            "name" : "diarist"
+         },
+         {
+            "id" : "Q1234713",
+            "name" : "theologian"
+         },
+         {
+            "id" : "Q17391638",
+            "name" : "art theorist"
+         }
+      ],
+      "name" : "Johann Wolfgang von Goethe"
+   }
+}
+#+END_SRC
+
+** add writer information
+
+Modifying ~json2json.py~ to add the Wikidata data for each found writer.
+
+- Which occupation property to add? First? All? Only the writer-ones?
+  - currently all occupations that are subclasses of writer are added
+
+** test enrichment
+
+#+BEGIN_SRC 
+  ./json2json.py -n -w gndwriter.json DNBTitel.json.gz | grep "poet lawyer" > poetlawyer_gndwriter.json
+#+END_SRC
+
+
+* TODO index in Elastic
+** create index
+
+| field             | type    | analysed | note                                           |
+|-------------------+---------+----------+------------------------------------------------|
+| ~_id~             | string  | no       | DNB ID                                         |
+| ~contributor~     | string  |          |                                                |
+| ~creator~         | string  |          |                                                |
+| ~extent~          | string  |          | field is missing! *TODO: difference to pages?* |
+| ~issued~          | string  |          |                                                |
+| ~issued_norm~     | integer | no       | year   *TODO: is this field creatd?*           |
+| ~lang~            | string  | no       | 3-letter code or empty                         |
+| ~medium~          | string  | no       |                                                |
+| ~pages~           | string  | no       |                                                |
+| ~pages_norm~      | integer | no       |                                                |
+| ~place~           | string  |          |                                                |
+| ~place_publisher~ | string  |          |                                                |
+| ~price~           | string  |          |                                                |
+| ~publisher~       | string  |          |                                                |
+| ~short_title~     | string  |          |                                                |
+| ~subject~         | string  |          |                                                |
+| ~title~           | string  | yes      |                                                |
+| ~type~            | string  | no       |                                                |
+
+** fill index

@@ -11,6 +11,10 @@
 # Author: rja
 #
 # Changes:
+# 2017-08-18 (rja)
+# - added normalisation of "issued"
+# - added use of "extent" if no pages could be found
+# - added Wikidata enrichment
 # 2017-06-23 (rja)
 # - added comments
 # - ignoring None values for new normalised values
@@ -18,13 +22,14 @@
 # 2017-06-21 (rja)
 # - initial version
 
+version = "0.0.3"
+
 import argparse
 import json
 import os
 import gzip
 import re
 
-version = "0.0.2"
 
 # strip the provided prefix from the value of the corresponding key
 strip_prefix = {
@@ -75,9 +80,17 @@ def normalise_pages(vals):
             return vnorm
     return None
 
+year_re = re.compile(r"^\s*([0-9]{4})\s*$")
+def normalise_issued(val):
+    m = year_re.match(val)
+    if m:
+        return int(m.group(1))
+    return None
+
 # normalise the value for the key using the provided method
 norm_set = {
-    "pages": normalise_pages
+    "pages": normalise_pages,
+    "issued": normalise_issued
     }
 
 def gen_lines(fpath):
@@ -113,10 +126,31 @@ def normalise(items):
                 else:
                     # normalise each value separately
                     item[key] = [normalise_val(key, v) for v in val]
+        # separate handling for extent and page
+        if "extent" in item and "pages_norm" not in newvals:
+            newvals["pages_norm"] = normalise_page(item["extent"])
         # update after iteration to not break iteration
         item.update(newvals)
         yield item
 
+# reads Wikidata data for creators from Java-generated JSON file
+def get_wikidata(wikidata):
+    return json.load(open(wikidata, "rt"))
+
+# add data from Wikidata
+def enrich(items, wikidata):
+    wd = get_wikidata(wikidata)
+    for item in items:
+        if "creator" in item:
+            for creator in item["creator"]:
+                if creator in wd:
+                    # if required, create new property
+                    if "creator_wd" not in item:
+                        item["creator_wd"] = {}
+                    # add content for each creator using the GND id (= creator)
+                    item["creator_wd"][creator] = wd[creator]
+        yield item
+    
 # normalise an individual value
 def normalise_val(key, val):
     if key in strip_prefix:
@@ -148,6 +182,7 @@ if __name__ == '__main__':
     parser.add_argument('-e', '--elastic', action="store_true", help="add JSON for Elastic")
     parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns instead of JSON")
     parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator for --print", default='\t')
+    parser.add_argument('-w', '--wikidata', type=str, metavar="F", help="enrich with Wikidata")
     parser.add_argument('-v', '--version', action="version", version="%(prog)s " + version)
 
     args = parser.parse_args()
@@ -156,6 +191,8 @@ if __name__ == '__main__':
     items = gen_items(lines)
     if args.normalise:
         items = normalise(items)
+    if args.wikidata:
+        items = enrich(items, args.wikidata)
     if args.print:
         dump_cols(items, args.print.split(","), args.sep)
     else:

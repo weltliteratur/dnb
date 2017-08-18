@@ -1,0 +1,279 @@
+?subclass	?subclassLabel
+<http://www.wikidata.org/entity/Q36180>	"writer"@en
+<http://www.wikidata.org/entity/Q28389>	"screenwriter"@en
+<http://www.wikidata.org/entity/Q49757>	"poet"@en
+<http://www.wikidata.org/entity/Q152182>	Q152182
+<http://www.wikidata.org/entity/Q175301>	"speechwriter"@en
+<http://www.wikidata.org/entity/Q214917>	"playwright"@en
+<http://www.wikidata.org/entity/Q333634>	"translator"@en
+<http://www.wikidata.org/entity/Q381353>	"woman of letters"@en
+<http://www.wikidata.org/entity/Q487596>	"dramaturge"@en
+<http://www.wikidata.org/entity/Q551835>	"physician writer"@en
+<http://www.wikidata.org/entity/Q623386>	"ghostwriter"@en
+<http://www.wikidata.org/entity/Q764233>	"Geoponici"@en
+<http://www.wikidata.org/entity/Q864380>	"biographer"@en
+<http://www.wikidata.org/entity/Q1568338>	"technical writer"@en
+<http://www.wikidata.org/entity/Q1749303>	"runemaster"@en
+<http://www.wikidata.org/entity/Q3064032>	"fabulist"@en
+<http://www.wikidata.org/entity/Q3589290>	"correspondent"@en
+<http://www.wikidata.org/entity/Q4853732>	"children's writer"@en
+<http://www.wikidata.org/entity/Q4938203>	"Boholano writers"@en
+<http://www.wikidata.org/entity/Q5689489>	"head writer"@en
+<http://www.wikidata.org/entity/Q6625963>	"novelist"@en
+<http://www.wikidata.org/entity/Q7596574>	"staff writer"@en
+<http://www.wikidata.org/entity/Q8178443>	"librettist"@en
+<http://www.wikidata.org/entity/Q8246794>	"blogger"@en
+<http://www.wikidata.org/entity/Q10297252>	"detective writer"@en
+<http://www.wikidata.org/entity/Q11500768>	"cooking expert"@en
+<http://www.wikidata.org/entity/Q12144794>	"prosaist"@en
+<http://www.wikidata.org/entity/Q14466416>	"Copywriter"@en
+<http://www.wikidata.org/entity/Q15949613>	"short story writer"@en
+<http://www.wikidata.org/entity/Q15979013>	"surrealist writer"@en
+<http://www.wikidata.org/entity/Q15980158>	"non-fiction writer"@en
+<http://www.wikidata.org/entity/Q16254673>	"pamphleteer"@en
+<http://www.wikidata.org/entity/Q16637669>	"Félibresse"@en
+<http://www.wikidata.org/entity/Q18533509>	"medical writer"@en
+<http://www.wikidata.org/entity/Q18844224>	"science fiction writer"@en
+<http://www.wikidata.org/entity/Q20532870>	"Uzbek writers"@en
+<http://www.wikidata.org/entity/Q21036234>	"crime writer"@en
+<http://www.wikidata.org/entity/Q21140478>	"regional writer"@en
+<http://www.wikidata.org/entity/Q22811127>	"devotional writer"@en
+<http://www.wikidata.org/entity/Q24387326>	"mythographer"@en
+<http://www.wikidata.org/entity/Q26203955>	Q26203955
+<http://www.wikidata.org/entity/Q26260814>	Q26260814
+<http://www.wikidata.org/entity/Q27212012>	"young adult writer"@en
+<http://www.wikidata.org/entity/Q27431213>	"cookery writer"@en
+<http://www.wikidata.org/entity/Q839935>	"script doctor"@en
+<http://www.wikidata.org/entity/Q3026032>	"dialogue writer"@en
+<http://www.wikidata.org/entity/Q3476620>	"video game writer"@en
+<http://www.wikidata.org/entity/Q7620399>	"story editor"@en
+<http://www.wikidata.org/entity/Q11301725>	Q11301725
+<http://www.wikidata.org/entity/Q20002503>	"story artist"@en
+<http://www.wikidata.org/entity/Q41775>	"Poète maudit"@en
+<http://www.wikidata.org/entity/Q186370>	"troubadour"@en
+<http://www.wikidata.org/entity/Q215144>	"bard"@en
+<http://www.wikidata.org/entity/Q256876>	"improvvisatore"@en
+<http://www.wikidata.org/entity/Q755990>	"Rishi"@en
+<http://www.wikidata.org/entity/Q767975>	"Goliard"@en
+<http://www.wikidata.org/entity/Q779388>	"Akhmatova's Orphans"@en
+<http://www.wikidata.org/entity/Q794686>	"aoidos"@en
+<http://www.wikidata.org/entity/Q822146>	"lyricist"@en
+<http://www.wikidata.org/entity/Q936371>	"rhapsode"@en
+<http://www.wikidata.org/entity/Q947305>	"skald"@en
+<http://www.wikidata.org/entity/Q1107241>	"Coirpre"@en
+<http://www.wikidata.org/entity/Q1209498>	"poet lawyer"@en
+<http://www.wikidata.org/entity/Q1747339>	"trobairitz"@en
+<http://www.wikidata.org/entity/Q1996467>	"trouvère"@en
+<http://www.wikidata.org/entity/Q2293636>	"slam poet"@en
+<http://www.wikidata.org/entity/Q2354449>	"Dichter des Vaderlands"@en
+<http://www.wikidata.org/entity/Q2393424>	Q2393424
+<http://www.wikidata.org/entity/Q2781593>	Q2781593
+<http://www.wikidata.org/entity/Q3403391>	"Prince des poètes"@en
+<http://www.wikidata.org/entity/Q3531683>	Q3531683
+<http://www.wikidata.org/entity/Q7459839>	"Sha'ir"@en
+<http://www.wikidata.org/entity/Q7491650>	"Shayar"@en
+<http://www.wikidata.org/entity/Q11122954>	"tanka poet"@en
+<http://www.wikidata.org/entity/Q12901590>	"poetaster"@en
+<http://www.wikidata.org/entity/Q13391399>	"chansonnier"@en
+<http://www.wikidata.org/entity/Q16681315>	Q16681315
+<http://www.wikidata.org/entity/Q18222085>	Q18222085
+<http://www.wikidata.org/entity/Q23117687>	"dithyrambic poet"@en
+<http://www.wikidata.org/entity/Q25277824>	Q25277824
+<http://www.wikidata.org/entity/Q26237228>	"epigrammatist"@en
+<http://www.wikidata.org/entity/Q28098639>	"cordelist"@en
+<http://www.wikidata.org/entity/Q29646255>	"Haiku poet"@en
+<http://www.wikidata.org/entity/Q11914886>	"comedy writer"@en
+<http://www.wikidata.org/entity/Q22073916>	"tragedy writer"@en
+<http://www.wikidata.org/entity/Q1136290>	"Dragoman"@en
+<http://www.wikidata.org/entity/Q2981640>	"cued speech transliterator"@en
+<http://www.wikidata.org/entity/Q24262584>	"Bible translator"@en
+<http://www.wikidata.org/entity/Q3589292>	"women letter writer"@en
+<http://www.wikidata.org/entity/Q17166634>	"hagiographer"@en
+<http://www.wikidata.org/entity/Q18814623>	"autobiographer"@en
+<http://www.wikidata.org/entity/Q11236655>	"light novel writer"@en
+<http://www.wikidata.org/entity/Q4110598>	"video blogger"@en
+<http://www.wikidata.org/entity/Q25936100>	"food blogger"@en
+<http://www.wikidata.org/entity/Q28008159>	"fashion blogger"@en
+<http://www.wikidata.org/entity/Q201788>	"historian"@en
+<http://www.wikidata.org/entity/Q1930187>	"journalist"@en
+<http://www.wikidata.org/entity/Q3330547>	"chronicler"@en
+<http://www.wikidata.org/entity/Q3579035>	"travel writer"@en
+<http://www.wikidata.org/entity/Q3606216>	"aphorist"@en
+<http://www.wikidata.org/entity/Q3745071>	"science writer"@en
+<http://www.wikidata.org/entity/Q6430706>	"critic"@en
+<http://www.wikidata.org/entity/Q10429346>	"bibliographer"@en
+<http://www.wikidata.org/entity/Q11774202>	"essayist"@en
+<http://www.wikidata.org/entity/Q15958642>	"political writer"@en
+<http://www.wikidata.org/entity/Q16314501>	"encyclopedist"@en
+<http://www.wikidata.org/entity/Q18931911>	"theorist"@en
+<http://www.wikidata.org/entity/Q24262594>	"religious writer"@en
+<http://www.wikidata.org/entity/Q2662892>	"Boileau-Narcejac"@en
+<http://www.wikidata.org/entity/Q2936875>	"Cantore al liuto"@en
+<http://www.wikidata.org/entity/Q516463>	"heraldist"@en
+<http://www.wikidata.org/entity/Q1133078>	"logographer"@en
+<http://www.wikidata.org/entity/Q1350189>	"egyptologist"@en
+<http://www.wikidata.org/entity/Q1493121>	"military historian"@en
+<http://www.wikidata.org/entity/Q1595570>	"local historian"@en
+<http://www.wikidata.org/entity/Q1743122>	"church historian"@en
+<http://www.wikidata.org/entity/Q1792450>	"art historian"@en
+<http://www.wikidata.org/entity/Q2004963>	"numismatist"@en
+<http://www.wikidata.org/entity/Q2135538>	"legal historian"@en
+<http://www.wikidata.org/entity/Q2870087>	"Atthidographer"@en
+<http://www.wikidata.org/entity/Q2995513>	"contemporary historian"@en
+<http://www.wikidata.org/entity/Q3332711>	"medievalist"@en
+<http://www.wikidata.org/entity/Q4287237>	Q4287237
+<http://www.wikidata.org/entity/Q4529715>	"Hittitologist"@en
+<http://www.wikidata.org/entity/Q8175949>	"media historian"@en
+<http://www.wikidata.org/entity/Q8963721>	"genealogist"@en
+<http://www.wikidata.org/entity/Q13570226>	"literary historian"@en
+<http://www.wikidata.org/entity/Q15462162>	"cultural historian"@en
+<http://www.wikidata.org/entity/Q15632632>	"epigrapher"@en
+<http://www.wikidata.org/entity/Q15985128>	"medical historian"@en
+<http://www.wikidata.org/entity/Q16063546>	"historian of science"@en
+<http://www.wikidata.org/entity/Q17486321>	"agrarian historian"@en
+<http://www.wikidata.org/entity/Q17486330>	"historian of mathematics"@en
+<http://www.wikidata.org/entity/Q17486338>	"historian of technology"@en
+<http://www.wikidata.org/entity/Q17488316>	"prehistorian"@en
+<http://www.wikidata.org/entity/Q17488357>	"historian of religion"@en
+<http://www.wikidata.org/entity/Q17488363>	"economic historian"@en
+<http://www.wikidata.org/entity/Q17488392>	"historian of cartography"@en
+<http://www.wikidata.org/entity/Q17489339>	"historian of the modern age"@en
+<http://www.wikidata.org/entity/Q17504989>	"historian of Eastern Europe"@en
+<http://www.wikidata.org/entity/Q17504992>	"social historian"@en
+<http://www.wikidata.org/entity/Q17504998>	"sport historian"@en
+<http://www.wikidata.org/entity/Q17505002>	"historian of student"@en
+<http://www.wikidata.org/entity/Q20198542>	"music historian"@en
+<http://www.wikidata.org/entity/Q20669602>	"contemporary historian"@en
+<http://www.wikidata.org/entity/Q20873384>	"historian of classical antiquity"@en
+<http://www.wikidata.org/entity/Q20971250>	"film historian"@en
+<http://www.wikidata.org/entity/Q22929895>	"medieval historian"@en
+<http://www.wikidata.org/entity/Q24265174>	"philosophy historian"@en
+<http://www.wikidata.org/entity/Q26132815>	"byzantinist"@en
+<http://www.wikidata.org/entity/Q28950371>	"fashion historian"@en
+<http://www.wikidata.org/entity/Q753110>	"songwriter"@en
+<http://www.wikidata.org/entity/Q15981299>	"singer-lyricist"@en
+<http://www.wikidata.org/entity/Q42909>	"reporter"@en
+<http://www.wikidata.org/entity/Q589298>	"editor-in-chief"@en
+<http://www.wikidata.org/entity/Q876864>	"contributing editor"@en
+<http://www.wikidata.org/entity/Q947873>	"television presenter"@en
+<http://www.wikidata.org/entity/Q957729>	"photojournalist"@en
+<http://www.wikidata.org/entity/Q1086863>	"columnist"@en
+<http://www.wikidata.org/entity/Q1771040>	"stringer"@en
+<http://www.wikidata.org/entity/Q3024627>	"editorial cartoonist"@en
+<http://www.wikidata.org/entity/Q3477303>	Q3477303
+<http://www.wikidata.org/entity/Q3765897>	"pubblicista journalist"@en
+<http://www.wikidata.org/entity/Q3765898>	"professional journalist"@en
+<http://www.wikidata.org/entity/Q4220892>	"film critic"@en
+<http://www.wikidata.org/entity/Q4992409>	"political editor"@en
+<http://www.wikidata.org/entity/Q5338722>	"Editor-at-large"@en
+<http://www.wikidata.org/entity/Q13219447>	"sports journalist"@en
+<http://www.wikidata.org/entity/Q15931838>	"investigative reporter"@en
+<http://www.wikidata.org/entity/Q15973695>	"political journalist"@en
+<http://www.wikidata.org/entity/Q15986551>	"chess journalist"@en
+<http://www.wikidata.org/entity/Q16287483>	"opinion journalist"@en
+<http://www.wikidata.org/entity/Q17351648>	"newspaper editor"@en
+<http://www.wikidata.org/entity/Q17433421>	"science journalist"@en
+<http://www.wikidata.org/entity/Q19346706>	"US american journalist"@en
+<http://www.wikidata.org/entity/Q20669622>	"music journalist"@en
+<http://www.wikidata.org/entity/Q22976182>	"television journalist"@en
+<http://www.wikidata.org/entity/Q24705156>	"broadcast journalist"@en
+<http://www.wikidata.org/entity/Q24812704>	"Media journalist"@en
+<http://www.wikidata.org/entity/Q23055218>	"travel guide writer"@en
+<http://www.wikidata.org/entity/Q17125263>	"YouTuber"@en
+<http://www.wikidata.org/entity/Q1350157>	"music critic"@en
+<http://www.wikidata.org/entity/Q1495660>	"food critic"@en
+<http://www.wikidata.org/entity/Q2556193>	"wine critic"@en
+<http://www.wikidata.org/entity/Q4164507>	"art critic"@en
+<http://www.wikidata.org/entity/Q4263842>	"literary critic"@en
+<http://www.wikidata.org/entity/Q11598626>	Q11598626
+<http://www.wikidata.org/entity/Q15978337>	"social critic"@en
+<http://www.wikidata.org/entity/Q15978391>	"satirist"@en
+<http://www.wikidata.org/entity/Q17337766>	"theatre critic"@en
+<http://www.wikidata.org/entity/Q18810130>	"television critic"@en
+<http://www.wikidata.org/entity/Q19251029>	"media critic"@en
+<http://www.wikidata.org/entity/Q19765978>	"dance critic"@en
+<http://www.wikidata.org/entity/Q20020377>	"cultural critic"@en
+<http://www.wikidata.org/entity/Q21207686>	"comics critic"@en
+<http://www.wikidata.org/entity/Q21286455>	"critic of religions"@en
+<http://www.wikidata.org/entity/Q15994177>	"political theorist"@en
+<http://www.wikidata.org/entity/Q744738>	"Encyclopédistes"@en
+<http://www.wikidata.org/entity/Q23038345>	"Wikipedian"@en
+<http://www.wikidata.org/entity/Q670974>	"Bollandists"@en
+<http://www.wikidata.org/entity/Q11774156>	"memoirist"@en
+<http://www.wikidata.org/entity/Q12806039>	"military theorist"@en
+<http://www.wikidata.org/entity/Q15958307>	"chess theoretician"@en
+<http://www.wikidata.org/entity/Q15962340>	"literary theorist"@en
+<http://www.wikidata.org/entity/Q16012028>	"legal scholar"@en
+<http://www.wikidata.org/entity/Q16031530>	"music theorist"@en
+<http://www.wikidata.org/entity/Q16270720>	"theoretical biologist"@en
+<http://www.wikidata.org/entity/Q16755977>	"racial theorist"@en
+<http://www.wikidata.org/entity/Q17391605>	"film theorist"@en
+<http://www.wikidata.org/entity/Q17391638>	"art theorist"@en
+<http://www.wikidata.org/entity/Q19350898>	"theoretical physicist"@en
+<http://www.wikidata.org/entity/Q28039322>	"story supervisor"@en
+<http://www.wikidata.org/entity/Q619553>	"apologist"@en
+<http://www.wikidata.org/entity/Q1234713>	"theologian"@en
+<http://www.wikidata.org/entity/Q20738773>	"hymnwriter"@en
+<http://www.wikidata.org/entity/Q164236>	"war correspondent"@en
+<http://www.wikidata.org/entity/Q619514>	"video journalist"@en
+<http://www.wikidata.org/entity/Q1155838>	"correspondent"@en
+<http://www.wikidata.org/entity/Q488205>	"singer-songwriter"@en
+<http://www.wikidata.org/entity/Q11781549>	"minnesänger"@en
+<http://www.wikidata.org/entity/Q24961653>	Q24961653
+<http://www.wikidata.org/entity/Q861009>	Q861009
+<http://www.wikidata.org/entity/Q18059311>	Q18059311
+<http://www.wikidata.org/entity/Q2986228>	"sports commentator"@en
+<http://www.wikidata.org/entity/Q5615122>	"guest host"@en
+<http://www.wikidata.org/entity/Q5905231>	"horror host"@en
+<http://www.wikidata.org/entity/Q6399436>	"VJ"@en
+<http://www.wikidata.org/entity/Q18668527>	"talk show host"@en
+<http://www.wikidata.org/entity/Q22662561>	"game show host"@en
+<http://www.wikidata.org/entity/Q156624>	"paparazzi"@en
+<http://www.wikidata.org/entity/Q11496048>	"war photographer"@en
+<http://www.wikidata.org/entity/Q7458488>	"sex columnist"@en
+<http://www.wikidata.org/entity/Q15941595>	"sports columnist"@en
+<http://www.wikidata.org/entity/Q17342450>	"editorial columnist"@en
+<http://www.wikidata.org/entity/Q19607300>	"television columnist"@en
+<http://www.wikidata.org/entity/Q189459>	"ulama"@en
+<http://www.wikidata.org/entity/Q2632248>	"Akhoond"@en
+<http://www.wikidata.org/entity/Q11711601>	Q11711601
+<http://www.wikidata.org/entity/Q12270170>	"mutakallim"@en
+<http://www.wikidata.org/entity/Q26234215>	Q26234215
+<http://www.wikidata.org/entity/Q17488465>	"regional historian"@en
+<http://www.wikidata.org/entity/Q1456208>	Q1456208
+<http://www.wikidata.org/entity/Q3621491>	"archaeologist"@en
+<http://www.wikidata.org/entity/Q15983985>	"classical archaeologist"@en
+<http://www.wikidata.org/entity/Q17486326>	"architectural historian"@en
+<http://www.wikidata.org/entity/Q22917056>	"engraved gem researcher"@en
+<http://www.wikidata.org/entity/Q17598791>	"latinist"@en
+<http://www.wikidata.org/entity/Q17391654>	"architecture critic"@en
+<http://www.wikidata.org/entity/Q18939491>	"diarist"@en
+<http://www.wikidata.org/entity/Q7508381>	"sideline reporter"@en
+<http://www.wikidata.org/entity/Q11313148>	"sportswriter"@en
+<http://www.wikidata.org/entity/Q16999353>	"Scholars of Piyyut"@en
+<http://www.wikidata.org/entity/Q29017275>	Q29017275
+<http://www.wikidata.org/entity/Q2325224>	Q2325224
+<http://www.wikidata.org/entity/Q17391659>	"architectural theoretician"@en
+<http://www.wikidata.org/entity/Q21272406>	"paleoanthropologist"@en
+<http://www.wikidata.org/entity/Q26425137>	"mykenologist"@en
+<http://www.wikidata.org/entity/Q3296111>	"Marxist historian"@en
+<http://www.wikidata.org/entity/Q3809586>	"Wikipedian in Residence"@en
+<http://www.wikidata.org/entity/Q29046765>	"wikipedian, interested in this topic"@en
+<http://www.wikidata.org/entity/Q24702769>	"radio journalist"@en
+<http://www.wikidata.org/entity/Q27915883>	"head of story"@en
+<http://www.wikidata.org/entity/Q956365>	"Liedermacher"@en
+<http://www.wikidata.org/entity/Q18190897>	"foreign correspondent"@en
+<http://www.wikidata.org/entity/Q1366909>	"soccer commentator"@en
+<http://www.wikidata.org/entity/Q3276037>	"color commentator"@en
+<http://www.wikidata.org/entity/Q7579803>	"sports analyst"@en
+<http://www.wikidata.org/entity/Q1802101>	"Archaeologist of the state"@en
+<http://www.wikidata.org/entity/Q15137728>	"archaeoastronomer"@en
+<http://www.wikidata.org/entity/Q22917872>	Q22917872
+<http://www.wikidata.org/entity/Q25915497>	"archaeologist of the Roman provinces"@en
+<http://www.wikidata.org/entity/Q25931036>	"zooarchaeologist"@en
+<http://www.wikidata.org/entity/Q26224000>	"castellologist"@en
+<http://www.wikidata.org/entity/Q26233771>	"building researcher"@en
+<http://www.wikidata.org/entity/Q26261971>	"christian archaeologist"@en
+<http://www.wikidata.org/entity/Q26424344>	"Near Eastern archaeologist"@en
+<http://www.wikidata.org/entity/Q31271601>	Q31271601
+<http://www.wikidata.org/entity/Q20743624>	"etruscologist"@en

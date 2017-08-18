@@ -277,6 +277,17 @@ and disk space is scarce):
 one to check? All? The first?* Example: [[https://www.wikidata.org/wiki/Q23][George Washington]]
 And which one to output?
 
+In the next round, consider this:
+,----
+| Another alternative would be to include the occupation for *all
+| authors* and later on filter in Elastic ...
+| 
+| Thus: Keep it simple?!
+| - add all occupations for all persons (with a GND id)
+| - just add their names, ignore their ID (could we do this during indexing?)
+`----
+
+
 Then we extract all information about writers using
 ~WriterExtractor.java~ which creates the file ~gndwriter.json~:
 
@@ -284,46 +295,48 @@ Then we extract all information about writers using
   grep "Goethe" gndwriter.json | sed -e "s/^,/{/" -e "s/$/}/" | json_pp 
 #+END_SRC
 
+
 #+BEGIN_SRC json
 {
    "118540238" : {
       "id" : "Q5879",
+      "name" : "Johann Wolfgang von Goethe",
       "occupations" : [
          {
             "id" : "Q4164507",
             "name" : "art critic"
          },
          {
-            "name" : "travel writer",
-            "id" : "Q3579035"
+            "id" : "Q3579035",
+            "name" : "travel writer"
          },
          {
-            "id" : "Q49757",
-            "name" : "poet"
+            "name" : "poet",
+            "id" : "Q49757"
          },
          {
             "id" : "Q1209498",
             "name" : "poet lawyer"
          },
          {
-            "id" : "Q1350157",
-            "name" : "music critic"
+            "name" : "music critic",
+            "id" : "Q1350157"
          },
          {
-            "id" : "Q6625963",
-            "name" : "novelist"
+            "name" : "novelist",
+            "id" : "Q6625963"
          },
          {
             "name" : "autobiographer",
             "id" : "Q18814623"
          },
          {
-            "id" : "Q214917",
-            "name" : "playwright"
+            "name" : "playwright",
+            "id" : "Q214917"
          },
          {
-            "id" : "Q3606216",
-            "name" : "aphorist"
+            "name" : "aphorist",
+            "id" : "Q3606216"
          },
          {
             "id" : "Q18939491",
@@ -334,16 +347,15 @@ Then we extract all information about writers using
             "name" : "theologian"
          },
          {
-            "id" : "Q17391638",
-            "name" : "art theorist"
+            "name" : "art theorist",
+            "id" : "Q17391638"
          }
-      ],
-      "name" : "Johann Wolfgang von Goethe"
+      ]
    }
 }
 #+END_SRC
 
-** add writer information
+** add occupation information
 
 Modifying ~json2json.py~ to add the Wikidata data for each found writer.
 
@@ -354,6 +366,94 @@ Modifying ~json2json.py~ to add the Wikidata data for each found writer.
 
 #+BEGIN_SRC 
   ./json2json.py -n -w gndwriter.json DNBTitel.json.gz | grep "poet lawyer" > poetlawyer_gndwriter.json
+#+END_SRC
+
+#+BEGIN_SRC sh :results raw
+  grep Egmont poetlawyer_gndwriter.json__ | head -n1 | json_pp
+#+END_SRC
+
+#+BEGIN_SRC json
+{
+   "contributor" : [
+      "116924373"
+   ],
+   "_id" : "361432887",
+   "place_publisher" : "München ; Leipzig : G. Müller",
+   "title" : "Goethes Egmont in Schillers Bearbeitung",
+   "lang" : "ger",
+   "creator" : [
+      "118540238"
+   ],
+   "issued" : "1914",
+   "issued_norm" : 1914,
+   "type" : "Document",
+   "creator_wd" : {
+      "118540238" : {
+         "occupations" : [
+            {
+               "name" : "art critic",
+               "id" : "Q4164507"
+            },
+            {
+               "name" : "travel writer",
+               "id" : "Q3579035"
+            },
+            {
+               "name" : "poet",
+               "id" : "Q49757"
+            },
+            {
+               "name" : "poet lawyer",
+               "id" : "Q1209498"
+            },
+            {
+               "id" : "Q1350157",
+               "name" : "music critic"
+            },
+            {
+               "name" : "novelist",
+               "id" : "Q6625963"
+            },
+            {
+               "name" : "autobiographer",
+               "id" : "Q18814623"
+            },
+            {
+               "id" : "Q214917",
+               "name" : "playwright"
+            },
+            {
+               "id" : "Q3606216",
+               "name" : "aphorist"
+            },
+            {
+               "name" : "diarist",
+               "id" : "Q18939491"
+            },
+            {
+               "name" : "theologian",
+               "id" : "Q1234713"
+            },
+            {
+               "name" : "art theorist",
+               "id" : "Q17391638"
+            }
+         ],
+         "id" : "Q5879",
+         "name" : "Johann Wolfgang von Goethe"
+      }
+   },
+   "pages" : [
+      "153 S."
+   ],
+   "publisher" : "G. Müller",
+   "place" : [
+      "München",
+      "Leipzig"
+   ],
+   "medium" : "RDACarrierType/1044",
+   "pages_norm" : 153
+}
 #+END_SRC
 
 
@@ -367,7 +467,7 @@ Modifying ~json2json.py~ to add the Wikidata data for each found writer.
 | ~creator~         | string  |          |                                                |
 | ~extent~          | string  |          | field is missing! *TODO: difference to pages?* |
 | ~issued~          | string  |          |                                                |
-| ~issued_norm~     | integer | no       | year   *TODO: is this field creatd?*           |
+| ~issued_norm~     | integer | no       | year                                           |
 | ~lang~            | string  | no       | 3-letter code or empty                         |
 | ~medium~          | string  | no       |                                                |
 | ~pages~           | string  | no       |                                                |

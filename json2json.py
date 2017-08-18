@@ -87,11 +87,15 @@ def normalise_issued(val):
         return int(m.group(1))
     return None
 
-# normalise the value for the key using the provided method
-norm_set = {
+# create a new normalised value from several values
+normalise_many_to_new = {
     "pages": normalise_pages,
-    "issued": normalise_issued
     }
+
+# create a new normalised value from one value
+normalise_one_to_new = {
+    "issued": normalise_issued
+}
 
 def gen_lines(fpath):
     if os.path.splitext(fpath)[1] == ".gz":
@@ -112,15 +116,21 @@ def normalise(items):
         newvals = {} # additional values
         for key in item:
             val = item[key]
-            # distinguish between strings and lists
+            # separate handling for strings and lists
             if isinstance(val, str):
-                # strings are replaced by their normalised value
-                item[key] = normalise_val(key, val)
+                if key in normalise_one_to_new:
+                    # create a new normalised value
+                    newval = normalise_one_to_new[key](val)
+                    if newval:
+                        newvals[key + "_norm"] = newval
+                else:
+                    # strings are replaced by their normalised value
+                    item[key] = normalise_val(key, val)
             else:
                 # either normalise individual list items or add new value
-                if key in norm_set:
+                if key in normalise_many_to_new:
                     # call dedicated function to convert set to string
-                    newval = norm_set[key](val)
+                    newval = normalise_many_to_new[key](val)
                     if newval:
                         newvals[key + "_norm"] = newval
                 else:

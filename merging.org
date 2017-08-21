@@ -216,30 +216,39 @@ replot
 * TODO enrich with Wikidata
 By using the field ~creator~ (*or should we use ~contributor~?*).
 
-** clarify Wikidata properties
-From README.org:
+** list of authors
+For each entity in Wikidata that has a GND id (P227) and an occupation
+(P106) property, we extract the following properties:
 
-We will use the following Wikidata items:
-- property [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]]
-- property [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]]
-- property [[https://www.wikidata.org/wiki/Property:P279][subclass of (P279)]]
-- class [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
-- potentially also the following subclasses of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]: [[https://www.wikidata.org/wiki/Q49757][poet
-  (Q49757)]], [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]], [[https://www.wikidata.org/wiki/Q15949613][short story writer (Q15949613)]]
+| id    | name                                | round | note                    |
+|-------+-------------------------------------+-------+-------------------------|
+| P106  | occupation                          | 1+2   | condition for inclusion |
+| P227  | GND id                              | 1     | condition for inclusion |
+| P21   | gender                              | 2?    |                         |
+| P569  | date of birth                       | 1?    |                         |
+| P19   | place of birth                      | 2     |                         |
+| P625  | - coordinate location               | 2     |                         |
+| P570  | date of death                       | 1?    |                         |
+| P20   | place of death                      | 1?    |                         |
+| P625  | - coordinate location               | 2     |                         |
+| P103  | native language                     | 2     |                         |
+| P1412 | languages spoken, written or signed | 2     |                         |
+| P166  | awards received                     | 2     |                         |
+| P18   | image (P18)                         | 1?    |                         |
 
---> *occupation is writer or a subclass and has GND id*
+Approach:
+1. find all entities with P106 and P227 and collect all other relevant
+   properties
+2. for all properties, get the missing values (e.g., coordinates of
+   cities)
 
-** get list of writers
-Our task of finding items whose /occupation is writer or a subclass
-and that have a GND id/ can be broken down as follows:
-1. find all subclasses of writer
-2. find all items which have an occupation property and a GND id
-3. after finishing 1. and 2., keep only those from 2, whose occupation
-   was found in 1
+
+[main] INFO org.wikidata.wdtk.dumpfiles.EntityTimerProcessor - Processed 32346937 entities in 2203 sec (14683 per second)
+read 357423 items and 69577 property values with missing labels
+
 
 *** all subclasses of writer
 We do this with curl as before:
-
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?subclass
   WHERE
@@ -458,6 +467,14 @@ Modifying ~json2json.py~ to add the Wikidata data for each found writer.
 
 
 * TODO index in Elastic
+
+- check what happens with JSON like this: "publisher":
+  "Akad. Kiado\u0301" - is the [[http://www.fileformat.info/info/unicode/char/0301/index.htm][COMBINING ACUTE ACCENT]] correctly
+  processed? similar: "publisher": "Museum fu\u0308r Tierkunde"
+Queries:
+- Median, Mean, etc. in Elastic? - [[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-percentile-aggregation.html][percentiles]]
+- location
+
 ** create index
 
 | field             | type    | analysed | note                                           |

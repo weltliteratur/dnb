@@ -11,23 +11,26 @@
 #+LaTeX_CLASS_OPTIONS: [a4paper,11pt]
 #+PANDOC_OPTIONS:
 
-* download DNB dump
+The goal is to enrich the DNB dataset and index it with Elastic.
+
+* process DNB data
+** download dump
 #+BEGIN_SRC sh :results silent
   curl --output DNBTitel.rdf.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=DNBTitel.rdf.gz"
 #+END_SRC
 
-* convert RDF to JSON
+** convert RDF to JSON
 #+BEGIN_SRC sh
   rdf2json.py DNBTitel.rdf.gz | gzip -c > DNBTitel.json.gz
 #+END_SRC
 
-* TODO normalise fields
-
-- TODO :: difference between ~pages~ and ~extent~?
-
+** TODO normalise fields
 #+BEGIN_SRC sh
   ./json2json.py --normalise DNBTitel.json.gz | gzip -c > DNBTitel_normalised.json.gz
 #+END_SRC
+
+What is the difference between ~pages~ and ~extent~?
+- We use ~extent~ when no valid ~pages~ are given.
 
 * analyse fields
 We analyse the distribution of some metadata fields.
@@ -65,7 +68,7 @@ replot
 
 [[pages.png]]
 
-** TODO extent
+** extent
 #+BEGIN_SRC sh :results silent
   ./json2json.py --norm --print "pages_norm,extent" DNBTitel.json.gz | sed "s/[0-9]/0/g" | gzip -c > pages_extent.tsv
 #+END_SRC
@@ -90,9 +93,8 @@ replot
 |      00000 |        |        52 |
 |     000000 |        |        31 |
 
-*** TODO conclusion and task
-So the extent is only given when no (normalised) pages are given
-... -> set ~pages_norm~ to pages extracted from extent in those cases.
+So ~extent~ is only given when no (normalised) ~pages~ are given
+-> set ~pages_norm~ to pages extracted from ~extent~ in those cases.
 
 ** issued
 Extract and normalise the patterns for the "issued" field:
@@ -138,7 +140,7 @@ Get the valid years for the "Document" type:
   ./json2json.py --normalise --print "type,issued" DNBTitel.json.gz \
       | grep -E '^Document\s+[0-9][0-9][0-9][0-9]$' \
       | awk -F'\t' '{print $2}' | sort | uniq -c | awk '{print $2"\t"$1}' \
-                                                       > issued_document_distrib.tsv
+						       > issued_document_distrib.tsv
 #+END_SRC
 
 Let's plot the years for the "Document" type:
@@ -216,38 +218,42 @@ replot
 * TODO enrich with Wikidata
 By using the field ~creator~ (*or should we use ~contributor~?*).
 
-** list of authors
-For each entity in Wikidata that has a GND id (P227) and an occupation
-(P106) property, we extract the following properties:
+** identify properties
+For each entity in Wikidata that has a label, a GND id (P227)
+property, and an occupation (P106) property, we extract the following
+properties:
 
 | id    | name                                | round | note                    |
 |-------+-------------------------------------+-------+-------------------------|
-| P106  | occupation                          | 1+2   | condition for inclusion |
-| P227  | GND id                              | 1     | condition for inclusion |
-| P21   | gender                              | 2?    |                         |
-| P569  | date of birth                       | 1?    |                         |
-| P19   | place of birth                      | 2     |                         |
-| P625  | - coordinate location               | 2     |                         |
-| P570  | date of death                       | 1?    |                         |
-| P20   | place of death                      | 1?    |                         |
-| P625  | - coordinate location               | 2     |                         |
-| P103  | native language                     | 2     |                         |
-| P1412 | languages spoken, written or signed | 2     |                         |
-| P166  | awards received                     | 2     |                         |
-| P18   | image (P18)                         | 1?    |                         |
+| P106  | occupation                          |   1+2 | condition for inclusion |
+| P227  | GND id                              |     1 | condition for inclusion |
+| P21   | gender                              |     2 |                         |
+| P569  | date of birth                       |     1 |                         |
+| P19   | place of birth                      |     2 |                         |
+| P625  | - coordinate location               |     2 | extract separately      |
+| P570  | date of death                       |     1 |                         |
+| P20   | place of death                      |     2 |                         |
+| P625  | - coordinate location               |     2 | extract separately      |
+| P103  | native language                     |     2 |                         |
+| P1412 | languages spoken, written or signed |     2 |                         |
+| P166  | awards received                     |     2 |                         |
+| P18   | image (P18)                         |     1 |                         |
 
 Approach:
 1. find all entities with P106 and P227 and collect all other relevant
    properties
-2. for all properties, get the missing values (e.g., coordinates of
-   cities)
+2. get the labels and missing values (e.g., coordinates of cities) for
+   properties
 
+** extract subclasses of writer
+To label entities whose occupation property points to a subclass of
+writer, we extract all subclasses of writer with SPARQL, since this is
+faster and simpler than using the dump.
 
-[main] INFO org.wikidata.wdtk.dumpfiles.EntityTimerProcessor - Processed 32346937 entities in 2203 sec (14683 per second)
-read 357423 items and 69577 property values with missing labels
+Since an entity can have several values for the occupation property
+(e.g., [[https://www.wikidata.org/wiki/Q23][George Washington]]) we extract all values and if one of the
+occupations is a subclass of writer, we label the entity as a writer.
 
-
-*** all subclasses of writer
 We do this with curl as before:
 #+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
   SELECT ?subclass
@@ -273,37 +279,18 @@ We do this with curl as before:
 #+RESULTS:
 : 279 wikidata_writer_subclasses.tsv
 
-*** TODO writers
+** TODO process dump
 
-manually download (a part of) the Wikidata dump (since Java gets a 503
-and disk space is scarce):
-#+BEGIN_SRC sh
-  # this fixes 
-  zcat 20170814.json.gz_ORIG | head -n -2 | head -c -2 | sed -e "\$a]" | gzip -c > 20170814.json.gz 
-#+END_SRC
+Is done using Java (see ~WriterExtractor.java~ for the basic idea) and
+ creates the file ~gndwriter.json~:
 
-*An entity can have several values for the occupation property - which
-one to check? All? The first?* Example: [[https://www.wikidata.org/wiki/Q23][George Washington]]
-And which one to output?
+> Processed 32346937 entities in 2203 sec (14683 per second)
+> read 357423 items and 69577 property values with missing labels
 
-In the next round, consider this:
-,----
-| Another alternative would be to include the occupation for *all
-| authors* and later on filter in Elastic ...
-| 
-| Thus: Keep it simple?!
-| - add all occupations for all persons (with a GND id)
-| - just add their names, ignore their ID (could we do this during indexing?)
-`----
-
-
-Then we extract all information about writers using
-~WriterExtractor.java~ which creates the file ~gndwriter.json~:
 
 #+BEGIN_SRC sh :results raw
   grep "Goethe" gndwriter.json | sed -e "s/^,/{/" -e "s/$/}/" | json_pp 
 #+END_SRC
-
 
 #+BEGIN_SRC json
 {
@@ -364,12 +351,16 @@ Then we extract all information about writers using
 }
 #+END_SRC
 
-** add occupation information
+** TODO enrich JSON
 
-Modifying ~json2json.py~ to add the Wikidata data for each found writer.
+Modifying ~json2json.py~ to add the Wikidata data for each found
+writer with the ~--wikidata~ option.
 
-- Which occupation property to add? First? All? Only the writer-ones?
-  - currently all occupations that are subclasses of writer are added
+#+BEGIN_SRC sh
+  ./json2json.py -n -w gndwriter.json DNBTitel.json.gz \
+      | gzip -c \
+	     > DNBTitel_normalised_enriched.json.gz
+#+END_SRC
 
 ** test enrichment
 
@@ -378,7 +369,7 @@ Modifying ~json2json.py~ to add the Wikidata data for each found writer.
 #+END_SRC
 
 #+BEGIN_SRC sh :results raw
-  grep Egmont poetlawyer_gndwriter.json__ | head -n1 | json_pp
+  grep Egmont poetlawyer_gndwriter.json | head -n1 | json_pp
 #+END_SRC
 
 #+BEGIN_SRC json
@@ -465,6 +456,14 @@ Modifying ~json2json.py~ to add the Wikidata data for each found writer.
 }
 #+END_SRC
 
+** attic
+
+Manually download (a part of) the Wikidata dump (since Java gets a 503
+and disk space is scarce):
+#+BEGIN_SRC sh
+  # this fixes 
+  zcat 20170814.json.gz_ORIG | head -n -2 | head -c -2 | sed -e "\$a]" | gzip -c > 20170814.json.gz 
+#+END_SRC
 
 * TODO index in Elastic
 
@@ -473,9 +472,11 @@ Modifying ~json2json.py~ to add the Wikidata data for each found writer.
   processed? similar: "publisher": "Museum fu\u0308r Tierkunde"
 Queries:
 - Median, Mean, etc. in Elastic? - [[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-percentile-aggregation.html][percentiles]]
-- location
+- location (format "lat,lon" should work)
 
-** create index
+** TODO create index
+
+TODO: add Wikidata fields
 
 | field             | type    | analysed | note                                           |
 |-------------------+---------+----------+------------------------------------------------|

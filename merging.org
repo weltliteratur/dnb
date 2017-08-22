@@ -580,10 +580,7 @@ see [[*plot the distribution][above]]
 meisten Büchern im Katalog usw. (und die Beispiele aus merging.org,
 Goethe und so).
 
-- distribution number of authors per work 
-- authors with the largest number of pages
-- need to merge with GND!
-- how to deal with several authors per work?
+- TODO: plot distribution of the number of authors per work 
 
 *** by item count
 #+BEGIN_SRC sh

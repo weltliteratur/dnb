@@ -11,6 +11,8 @@
 # Author: rja
 #
 # Changes:
+# 2017-08-22 (rja)
+# - added nested path support for column selection (-p)
 # 2017-08-18 (rja)
 # - added normalisation of "issued"
 # - added use of "extent" if no pages could be found
@@ -160,7 +162,7 @@ def enrich(items, wikidata):
                     # add content for each creator using the GND id (= creator)
                     item["creator_wd"][creator] = wd[creator]
         yield item
-    
+
 # normalise an individual value
 def normalise_val(key, val):
     if key in strip_prefix:
@@ -179,11 +181,28 @@ def dump_cols(items, cols, sep):
     for item in items:
         result = []
         for col in cols:
-            if col in item:
-                result.append(str(item[col]))
-            else:
-                result.append("")
+            result.append(to_str(get_value(item, col.split("."))))
         print(sep.join(result))
+
+def to_str(val):
+    if isinstance(val, str):
+        return val
+    if isinstance(val, list):
+        return ", ".join(val)
+    return str(val)
+
+# retrieves values for nested paths using "." as delimiter as "*" for globbing
+def get_value(item, colspec):
+    if len(colspec) == 0:
+        return item
+    p = colspec.pop(0)
+    if p in item:
+        return get_value(item[p], colspec)
+    elif p == "*":
+        return ", ".join([str(get_value(item[pp], colspec)) for pp in item])
+    else:
+        return ""
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Normalise JSON.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)

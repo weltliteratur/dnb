@@ -691,7 +691,7 @@ have to clarify normalisation first
 Count per publisher:
 #+BEGIN_SRC sh :results silent
   zcat publisher_pages_filtered.tsv.gz \
-      | awk -F'\t' '{sum[$1]+=$2; count[$1]+=1} END {for (p in sum) printf("%s\t%s\t%s\n", p, sum[p], count[p])}' \
+      | awk -F'\t' '{sum[$1]+=$2; count[$1]+=1} END {for (p in sum) printf("%s\t%s\t%s\n", p, sum[p], count[p], int(sum[p]/count[p]))}' \
 	    > publisher_pages_stats.tsv
 #+END_SRC
 
@@ -722,12 +722,11 @@ Count per publisher:
 | Thieme                             |  3317355 | 12559 |  264 |
 | de Gruyter                         |  3281362 | 10534 |  312 |
 | Kohlhammer                         |  3239885 | 14734 |  220 |
-#+TBLFM: $4=$-2/$-1;%2.0f
 
 ***** top 20 by mean page count
 
 #+BEGIN_SRC sh
-  awk -F'\t' '{print $1"\t"$2"\t"$3"\t"int($2/$3)}' publisher_pages_stats.tsv | sort -t$'\t' -rnk4 | head -n20
+   sort -t$'\t' -rnk4 publisher_pages_stats.tsv | head -n20
 #+END_SRC
 
 | publisher                                                                    | pages | items | mean |
@@ -752,3 +751,26 @@ Count per publisher:
 | Monte Avila                                                                  |  2516 |     1 | 2516 |
 | Pierer, Heymann                                                              |  2500 |     1 | 2500 |
 | Jixie-Gongye-Chubanshe                                                       |  2462 |     1 | 2462 |
+***** scatter plot
+
+How is the number of items per publisher related to the average number
+of pages per publisher?
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set term png enhanced size 800,600
+set out 'publisher_pages.png'
+
+set grid
+set datafile separator "\t"
+# set xrange [0:4000]
+set logscale 
+# set format y "10^%T"
+
+set xlabel 'number of items
+set ylabel 'mean number of pages per item'
+
+plot 'publisher_pages_stats.tsv' using 3:4 with points pt 7 title ''
+#+END_SRC
+
+[[publisher_pages.png]]

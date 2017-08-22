@@ -35,7 +35,7 @@ What is the difference between ~pages~ and ~extent~?
 * analyse fields
 We analyse the distribution of some metadata fields.
 ** pages
-Dump the data:
+*** dump the data
 #+BEGIN_SRC sh
   ./json2json.py -p pages DNBTitel.json.gz > pages.tsv
 #+END_SRC
@@ -47,7 +47,7 @@ Normalise and extract entries with meaningful (numerical) information:
       | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
 #+END_SRC
 
-Plot the distribution:
+*** plot the distribution
 #+BEGIN_SRC gnuplot :results silent
 set term svg enhanced size 800,600
 set out 'pages.svg'
@@ -64,9 +64,22 @@ plot 'pages_freq.tsv' using 1:2 with lines title ''
 set term png enhanced size 800,600
 set out 'pages.png'
 replot
+
+# zoom into range 400 to 600 to see 16-patterns of pages
+set out 'pages_400-600.png'
+unset logscale
+unset format y
+set xtics 0,16
+set xrange [400:600]
+plot 'pages_freq.tsv' using 1:2 with lines title ''
+
 #+END_SRC
 
+**** page distribution
 [[pages.png]]
+
+**** page range 400 to 600
+[[pages_400-600.png]]
 
 ** extent
 #+BEGIN_SRC sh :results silent
@@ -202,7 +215,6 @@ replot
 |       1 | ['1070      | Wien,    | Lindengasse        | 47'] |
 
 ** price
-
 ** publisher
 
 #+BEGIN_SRC sh
@@ -500,3 +512,235 @@ TODO: add Wikidata fields
 | ~type~            | string  | no       |                                                |
 
 ** fill index
+
+* TODO analysis 
+** TODO visualise pages
+1. Sichtbarmachung des "extent"-Datenfeldes mit "HDT-it!" (ginge das?
+hatte das damals auch für den Blogpost gemacht und finde, es schaut ganz
+plastisch aus)
+
+** TODO number of media, usable page data
+2. Wieviele Medien insgesamt in der DNB – wie viele davon haben
+brauchbare Seitenangaben usw. (eigentlich schon so, wie du es in
+merging.org gemacht hast).
+
+*** types of media
+All media:
+#+BEGIN_SRC sh
+  ./json2json.py -n -p type DNBTitel.json.gz \
+      | sort -S1G | uniq -c > media_freq.tsv
+#+END_SRC
+
+With usable page numbers:
+#+BEGIN_SRC sh
+  ./json2json.py -n -p type,pages_norm DNBTitel.json.gz \
+      | awk -F'\t' '{if ($2 != "") print $1}' \
+      | sort -S1G | uniq -c > media_with_pages_freq.tsv
+#+END_SRC
+
+#+BEGIN_SRC sh
+  cat media_freq.tsv
+  cat media_with_pages_freq.tsv.gz
+#+END_SRC
+
+| type       | frequency | frequency (proper pages given) |
+|------------+-----------+--------------------------------|
+|            |     11070 |                                |
+| Article    |    981677 |                                |
+| Collection |    393390 |                            347 |
+| Document   |  10632628 |                        7434113 |
+| Issue      |   1470688 |                        1036770 |
+| Periodical |    489990 |                              8 |
+| Series     |    122866 |                             20 |
+|------------+-----------+--------------------------------|
+| *sum*      |  14102309 |                        8471258 |
+#+TBLFM: @9$2=vsum(@I..@II)::@9$3=vsum(@I..@II)
+
+
+** DONE plot number of pages
+3. Den Plot "number of pages", aber so, dass man sieht, dass es aller 16
+Seiten Peaks gibt (hängt mit den Buchbögen zusammen, ein Bogen hat 16
+Seiten, und die wollten die Setzer/Verlage dann eben auch füllen,
+deswegen der Peak – der aber doch ziemlich interessant ist, weil er das
+sichtbar macht, und unsere Datengrundlage irgendwie auch legitimiert).
+
+see [[*plot the distribution][above]]
+
+
+** TODO frequent authors
+4. Ein paar weitere allgemeine Blicke in den Katalog: Autoren mit den
+meisten Büchern im Katalog usw. (und die Beispiele aus merging.org,
+Goethe und so).
+
+- distribution number of authors per work 
+- authors with the largest number of pages
+- need to merge with GND!
+- how to deal with several authors per work?
+
+*** TODO merge author names from Wikidata using GND
+
+** TODO publishers and pages
+5. Hauptanliegen sollten für dieses Mal die Verlage und deren
+Seitenpolitik sein: Durchschnittliche Länge von Büchern pro Verlag
+(Suhrkamp, Rowohlt, Aufbau, Hanser, Eichborn, …) – wobei ich hier Bücher
+über 5.000 Seiten weglassen würde, weil das offenbar Fehler sind. – Und
+ein Längenranking (Top-20?) pro Verlag – die kann man dann
+handbereinigen, falls mal nichtliterarische Werke darunter gefallen
+sind, denn es sind ja nicht so viele in einer Top-20-Liste.
+
+*Frage: wieviel Aufwand in die Normalisierung der Verlage stecken?*
+Optionen: 
+- nicht normalisieren
+- einige wenige Verlage normalisieren
+
+*** DONE most frequent publishers
+
+#+BEGIN_SRC sh
+  ./json2json.py -n -p publisher DNBTitel.json.gz | sort -S1G | uniq -c | gzip -c > publisher.tsv.gz
+#+END_SRC
+
+Top publishers:
+#+BEGIN_SRC sh
+  zcat publisher.tsv.gz | sort -S1G -nr | head -n20
+#+END_SRC
+
+| publisher                       |   items |
+|---------------------------------+---------|
+|                                 | 5640251 |
+| GRIN Verlag GmbH                |  121456 |
+| Books on Demand                 |   97716 |
+| Springer                        |   83093 |
+| LAP LAMBERT Academic Publishing |   83033 |
+| [s. n.]                         |   78068 |
+| Springer Berlin Heidelberg      |   54125 |
+| Lang                            |   54075 |
+| John Wiley & Sons               |   50768 |
+| Heyne                           |   42233 |
+| Rowohlt                         |   40982 |
+| VDM Verlag Dr. Müller           |   40954 |
+| tredition                       |   32839 |
+| [s.n.]                          |   32549 |
+| Herder                          |   31734 |
+| GRIN Verlag                     |   31242 |
+| Shaker                          |   29769 |
+| Goldmann                        |   27502 |
+| Beck                            |   27324 |
+| Reclam                          |   26953 |
+
+But: beware of errors:
+#+BEGIN_SRC sh
+  zcat publisher.tsv.gz | sort -S1G -nr | grep Brockhaus | head -n20
+#+END_SRC
+
+| label                                          | frequency |
+|------------------------------------------------+-----------|
+| Brockhaus                                      |      5968 |
+| R. Brockhaus                                   |       868 |
+| F. A. Brockhaus                                |       671 |
+| Brockhaus, VEB                                 |       543 |
+| SCM R. Brockhaus                               |       494 |
+| SCM R.Brockhaus im SCM-Verlag                  |       221 |
+| VEB Brockhaus                                  |       193 |
+| Bibliogr. Inst. und Brockhaus                  |       121 |
+| [F. A. Brockhaus]                              |        65 |
+| Brockhaus VEB                                  |        63 |
+| Bibliogr. Inst. & Brockhaus                    |        62 |
+| F. A. Brockhaus Verlag                         |        53 |
+| Brockhaus, Wissenmedia in der InmediaONE] GmbH |        50 |
+| SCM R. Brockhaus im SCM Verlag GmbH & Co.KG    |        38 |
+| Theologischer Verlag Brockhaus                 |        34 |
+| [Brockhaus]                                    |        30 |
+| SCM R.Brockhaus                                |        25 |
+| Theologischer Verl. Brockhaus                  |        16 |
+| M. Brockhaus                                   |         9 |
+| SCM Brockhaus                                  |         8 |
+*** TODO average extent per publisher
+**** extract raw data
+#+BEGIN_SRC sh
+  ./json2json.py -n -p publisher,pages_norm | gzip -c > publisher_pages.tsv.gz
+#+END_SRC
+**** DONE filter outliers and errors
+remove:
+- pages > 5000
+- no pages
+- no publisher
+
+#+BEGIN_SRC sh
+  zcat publisher_pages.tsv.gz \
+      | awk -F'\t' '{if ($1 != "" && $2 != "" && $2 <= 5000) print $1"\t"$2}' \
+      | gzip -c > publisher_pages_filtered.tsv.gz
+#+END_SRC
+
+**** TODO ranking per publisher
+
+have to clarify normalisation first
+
+
+**** DONE average book length per publisher
+
+# would be easy with sqlite3 - install!
+
+Count per publisher:
+#+BEGIN_SRC sh :results silent
+  zcat publisher_pages_filtered.tsv.gz \
+      | awk -F'\t' '{sum[$1]+=$2; count[$1]+=1} END {for (p in sum) printf("%s\t%s\t%s\n", p, sum[p], count[p])}' \
+	    > publisher_pages_stats.tsv
+#+END_SRC
+
+***** top 20 by page sum
+#+BEGIN_SRC sh
+  sort -t$'\t' -rnk2 publisher_pages_stats.tsv | head -n20
+#+END_SRC
+
+| publisher                          |    pages | items | mean |
+|------------------------------------+----------+-------+------|
+| Springer                           | 21319843 | 65100 |  327 |
+| Lang                               | 14134698 | 51255 |  276 |
+| Heyne                              | 12587106 | 41094 |  306 |
+| Beck                               | 10391848 | 24630 |  422 |
+| Rowohlt                            |  9237092 | 40148 |  230 |
+| Goldmann                           |  7776002 | 26491 |  294 |
+| Herder                             |  5811171 | 29036 |  200 |
+| Suhrkamp                           |  5675784 | 21129 |  269 |
+| Ullstein                           |  5310460 | 19025 |  279 |
+| Reclam                             |  4885858 | 25831 |  189 |
+| Dt. Taschenbuch-Verl.              |  4489154 | 17122 |  262 |
+| Piper                              |  4349318 | 14524 |  299 |
+| Fischer-Taschenbuch-Verl.          |  4060245 | 14549 |  279 |
+| Shaker                             |  4013108 | 22838 |  176 |
+| RM-Buch-und-Medien-Vertrieb [u.a.] |  3813996 | 11215 |  340 |
+| Weltbild                           |  3586937 | 10636 |  337 |
+| Oldenbourg                         |  3469927 | 11820 |  294 |
+| Thieme                             |  3317355 | 12559 |  264 |
+| de Gruyter                         |  3281362 | 10534 |  312 |
+| Kohlhammer                         |  3239885 | 14734 |  220 |
+#+TBLFM: $4=$-2/$-1;%2.0f
+
+***** top 20 by mean page count
+
+#+BEGIN_SRC sh
+  awk -F'\t' '{print $1"\t"$2"\t"$3"\t"int($2/$3)}' publisher_pages_stats.tsv | sort -t$'\t' -rnk4 | head -n20
+#+END_SRC
+
+| publisher                                                                    | pages | items | mean |
+|------------------------------------------------------------------------------+-------+-------+------|
+| Ronny Szpetecki                                                              |  4676 |     1 | 4676 |
+| Kantonale Denkmalpflege Graubünden                                           |  4248 |     1 | 4248 |
+| Großversandhaus Quelle                                                       |  3947 |     1 | 3947 |
+| Didacta, Ausstellungs- und Verl.-Ges.                                        |  3700 |     1 | 3700 |
+| Chemical Rubber Publishing Co.                                               |  3604 |     1 | 3604 |
+| Deutscher Sparkassenverlag Stuttgart                                         |  3295 |     1 | 3295 |
+| Ander                                                                        |  6398 |     2 | 3199 |
+| Maṭbaʿat al-Ahrām                                                            |  3056 |     1 | 3056 |
+| Deutsche Demokratische Republik, Staatl. Plankommission, Statist. Zentralamt |  2967 |     1 | 2967 |
+| Burke's Peerage Ltd.                                                         |  2867 |     1 | 2867 |
+| [PONS GmbH]                                                                  |  2837 |     1 | 2837 |
+| Life Publ. International                                                     |  2776 |     1 | 2776 |
+| Genfer Bibelgesellschaft                                                     |  2673 |     1 | 2673 |
+| Hakubunkan Verl.                                                             |  2633 |     1 | 2633 |
+| McClelland and Stewart Inc.                                                  |  2573 |     1 | 2573 |
+| Schraad                                                                      |  2560 |     1 | 2560 |
+| Verlagsh. Freya G. m. b. H.                                                  |  2516 |     1 | 2516 |
+| Monte Avila                                                                  |  2516 |     1 | 2516 |
+| Pierer, Heymann                                                              |  2500 |     1 | 2500 |
+| Jixie-Gongye-Chubanshe                                                       |  2462 |     1 | 2462 |

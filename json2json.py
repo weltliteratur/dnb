@@ -199,7 +199,7 @@ def get_value(item, colspec):
     if p in item:
         return get_value(item[p], colspec)
     elif p == "*":
-        return ", ".join([str(get_value(item[pp], colspec)) for pp in item])
+        return ", ".join([str(get_value(item[pp], list(colspec))) for pp in item])
     else:
         return ""
 

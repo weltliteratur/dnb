@@ -30,6 +30,8 @@ The goal is to enrich the DNB dataset and index it with Elastic.
 #+END_SRC
 
 What is the difference between ~pages~ and ~extent~?
+- ~rdf2json.py~: ~extent~ is from ~dcterms:extent~ and ~pages~ is from
+  ~isbd:P1053~ (which is "has extent") - so it is basically the same
 - We use ~extent~ when no valid ~pages~ are given.
 
 * analyse fields
@@ -628,7 +630,7 @@ Top publishers:
 | Beck                            |   27324 |
 | Reclam                          |   26953 |
 
-But: beware of errors:
+**** But: beware of errors
 #+BEGIN_SRC sh
   zcat publisher.tsv.gz | sort -S1G -nr | grep Brockhaus | head -n20
 #+END_SRC

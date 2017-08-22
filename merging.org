@@ -230,7 +230,7 @@ replot
   ./json2json.py -n -p contributor DNBTitel.json.gz | sort -S1G | uniq -c > contributor.tsv
 #+END_SRC
 
-* TODO enrich with Wikidata
+* DONE enrich with Wikidata
 By using the field ~creator~ (*or should we use ~contributor~?*).
 
 ** identify properties
@@ -366,7 +366,7 @@ Is done using Java (see ~WriterExtractor.java~ for the basic idea) and
 }
 #+END_SRC
 
-** TODO enrich JSON
+** DONE enrich JSON
 
 Modifying ~json2json.py~ to add the Wikidata data for each found
 writer with the ~--wikidata~ option.
@@ -584,6 +584,35 @@ Goethe und so).
 - authors with the largest number of pages
 - need to merge with GND!
 - how to deal with several authors per work?
+
+*** top authors (item count)
+#+BEGIN_SRC sh
+  ./json2json.py -p "creator_wd.*.name" DNBTitel_normalised_enriched.json.gz | sort -S1G | uniq -c | sort -nr | head -n20
+#+END_SRC
+
+| author                     | frequency |
+|----------------------------+-----------|
+|                            |  12469257 |
+| Johann Wolfgang von Goethe |      6764 |
+| Rudolf Steiner             |      4320 |
+| Hermann Hesse              |      3653 |
+| Thomas Mann                |      3590 |
+| Stefan Zweig               |      3262 |
+| Heinz G. Konsalik          |      3251 |
+| Wilhelm Grimm, Jacob Grimm |      3026 |
+| Friedrich Schiller         |      2715 |
+| William Shakespeare        |      2473 |
+| Franz Kafka                |      2359 |
+| Theodor Storm              |      2312 |
+| Bertolt Brecht             |      2238 |
+| Karl May                   |      2193 |
+| Erich Kästner              |      2150 |
+| Friedrich Nietzsche        |      2106 |
+| Theodor Fontane            |      2030 |
+| Wilhelm Busch              |      2014 |
+| Gottfried Keller           |      2006 |
+| Rainer Maria Rilke         |      1999 |
+
 
 *** TODO merge author names from Wikidata using GND
 

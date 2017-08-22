@@ -49,6 +49,7 @@ Normalise and extract entries with meaningful (numerical) information:
 
 *** plot the distribution
 #+BEGIN_SRC gnuplot :results silent
+reset
 set term svg enhanced size 800,600
 set out 'pages.svg'
 set grid

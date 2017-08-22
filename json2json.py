@@ -12,7 +12,7 @@
 #
 # Changes:
 # 2017-08-22 (rja)
-# - added nested path support for column selection (-p)
+# - added nested path and wildcard support for column selection (-p)
 # 2017-08-18 (rja)
 # - added normalisation of "issued"
 # - added use of "extent" if no pages could be found
@@ -191,7 +191,7 @@ def to_str(val):
         return ", ".join(val)
     return str(val)
 
-# retrieves values for nested paths using "." as delimiter as "*" for globbing
+# retrieves values for nested paths using "." as delimiter and "*" as wildcard
 def get_value(item, colspec):
     if len(colspec) == 0:
         return item

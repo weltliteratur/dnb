@@ -294,7 +294,7 @@ We do this with curl as before:
 #+RESULTS:
 : 279 wikidata_writer_subclasses.tsv
 
-** TODO process dump
+** DONE process dump
 
 Is done using Java (see ~WriterExtractor.java~ for the basic idea) and
  creates the file ~gndwriter.json~:
@@ -372,7 +372,7 @@ Modifying ~json2json.py~ to add the Wikidata data for each found
 writer with the ~--wikidata~ option.
 
 #+BEGIN_SRC sh
-  ./json2json.py -n -w gndwriter.json DNBTitel.json.gz \
+  ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel.json.gz \
       | gzip -c \
 	     > DNBTitel_normalised_enriched.json.gz
 #+END_SRC
@@ -380,7 +380,7 @@ writer with the ~--wikidata~ option.
 ** test enrichment
 
 #+BEGIN_SRC 
-  ./json2json.py -n -w gndwriter.json DNBTitel.json.gz | grep "poet lawyer" > poetlawyer_gndwriter.json
+  ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel.json.gz | grep "poet lawyer" > poetlawyer_gndwriter.json
 #+END_SRC
 
 #+BEGIN_SRC sh :results raw
@@ -392,82 +392,89 @@ writer with the ~--wikidata~ option.
    "contributor" : [
       "116924373"
    ],
-   "_id" : "361432887",
-   "place_publisher" : "München ; Leipzig : G. Müller",
    "title" : "Goethes Egmont in Schillers Bearbeitung",
-   "lang" : "ger",
-   "creator" : [
-      "118540238"
-   ],
-   "issued" : "1914",
-   "issued_norm" : 1914,
-   "type" : "Document",
-   "creator_wd" : {
-      "118540238" : {
-         "occupations" : [
-            {
-               "name" : "art critic",
-               "id" : "Q4164507"
-            },
-            {
-               "name" : "travel writer",
-               "id" : "Q3579035"
-            },
-            {
-               "name" : "poet",
-               "id" : "Q49757"
-            },
-            {
-               "name" : "poet lawyer",
-               "id" : "Q1209498"
-            },
-            {
-               "id" : "Q1350157",
-               "name" : "music critic"
-            },
-            {
-               "name" : "novelist",
-               "id" : "Q6625963"
-            },
-            {
-               "name" : "autobiographer",
-               "id" : "Q18814623"
-            },
-            {
-               "id" : "Q214917",
-               "name" : "playwright"
-            },
-            {
-               "id" : "Q3606216",
-               "name" : "aphorist"
-            },
-            {
-               "name" : "diarist",
-               "id" : "Q18939491"
-            },
-            {
-               "name" : "theologian",
-               "id" : "Q1234713"
-            },
-            {
-               "name" : "art theorist",
-               "id" : "Q17391638"
-            }
-         ],
-         "id" : "Q5879",
-         "name" : "Johann Wolfgang von Goethe"
-      }
-   },
-   "pages" : [
-      "153 S."
-   ],
+   "place_publisher" : "München ; Leipzig : G. Müller",
    "publisher" : "G. Müller",
    "place" : [
       "München",
       "Leipzig"
    ],
+   "issued" : "1914",
+   "lang" : "ger",
+   "pages" : [
+      "153 S."
+   ],
    "medium" : "RDACarrierType/1044",
-   "pages_norm" : 153
+   "_id" : "361432887",
+   "pages_norm" : 153,
+   "creator_wd" : {
+      "118540238" : {
+         "languages" : "German",
+         "image" : "Goethe (Stieler 1828).jpg",
+         "place_of_death" : "Weimar",
+         "native_language" : "German",
+         "id" : "Q5879",
+         "date_of_death" : "1832-03-22",
+         "date_of_birth" : "1749-08-28",
+         "name" : "Johann Wolfgang von Goethe",
+         "awards" : [
+            "Merit Order of the Bavarian Crown",
+            "Officer of the Legion of Honour",
+            "Order of Saint Anna, 1st class"
+         ],
+         "place_of_birth" : "Frankfurt",
+         "gender" : "male",
+         "occupation" : [
+            "poet lawyer",
+            "theatre manager",
+            "botanist",
+            "politician",
+            "painter",
+            "philosopher",
+            "theologian",
+            "jurist",
+            "art critic",
+            "music critic",
+            "Geheimrat",
+            "librarian",
+            "poet",
+            "travel writer",
+            "physicist",
+            "literary",
+            "novelist",
+            "playwright",
+            "autobiographer",
+            "diplomat",
+            "statesman",
+            "polymath",
+            "aphorist",
+            "diarist",
+            "mineralogist",
+            "zoologist",
+            "art theorist",
+            "lawyer"
+         ],
+         "occupation_writer" : [
+            "poet lawyer",
+            "theologian",
+            "art critic",
+            "music critic",
+            "poet",
+            "travel writer",
+            "novelist",
+            "playwright",
+            "autobiographer",
+            "aphorist",
+            "diarist",
+            "art theorist"
+         ]
+      }
+   },
+   "type" : "Document",
+   "issued_norm" : 1914,
+   "creator" : [
+      "118540238"
+   ]
 }
 #+END_SRC
 
@@ -522,7 +529,7 @@ TODO: add Wikidata fields
 hatte das damals auch für den Blogpost gemacht und finde, es schaut ganz
 plastisch aus)
 
-** TODO number of media, usable page data
+** DONE number of media, usable page data
 2. Wieviele Medien insgesamt in der DNB – wie viele davon haben
 brauchbare Seitenangaben usw. (eigentlich schon so, wie du es in
 merging.org gemacht hast).
@@ -559,7 +566,6 @@ With usable page numbers:
 | *sum*      |  14102309 |                        8471258 |
 #+TBLFM: @9$2=vsum(@I..@II)::@9$3=vsum(@I..@II)
 
-
 ** DONE plot number of pages
 3. Den Plot "number of pages", aber so, dass man sieht, dass es aller 16
 Seiten Peaks gibt (hängt mit den Buchbögen zusammen, ein Bogen hat 16
@@ -568,7 +574,6 @@ deswegen der Peak – der aber doch ziemlich interessant ist, weil er das
 sichtbar macht, und unsere Datengrundlage irgendwie auch legitimiert).
 
 see [[*plot the distribution][above]]
-
 
 ** TODO frequent authors
 4. Ein paar weitere allgemeine Blicke in den Katalog: Autoren mit den
@@ -598,7 +603,7 @@ Optionen:
 
 *** DONE most frequent publishers
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :results silent
   ./json2json.py -n -p publisher DNBTitel.json.gz | sort -S1G | uniq -c | gzip -c > publisher.tsv.gz
 #+END_SRC
 

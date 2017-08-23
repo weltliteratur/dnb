@@ -1038,11 +1038,10 @@ replot
 Let's plot the median number of pages per decade:
 
 #+BEGIN_SRC sh
-  LC_ALL=C \
-	./json2json.py -p "issued,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+  LC_ALL=C ./json2json.py -p "issued,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 != "" && $2 != "" && $3 != "") print int($1/10)"\t"$2}' \
       | sort -S1G -nr \
-      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2\
+      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2\
 		 > decade_pages_stats.tsv
 #+END_SRC
 
@@ -1056,11 +1055,11 @@ set grid
 set datafile separator "\t"
 set xrange [1500:2020]
 set xlabel 'year'
-set ylabel 'number of pages per decade'
+set ylabel number of pages per decade'
 
 plot \
-  'decade_pages_stats.tsv' using ($1*10):2 with linespoints pt 7 title 'median',\
-  'decade_pages_stats.tsv' using ($1*10):3 with linespoints pt 7 title 'mean'
+  'decade_pages_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
+  'decade_pages_stats.tsv' using ($1*10):2 with linespoints pt 7 lw 2 lt 3 lc rgb "green" title 'median'
 
 set term svg enhanced size 800,600
 set out 'decade_pages.svg'

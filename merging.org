@@ -164,12 +164,12 @@ Get the valid years for the "Document" type:
 
 Let's plot the years for the "Document" type:
 #+BEGIN_SRC gnuplot :results silent
+reset
 set term svg enhanced size 800,600
 set out 'issued.svg'
 set grid
 set xrange [1450:2050]
 set logscale y
-# set format y "10^%T"
 
 set xlabel 'year'
 set ylabel 'frequency'
@@ -307,7 +307,7 @@ Is done using Java (see ~WriterExtractor.java~ for the basic idea) and
 
 
 #+BEGIN_SRC sh :results raw
-  grep "Goethe" gndwriter.json | sed -e "s/^,/{/" -e "s/$/}/" | json_pp 
+  grep "Goethe" gndwriter.json | sed -e "s/^,/{/" -e "s/$/}/" | json_pp
 #+END_SRC
 
 #+BEGIN_SRC json
@@ -382,7 +382,7 @@ writer with the ~--wikidata~ option.
 
 ** test enrichment
 
-#+BEGIN_SRC 
+#+BEGIN_SRC
   ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel.json.gz | grep "poet lawyer" > poetlawyer_gndwriter.json
 #+END_SRC
 
@@ -486,8 +486,8 @@ writer with the ~--wikidata~ option.
 Manually download (a part of) the Wikidata dump (since Java gets a 503
 and disk space is scarce):
 #+BEGIN_SRC sh
-  # this fixes 
-  zcat 20170814.json.gz_ORIG | head -n -2 | head -c -2 | sed -e "\$a]" | gzip -c > 20170814.json.gz 
+  # this fixes
+  zcat 20170814.json.gz_ORIG | head -n -2 | head -c -2 | sed -e "\$a]" | gzip -c > 20170814.json.gz
 #+END_SRC
 
 * TODO index in Elastic
@@ -526,7 +526,7 @@ TODO: add Wikidata fields
 
 ** fill index
 
-* TODO analysis 
+* TODO analysis
 ** TODO visualise pages
 1. Sichtbarmachung des "extent"-Datenfeldes mit "HDT-it!" (ginge das?
 hatte das damals auch für den Blogpost gemacht und finde, es schaut ganz
@@ -583,7 +583,7 @@ see [[*plot the distribution][above]]
 meisten Büchern im Katalog usw. (und die Beispiele aus merging.org,
 Goethe und so).
 
-- TODO: plot distribution of the number of authors per work 
+- TODO: plot distribution of the number of authors per work
 
 *** by item count
 #+BEGIN_SRC sh
@@ -681,21 +681,20 @@ There are probably some errors among those ...
 
 #+BEGIN_SRC gnuplot :results silent
 reset
-set encoding utf8 
-set term png enhanced size 800,600 font "sans-serif,11"
+set encoding utf8
+set term png enhanced size 800,600
 set out 'author_pages.png'
 
 set grid
 set datafile separator "\t"
 set xrange [*:10000]
-set logscale 
+set logscale
 set format y "10^%T"
 set format x "10^%T"
 
 set xlabel 'number of items'
 set ylabel 'mean number of pages per item'
 
-#set arrow 1 from first 
 set label "Peter Goetz von Olenhusen" left at 1, 190192 offset .5,.5
 set label "Antoine Furetiere" left at 2, 11462 offset .5, .5
 set label "Reinhard Baumgart" left at 32, 10640 offset .5, .5
@@ -750,14 +749,14 @@ Only authors that are documented with a [[https://www.wikidata.org/wiki/Property
 
 #+BEGIN_SRC gnuplot :results silent
 reset
-set encoding utf8 
-set term png enhanced size 800,600 font "sans-serif,11"
+set encoding utf8
+set term png enhanced size 800,600
 set out 'author_writer_pages.png'
 
 set grid
 set datafile separator "\t"
 set xrange [*:10000]
-set logscale 
+set logscale
 set format y "10^%T"
 set format x "10^%T"
 
@@ -855,7 +854,7 @@ handbereinigen, falls mal nichtliterarische Werke darunter gefallen
 sind, denn es sind ja nicht so viele in einer Top-20-Liste.
 
 *Frage: wieviel Aufwand in die Normalisierung der Verlage stecken?*
-Optionen: 
+Optionen:
 - nicht normalisieren
 - einige wenige Verlage normalisieren
 
@@ -1021,9 +1020,7 @@ set out 'publisher_pages.png'
 
 set grid
 set datafile separator "\t"
-# set xrange [0:4000]
-set logscale 
-# set format y "10^%T"
+set logscale
 
 set xlabel 'number of items
 set ylabel 'mean number of pages per item'
@@ -1036,3 +1033,38 @@ replot
 #+END_SRC
 
 [[publisher_pages.png]]
+
+** temporal distribution
+Let's plot the median number of pages per decade:
+
+#+BEGIN_SRC sh
+  LC_ALL=C \
+	./json2json.py -p "issued,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 != "" && $2 != "" && $3 != "") print int($1/10)"\t"$2}' \
+      | sort -S1G -nr \
+      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2\
+		 > decade_pages_stats.tsv
+#+END_SRC
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8
+set term png enhanced size 800,600
+set out 'decade_pages.png'
+
+set grid
+set datafile separator "\t"
+set xrange [1500:2020]
+set xlabel 'year'
+set ylabel 'number of pages per decade'
+
+plot \
+  'decade_pages_stats.tsv' using ($1*10):2 with linespoints pt 7 title 'median',\
+  'decade_pages_stats.tsv' using ($1*10):3 with linespoints pt 7 title 'mean'
+
+set term svg enhanced size 800,600
+set out 'decade_pages.svg'
+replot
+#+END_SRC
+
+[[decade_pages.png]]

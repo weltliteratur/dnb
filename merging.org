@@ -76,6 +76,9 @@ set xtics 0,16
 set xrange [400:600]
 plot 'pages_freq.tsv' using 1:2 with lines title ''
 
+set term svg enhanced size 800,600
+set out 'pages_400-600.svg'
+replot
 #+END_SRC
 
 **** page distribution
@@ -701,6 +704,9 @@ set label "Johann\nWolfgang\nvon\nGoethe" left at 5221, 230 offset -1.8, 3.6
 
 plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
 
+set term svg enhanced size 800,600
+set out 'author_pages.svg'
+replot
 #+END_SRC
 
 [[author_pages.png][author_pages.png]]
@@ -741,7 +747,42 @@ Only authors that are documented with a [[https://www.wikidata.org/wiki/Property
 | Lutz Meyer-Goßner                   |  25432 |    14 |          1816 |
 | Walter Bayer, Marcus Lutter         |   1779 |     1 |          1779 |
 
-** longest works
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8 
+set term png enhanced size 800,600 font "sans-serif,11"
+set out 'author_writer_pages.png'
+
+set grid
+set datafile separator "\t"
+set xrange [*:10000]
+set logscale 
+set format y "10^%T"
+set format x "10^%T"
+
+set xlabel 'number of items'
+set ylabel 'mean number of pages per item'
+
+set label "Antoine Furetiere" left at 2, 11462 offset .5, .3
+set label "Reinhard Baumgart" left at 32, 10640 offset .5, .3
+set label "Cesar-Pierre Richelet" left at 2, 5294 offset .5, .3
+set label "Samael Aun Weor" left at 27, 5226 offset .5, .3
+set label "Guenther Bentele" left at 27, 3842 offset .5, .3
+set label "Colleen McCullough" left at 143, 2966 offset .5, .3
+set label "Johann\nWolfgang\nvon\nGoethe" left at 5221, 230 offset -1.8, 3.6
+
+plot 'author_writer_pages_stats.tsv' using 2:3 with points pt 7 title ''
+
+set term svg enhanced size 800,600
+set out 'author_writer_pages.svg'
+replot
+#+END_SRC
+
+[[author_writer_pages.png]]
+
+
+** top works
 
 From all authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata:
 #+BEGIN_SRC sh
@@ -988,6 +1029,10 @@ set xlabel 'number of items
 set ylabel 'mean number of pages per item'
 
 plot 'publisher_pages_stats.tsv' using 3:4 with points pt 7 title ''
+
+set term svg enhanced size 800,600
+set out 'publisher_pages.svg'
+replot
 #+END_SRC
 
 [[publisher_pages.png]]

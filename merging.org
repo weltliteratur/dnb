@@ -575,7 +575,7 @@ sichtbar macht, und unsere Datengrundlage irgendwie auch legitimiert).
 
 see [[*plot the distribution][above]]
 
-** TODO top authors
+** DONE top authors
 4. Ein paar weitere allgemeine Blicke in den Katalog: Autoren mit den
 meisten Büchern im Katalog usw. (und die Beispiele aus merging.org,
 Goethe und so).
@@ -705,7 +705,104 @@ plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
 
 [[author_pages.png][author_pages.png]]
 
-*** TODO merge author names from Wikidata using GND
+*** by average page count (only writers)
+Only authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and with an
+[[https://www.wikidata.org/wiki/Property:P106][occupation]] that is a [[https://www.wikidata.org/wiki/Property:P279][subclass]] of [[https://www.wikidata.org/wiki/Q36180][writer]]:
+#+BEGIN_SRC sh
+  ./json2json.py -p "creator_wd.*.name,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($2 != "" && $3 != "") {sum[$1]+=$2; count[$1]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
+      > author_writer_pages_stats.tsv
+#+END_SRC
+
+#+BEGIN_SRC sh
+  sort -nrk3 author_writer_pages_stats.tsv | head -n20
+#+END_SRC
+
+| author                              |  pages | items | average pages |
+|-------------------------------------+--------+-------+---------------|
+| Antoine Furetière                   |  22924 |     2 |         11462 |
+| Reinhard Baumgart                   | 340491 |    32 |         10640 |
+| César-Pierre Richelet               |  10588 |     2 |          5294 |
+| Samael Aun Weor                     | 141110 |    27 |          5226 |
+| Günther Bentele                     | 103739 |    27 |          3842 |
+| Jean Quatremer                      |   3376 |     1 |          3376 |
+| Colleen McCullough                  | 424189 |   143 |          2966 |
+| Dieter Hildebrandt                  | 266207 |   100 |          2662 |
+| André Vauchez                       |   2536 |     1 |          2536 |
+| Wolfgang Lauterbach, Peter Hartmann |   2319 |     1 |          2319 |
+| Peter Hartmann                      | 101951 |    46 |          2216 |
+| Wolfgang Kleiber                    |  10787 |     5 |          2157 |
+| Noam Chomsky                        | 197964 |    92 |          2151 |
+| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |          2052 |
+| Kari Jormakka                       |  10239 |     5 |          2047 |
+| John Bernard Burke                  |   4052 |     2 |          2026 |
+| Egon Wiberg, Arnold F. Holleman     |   5633 |     3 |          1877 |
+| Frank Göttmann                      |   5561 |     3 |          1853 |
+| Lutz Meyer-Goßner                   |  25432 |    14 |          1816 |
+| Walter Bayer, Marcus Lutter         |   1779 |     1 |          1779 |
+
+** longest works
+
+From all authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata:
+#+BEGIN_SRC sh
+  ./json2json.py -p "pages_norm,_id,title,creator_wd.*.name" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 != "" && $4 != "") print $1"\t"$2"\t"$3}' \
+      | sort -S1G -rn | head -n20
+#+END_SRC
+
+| title                                                                 | pages  |
+|-----------------------------------------------------------------------+--------|
+| [[http://d-nb.info/920918131][Tim]]                                                                   | 348333 |
+| [[http://d-nb.info/930916484][Selbstvergessenheit]]                                                   | 332331 |
+| [[http://d-nb.info/920996760][Denkzettel]]                                                            | 239240 |
+| [[http://d-nb.info/830994645][Börsen und Kartellrecht]]                                               | 190192 |
+| [[http://d-nb.info/880974125][Die fünfte Freiheit]]                                                   | 176150 |
+| [[http://d-nb.info/942067983][Revolutionäre Psychologie]]                                             | 137317 |
+| [[http://d-nb.info/910581096][Metaphorische Aktionen]]                                                | 114100 |
+| [[http://d-nb.info/959654496][Die Malerei im Bietigheimer Hornmoldhaus]]                              |  96104 |
+| [[http://d-nb.info/920285317][Neurologie]]                                                            |  51420 |
+| [[http://d-nb.info/931276837][Auf der Suche nach Europas Stärken]]                                    |  26580 |
+| [[http://d-nb.info/951007475][Dictionnaire universel, contenant generalement tous les mots françois]] |  22522 |
+| [[http://d-nb.info/1112954090][Kostengesetze]]                                                         |  22297 |
+| [[http://d-nb.info/820541613][Die grünen Augen]]                                                      |  21920 |
+| [[http://d-nb.info/958168091][Nicht mehr rauchen und dabei schlank bleiben]]                          |  13008 |
+| [[http://d-nb.info/950750476][Dictionnaire françois, contenant les mots et les choses]]               |  10112 |
+| [[http://d-nb.info/964760746][Flying Dutchmen]]                                                       |   9306 |
+| [[http://d-nb.info/964186179][Fado Alexandrino]]                                                      |   7969 |
+| [[http://d-nb.info/36896809X][Il giuoco delle perle di vetro]]                                        |   5616 |
+| [[http://d-nb.info/901336033][Der öffentliche Sektor]]                                                |   5242 |
+| [[http://d-nb.info/947104364][Getreidemarkt am Bodensee]]                                             |   5126 |
+
+From all authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and
+with an [[https://www.wikidata.org/wiki/Property:P106][occupation]] that is a [[https://www.wikidata.org/wiki/Property:P279][subclass]] of [[https://www.wikidata.org/wiki/Q36180][writer]]:
+#+BEGIN_SRC sh
+  ./json2json.py -p "pages_norm,_id,title,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 != "" && $4 != "") print $1"\t"$2"\t"$3}' \
+      | sort -S1G -rn | head -n20
+#+END_SRC
+
+| title                                                                 |  pages |
+|-----------------------------------------------------------------------+--------|
+| [[http://d-nb.info/920918131][Tim]]                                                                   | 348333 |
+| [[http://d-nb.info/930916484][Selbstvergessenheit]]                                                   | 332331 |
+| [[http://d-nb.info/920996760][Denkzettel]]                                                            | 239240 |
+| [[http://d-nb.info/880974125][Die fünfte Freiheit]]                                                   | 176150 |
+| [[http://d-nb.info/942067983][Revolutionäre Psychologie]]                                             | 137317 |
+| [[http://d-nb.info/959654496][Die Malerei im Bietigheimer Hornmoldhaus]]                              |  96104 |
+| [[http://d-nb.info/951007475][Dictionnaire universel, contenant generalement tous les mots françois]] |  22522 |
+| [[http://d-nb.info/1112954090][Kostengesetze]]                                                         |  22297 |
+| [[http://d-nb.info/820541613][Die grünen Augen]]                                                      |  21920 |
+| [[http://d-nb.info/958168091][Nicht mehr rauchen und dabei schlank bleiben]]                          |  13008 |
+| [[http://d-nb.info/950750476][Dictionnaire françois, contenant les mots et les choses]]               |  10112 |
+| [[http://d-nb.info/964760746][Flying Dutchmen]]                                                       |   9306 |
+| [[http://d-nb.info/964186179][Fado Alexandrino]]                                                      |   7969 |
+| [[http://d-nb.info/36896809X][Il giuoco delle perle di vetro]]                                        |   5616 |
+| [[http://d-nb.info/947104364][Getreidemarkt am Bodensee]]                                             |   5126 |
+| [[http://d-nb.info/975045431][Die Waffen nieder!]]                                                    |   4292 |
+| [[http://d-nb.info/997086467][Aeneis]]                                                                |   4290 |
+| [[http://d-nb.info/970072074][Fastnachtsspiele, Tragödien und Komödien]]                              |   4114 |
+| [[http://d-nb.info/573274061][Das Gauklerschiff]]                                                     |   3840 |
+| [[http://d-nb.info/573274053][Atalanta]]                                                              |   3839 |
 
 ** TODO publishers and pages
 5. Hauptanliegen sollten für dieses Mal die Verlage und deren

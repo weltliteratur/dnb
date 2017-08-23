@@ -651,28 +651,28 @@ Goethe und so).
   sort -nrk3 author_pages_stats.tsv | head -n20
 #+END_SRC
 
-| author                              |  pages | items | average pages |
-|-------------------------------------+--------+-------+---------------|
-| Peter Götz von Olenhusen            | 190192 |     1 |        190192 |
-| Antoine Furetière                   |  22924 |     2 |         11462 |
-| Reinhard Baumgart                   | 340491 |    32 |         10640 |
-| Karl Friedrich Masuhr               |  55128 |    10 |          5512 |
-| César-Pierre Richelet               |  10588 |     2 |          5294 |
-| Samael Aun Weor                     | 141110 |    27 |          5226 |
-| Günther Bentele                     | 103739 |    27 |          3842 |
-| Roland Berger                       |  27704 |     8 |          3463 |
-| Jean Quatremer                      |   3376 |     1 |          3376 |
-| Colleen McCullough                  | 424189 |   143 |          2966 |
-| Michael Hoffmann-Becking            |   2811 |     1 |          2811 |
-| Dieter Hildebrandt                  | 266207 |   100 |          2662 |
-| André Vauchez                       |   2536 |     1 |          2536 |
-| Peter Hartmann, Wolfgang Lauterbach |   2319 |     1 |          2319 |
-| Wolfgang Kleiber                    |  10787 |     5 |          2157 |
-| Noam Chomsky                        | 197964 |    92 |          2151 |
-| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |          2052 |
-| Kari Jormakka                       |  10239 |     5 |          2047 |
-| John Bernard Burke                  |   4052 |     2 |          2026 |
-| Paul Robert                         |   4044 |     2 |          2022 |
+| author                              |  pages | items | average pages | work                                                                             |
+|-------------------------------------+--------+-------+---------------+----------------------------------------------------------------------------------|
+| Peter Götz von Olenhusen            | 190192 |     1 |        190192 | [[http://d-nb.info/830994645][Börsen und Kartellrecht]]                                                          |
+| Antoine Furetière                   |  22924 |     2 |         11462 | [[http://d-nb.info/951007475][Dictionnaire universel, contenant generalement tous les mots françois]], [[http://d-nb.info/911347364][911347364]] |
+| Reinhard Baumgart                   | 340491 |    32 |         10640 |                                                                                  |
+| Karl Friedrich Masuhr               |  55128 |    10 |          5512 |                                                                                  |
+| César-Pierre Richelet               |  10588 |     2 |          5294 | [[http://d-nb.info/1026157692][1026157692]], [[http://d-nb.info/950750476][950750476]]                                                            |
+| Samael Aun Weor                     | 141110 |    27 |          5226 |                                                                                  |
+| Günther Bentele                     | 103739 |    27 |          3842 |                                                                                  |
+| Roland Berger                       |  27704 |     8 |          3463 |                                                                                  |
+| Jean Quatremer                      |   3376 |     1 |          3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]                                                   |
+| Colleen McCullough                  | 424189 |   143 |          2966 |                                                                                  |
+| Michael Hoffmann-Becking            |   2811 |     1 |          2811 | [[http://d-nb.info/1071359681][Beck'sches Formularbuch bürgerliches, Handels- und Wirtschaftsrecht]]              |
+| Dieter Hildebrandt                  | 266207 |   100 |          2662 |                                                                                  |
+| André Vauchez                       |   2536 |     1 |          2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]                                                          |
+| Peter Hartmann, Wolfgang Lauterbach |   2319 |     1 |          2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]                                                              |
+| Wolfgang Kleiber                    |  10787 |     5 |          2157 |                                                                                  |
+| Noam Chomsky                        | 197964 |    92 |          2151 |                                                                                  |
+| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |          2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]]                                                 |
+| Kari Jormakka                       |  10239 |     5 |          2047 |                                                                                  |
+| John Bernard Burke                  |   4052 |     2 |          2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]                                                             |
+| Paul Robert                         |   4044 |     2 |          2022 | [[http://d-nb.info/1111909199][Le petit Robert]], [[http://d-nb.info/575859679][Micro-Robert]]                                                    |
 
 There are probably some errors among those ...
 

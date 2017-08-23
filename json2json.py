@@ -11,6 +11,8 @@
 # Author: rja
 #
 # Changes:
+# 2017-08-23 (rja)
+# - refactored and added support to prune rows with empty columns
 # 2017-08-22 (rja)
 # - added nested path and wildcard support for column selection (-p)
 # 2017-08-18 (rja)
@@ -24,7 +26,7 @@
 # 2017-06-21 (rja)
 # - initial version
 
-version = "0.0.3"
+version = "0.0.4"
 
 import argparse
 import json
@@ -176,14 +178,22 @@ def dump(items, key=None):
     for item in items:
         print(json.dumps(item))
 
-# print columns as specified by cols (comma-separated list)
-def dump_cols(items, cols, sep):
+# select the provided paths as columns
+def gen_cols(items, pathspecs):
     for item in items:
-        result = []
-        for col in cols:
-            result.append(to_str(get_value(item, col.split("."))))
-        print(sep.join(result))
+        yield [to_str(get_value(item, pathspec.split("."))) for pathspec in pathspecs]
 
+def gen_filter(items):
+    for item in items:
+        if all([val != "" for val in item]):
+            yield item
+
+# print columns as specified by cols (comma-separated list)
+def dump_cols(items, sep):
+    for item in items:
+        print(sep.join(item))
+
+# string conversion supporting lists
 def to_str(val):
     if isinstance(val, str):
         return val
@@ -192,15 +202,21 @@ def to_str(val):
     return str(val)
 
 # retrieves values for nested paths using "." as delimiter and "*" as wildcard
-def get_value(item, colspec):
-    if len(colspec) == 0:
+def get_value(item, pathspec):
+    # recursive graph traversal
+    # destination reached (path empty) -> return current node
+    if len(pathspec) == 0:
         return item
-    p = colspec.pop(0)
+    # get next path element
+    p = pathspec.pop(0)
+    # descend
     if p in item:
-        return get_value(item[p], colspec)
+        return get_value(item[p], pathspec)
     elif p == "*":
-        return ", ".join([str(get_value(item[pp], list(colspec))) for pp in item])
+        # handle wildcard: descend into all child nodes
+        return ", ".join([str(get_value(item[pp], list(pathspec))) for pp in item])
     else:
+        # not found
         return ""
 
 
@@ -209,7 +225,8 @@ if __name__ == '__main__':
     parser.add_argument('input', type=str, help='(gzipped) input RDF file')
     parser.add_argument('-n', '--normalise', action="store_true", help="normalise")
     parser.add_argument('-e', '--elastic', action="store_true", help="add JSON for Elastic")
-    parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns instead of JSON")
+    parser.add_argument('-f', '--filter', action="store_true", help="filter rows with empty columns")
+    parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns for given paths instead of JSON")
     parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator for --print", default='\t')
     parser.add_argument('-w', '--wikidata', type=str, metavar="F", help="enrich with Wikidata")
     parser.add_argument('-v', '--version', action="version", version="%(prog)s " + version)
@@ -223,7 +240,10 @@ if __name__ == '__main__':
     if args.wikidata:
         items = enrich(items, args.wikidata)
     if args.print:
-        dump_cols(items, args.print.split(","), args.sep)
+        items = gen_cols(items, args.print.split(","))
+        if args.filter:
+            items = gen_filter(items)
+        dump_cols(items, args.sep)
     else:
         if args.elastic:
             items = gen_elastic(items)

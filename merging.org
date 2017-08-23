@@ -676,6 +676,35 @@ Goethe und so).
 
 There are probably some errors among those ...
 
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8 
+set term png enhanced size 800,600 font "sans-serif,11"
+set out 'author_pages.png'
+
+set grid
+set datafile separator "\t"
+set xrange [*:10000]
+set logscale 
+set format y "10^%T"
+set format x "10^%T"
+
+set xlabel 'number of items'
+set ylabel 'mean number of pages per item'
+
+#set arrow 1 from first 
+set label "Peter Goetz von Olenhusen" left at 1, 190192 offset .5,.5
+set label "Antoine Furetiere" left at 2, 11462 offset .5, .5
+set label "Reinhard Baumgart" left at 32, 10640 offset .5, .5
+set label "Colleen McCullough" left at 143, 2966 offset .5, .5
+set label "Johann\nWolfgang\nvon\nGoethe" left at 5221, 230 offset -1.8, 3.6
+
+plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
+
+#+END_SRC
+
+[[author_pages.png][author_pages.png]]
+
 *** TODO merge author names from Wikidata using GND
 
 ** TODO publishers and pages

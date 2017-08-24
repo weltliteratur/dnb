@@ -1571,32 +1571,35 @@ be regarded the same publisher.
 | Gustav Kiepenheuer                         |     4 |    622 |        155 |
 | Verlag Kiepenheuer & Witsch                |     4 |   1127 |        281 |
 | Kiepenheuer und Witsch [in Komm.]          |     3 |    360 |        120 |
-| Müller & J. Kiepenheuer                    |     2 |    400 |        200 |
-| Müller & [J.] Kiepenheuer                  |     2 |    335 |        167 |
 | Gustav Kiepenheuer Bühnenvertriebs-GmbH    |     2 |    253 |        126 |
-| Kiepenheuer-Bühnen-Vertriebs-GmbH          |     2 |    248 |        124 |
-| Kiepenheuer-Bühnenvertriebs-GMBH           |     2 |    209 |        104 |
 | Kiepenheuer Bühnen-Vertriebs-GmbH          |     2 |    195 |         97 |
-| Theaterverl. Kiepenheuer u. Witsch         |     2 |    158 |         79 |
+| Kiepenheuer-Bühnen-Vertriebs-GmbH          |     2 |    248 |        124 |
 | Kiepenheuer-Bühnenvertriebs-Ges.           |     2 |    152 |         76 |
-| Gustav-Kiepenheuer-Bühnenvertriebs-GmbH    |     1 |     96 |         96 |
-| Kiepenheuer Bühnenvertr. G. m. b. H.       |     1 |     92 |         92 |
-| Gustav Kiepenheuer Bühnenvetriebs G.m.b.H. |     1 |     89 |         89 |
-| Kiepenheuer Bühnenvertriebs-GmbH.          |     1 |     79 |         79 |
-| Verlag Kiepenheuer & Witsch Bühnenvertrieb |     1 |     71 |         71 |
-| Verlag Kiepenheuer u. Witsch               |     1 |    520 |        520 |
-| Kiepenheuer [& Witsch]                     |     1 |    463 |        463 |
-| [Kiepenheuer]                              |     1 |    461 |        461 |
+| Kiepenheuer-Bühnenvertriebs-GMBH           |     2 |    209 |        104 |
+| Müller & [J.] Kiepenheuer                  |     2 |    335 |        167 |
+| Müller & J. Kiepenheuer                    |     2 |    400 |        200 |
+| Theaterverl. Kiepenheuer u. Witsch         |     2 |    158 |         79 |
+| Witsch                                     |     2 |     46 |         23 |
+| [Kiepenheuer & Witsch in Komm.]            |     1 |    292 |        292 |
 | [Kiepenheuer & Witsch]                     |     1 |    434 |        434 |
+| [Kiepenheuer]                              |     1 |    461 |        461 |
+| E. Kiepenheuer                             |     1 |    231 |        231 |
+| Ed. Stephan Witschi                        |     1 |    703 |        703 |
+| G. Kiepenheuerl                            |     1 |    167 |        167 |
+| Gustav Kiepenheuer Bühnenvetriebs G.m.b.H. |     1 |     89 |         89 |
+| Gustav-Kiepenheuer-Bühnenvertriebs-GmbH    |     1 |     96 |         96 |
+| Kiepeneheuer & Witsch                      |     1 |    173 |        173 |
+| Kiepenheuer [& Witsch]                     |     1 |    463 |        463 |
+| Kiepenheuer Bühnenvertr. G. m. b. H.       |     1 |     92 |         92 |
+| Kiepenheuer Bühnenvertriebs-GmbH.          |     1 |     79 |         79 |
+| Kiepenheuer u. Witsch [in Komm.]           |     1 |    183 |        183 |
+| Kiepenheuer und& Witsch                    |     1 |    285 |        285 |
+| Kiepenheuer,                               |     1 |    289 |        289 |
+| Kiepenheuer, Witsch & Co                   |     1 |    250 |        250 |
 | Kiepenheuervertriebs-GmbH                  |     1 |     38 |         38 |
 | Verlag d. Dichtung G. Kiepenheuer          |     1 |     34 |         34 |
-| [Kiepenheuer & Witsch in Komm.]            |     1 |    292 |        292 |
-| Kiepenheuer,                               |     1 |    289 |        289 |
-| Kiepenheuer und& Witsch                    |     1 |    285 |        285 |
-| Kiepenheuer, Witsch & Co                   |     1 |    250 |        250 |
-| E. Kiepenheuer                             |     1 |    231 |        231 |
-| Kiepenheuer u. Witsch [in Komm.]           |     1 |    183 |        183 |
-| G. Kiepenheuerl                            |     1 |    167 |        167 |
+| Verlag Kiepenheuer & Witsch Bühnenvertrieb |     1 |     71 |         71 |
+| Verlag Kiepenheuer u. Witsch               |     1 |    520 |        520 |
 
 **** Luchterhand
 

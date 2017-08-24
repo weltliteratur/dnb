@@ -214,7 +214,7 @@ def get_value(item, pathspec):
         return get_value(item[p], pathspec)
     elif p == "*":
         # handle wildcard: descend into all child nodes
-        return ", ".join([str(get_value(item[pp], list(pathspec))) for pp in item])
+        return ", ".join([to_str(get_value(item[pp], list(pathspec))) for pp in item])
     else:
         # not found
         return ""

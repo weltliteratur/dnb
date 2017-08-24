@@ -37,56 +37,6 @@ What is the difference between ~pages~ and ~extent~?
 * analyse fields
 We analyse the distribution of some metadata fields.
 ** pages
-*** dump the data
-#+BEGIN_SRC sh
-  ./json2json.py -p pages DNBTitel.json.gz > pages.tsv
-#+END_SRC
-
-Normalise and extract entries with meaningful (numerical) information:
-#+BEGIN_SRC sh :results silent
-  ./json2json.py --normalise --print "pages_norm" DNBTitel.json.gz \
-      | grep "^[0-9][0-9]*$" | sort -S1G | uniq -c \
-      | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
-#+END_SRC
-
-*** plot the distribution
-#+BEGIN_SRC gnuplot :results silent
-reset
-set term svg enhanced size 800,600
-set out 'pages.svg'
-set grid
-set xrange [0:4000]
-set logscale y
-set format y "10^%T"
-
-set xlabel 'number of pages'
-set ylabel 'frequency'
-
-plot 'pages_freq.tsv' using 1:2 with lines title ''
-
-set term png enhanced size 800,600
-set out 'pages.png'
-replot
-
-# zoom into range 400 to 600 to see 16-patterns of pages
-set out 'pages_400-600.png'
-unset logscale
-unset format y
-set xtics 0,16
-set xrange [400:600]
-plot 'pages_freq.tsv' using 1:2 with lines title ''
-
-set term svg enhanced size 800,600
-set out 'pages_400-600.svg'
-replot
-#+END_SRC
-
-**** page distribution
-[[pages.png]]
-
-**** page range 400 to 600
-[[pages_400-600.png]]
-
 ** extent
 #+BEGIN_SRC sh :results silent
   ./json2json.py --norm --print "pages_norm,extent" DNBTitel.json.gz | sed "s/[0-9]/0/g" | gzip -c > pages_extent.tsv
@@ -527,155 +477,253 @@ TODO: add Wikidata fields
 ** fill index
 
 * TODO analysis
-** TODO visualise pages
-1. Sichtbarmachung des "extent"-Datenfeldes mit "HDT-it!" (ginge das?
-hatte das damals auch für den Blogpost gemacht und finde, es schaut ganz
-plastisch aus)
+data filters:
+1. issued >= 1912
+2. author has [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata
+3. author has [[https://www.wikidata.org/wiki/Property:P106][occupation]] that is a [[https://www.wikidata.org/wiki/Property:P279][subclass]] of [[https://www.wikidata.org/wiki/Q36180][writer]]
+4. work has a page number (extent)
 
-** DONE number of media, usable page data
-2. Wieviele Medien insgesamt in der DNB – wie viele davon haben
-brauchbare Seitenangaben usw. (eigentlich schon so, wie du es in
-merging.org gemacht hast).
+for publishers:
+5. limit maximal number of pages per work to exclude outliers (e.g., to 5000)
 
-*** types of media
+** DONE media types
+
 All media:
 #+BEGIN_SRC sh
-  ./json2json.py -n -p type DNBTitel.json.gz \
+  ./json2json.py -f -p type DNBTitel_normalised_enriched.json.gz \
       | sort -S1G | uniq -c > media_freq.tsv
 #+END_SRC
 
 With usable page numbers:
-#+BEGIN_SRC sh
-  ./json2json.py -n -p type,pages_norm DNBTitel.json.gz \
-      | awk -F'\t' '{if ($2 != "") print $1}' \
-      | sort -S1G | uniq -c > media_with_pages_freq.tsv
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p type,pages_norm \
+		 DNBTitel_normalised_enriched.json.gz \
+      | cut -f1 | sort -S1G | uniq -c > media_with_pages_freq.tsv
 #+END_SRC
 
+With all data filters except >= 1912:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p "type,pages_norm,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | cut -f1 | sort -S1G | uniq -c > media_filtered_freq.tsv
+#+END_SRC
+
+With all data filters:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p "issued,type,pages_norm,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print $2}' \
+      | sort -S1G | uniq -c > media_filtered_1912_freq.tsv
+#+END_SRC
+
+Combine into a table:
 #+BEGIN_SRC sh
   cat media_freq.tsv
-  cat media_with_pages_freq.tsv.gz
+  echo "---"
+  cat media_with_pages_freq.tsv
+  echo "---"
+  cat media_filtered_freq.tsv
+  echo "---"
+  cat media_filtered_1912_freq.tsv
 #+END_SRC
 
-| type       | frequency | frequency (proper pages given) |
-|------------+-----------+--------------------------------|
-|            |     11070 |                                |
-| Article    |    981677 |                                |
-| Collection |    393390 |                            347 |
-| Document   |  10632628 |                        7434113 |
-| Issue      |   1470688 |                        1036770 |
-| Periodical |    489990 |                              8 |
-| Series     |    122866 |                             20 |
-|------------+-----------+--------------------------------|
-| *sum*      |  14102309 |                        8471258 |
-#+TBLFM: @9$2=vsum(@I..@II)::@9$3=vsum(@I..@II)
+| type       |     freq | freq (pages given) | freq (filtered) | freq (filtered, >= 1912) |
+|------------+----------+--------------------+-----------------+--------------------------|
+|            |    11070 |                    |                 |                          |
+| Article    |   981677 |                    |                 |                          |
+| Collection |   393390 |                347 |              39 |                        1 |
+| Document   | 10632628 |            7434113 |         1047801 |                  1030524 |
+| Issue      |  1470688 |            1036770 |                 |                          |
+| Periodical |   489990 |                  8 |                 |                          |
+| Series     |   122866 |                 20 |                 |                          |
+|------------+----------+--------------------+-----------------+--------------------------|
+| *sum*      | 14102309 |            8471258 |         1047840 |                  1030525 |
+#+TBLFM: @9$2=vsum(@I..@II)::@9$3=vsum(@I..@II)::@9$4=vsum(@I..@II)::@9$5=vsum(@I..@II)
 
-** DONE plot number of pages
-3. Den Plot "number of pages", aber so, dass man sieht, dass es aller 16
-Seiten Peaks gibt (hängt mit den Buchbögen zusammen, ein Bogen hat 16
-Seiten, und die wollten die Setzer/Verlage dann eben auch füllen,
-deswegen der Peak – der aber doch ziemlich interessant ist, weil er das
-sichtbar macht, und unsere Datengrundlage irgendwie auch legitimiert).
+** DONE number of pages
 
-see [[*plot the distribution][above]]
+Filter data:
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print $2}' > pages.tsv
+#+END_SRC
+
+Count frequencies:
+#+BEGIN_SRC sh :results silent
+  sort -n -S1G pages.tsv | uniq -c | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
+#+END_SRC
+
+Plot distribution:
+#+BEGIN_SRC gnuplot :results silent
+reset
+set term svg enhanced size 800,600
+set out 'pages.svg'
+set grid
+set xrange [0:4000]
+set logscale y
+set format y "10^%T"
+
+set xlabel 'number of pages'
+set ylabel 'frequency'
+
+plot 'pages_freq.tsv' using 1:2 with lines title ''
+
+set term png enhanced size 800,600
+set out 'pages.png'
+replot
+
+
+# showing bogen boundaries
+unset logscale
+unset format y
+set xtics 0,16
+
+
+# zoom into range 400 to 600 to see 16-patterns of pages
+set xrange [400:600]
+set term png enhanced size 800,600
+set out 'pages_400-600.png'
+plot 'pages_freq.tsv' using 1:2 with lines title ''
+
+set term svg enhanced size 800,600
+set out 'pages_400-600.svg'
+replot
+
+
+# zoom into range 200 to 400 to see 16-patterns of pages
+set xrange [200:400]
+set term png enhanced size 800,600
+set out 'pages_200-400.png'
+plot 'pages_freq.tsv' using 1:2 with lines title ''
+
+set term svg enhanced size 800,600
+set out 'pages_200-400.svg'
+replot
+
+
+# zoom into range 0 to 200 to see 16-patterns of pages
+set xrange [0:200]
+set term png enhanced size 800,600
+set out 'pages_000-200.png'
+plot 'pages_freq.tsv' using 1:2 with lines title ''
+
+set term svg enhanced size 800,600
+set out 'pages_000-200.svg'
+replot
+#+END_SRC
+
+**** page distribution
+[[pages.png]]
+
+**** page ranges
+[[pages_000-200.png]]
+
+[[pages_200-400.png]]
+
+[[pages_400-600.png]]
 
 ** DONE top authors
-4. Ein paar weitere allgemeine Blicke in den Katalog: Autoren mit den
-meisten Büchern im Katalog usw. (und die Beispiele aus merging.org,
-Goethe und so).
 
 - TODO: plot distribution of the number of authors per work
 
 *** by item count
 #+BEGIN_SRC sh
-  ./json2json.py -p "creator_wd.*.name" DNBTitel_normalised_enriched.json.gz | sort -S1G | uniq -c | sort -nr | head -n20
+  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print $4"\t"$5}' \
+      | sort -S1G | uniq -c | sort -nr | head -n20
 #+END_SRC
 
 | author                     | frequency |
 |----------------------------+-----------|
-|                            |  12469257 |
-| Johann Wolfgang von Goethe |      6764 |
-| Rudolf Steiner             |      4320 |
-| Hermann Hesse              |      3653 |
-| Thomas Mann                |      3590 |
-| Stefan Zweig               |      3262 |
-| Heinz G. Konsalik          |      3251 |
-| Wilhelm Grimm, Jacob Grimm |      3026 |
-| Friedrich Schiller         |      2715 |
-| William Shakespeare        |      2473 |
-| Franz Kafka                |      2359 |
-| Theodor Storm              |      2312 |
-| Bertolt Brecht             |      2238 |
-| Karl May                   |      2193 |
-| Erich Kästner              |      2150 |
-| Friedrich Nietzsche        |      2106 |
-| Theodor Fontane            |      2030 |
-| Wilhelm Busch              |      2014 |
-| Gottfried Keller           |      2006 |
-| Rainer Maria Rilke         |      1999 |
+| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |      5090 |
+| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |      3965 |
+| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |      3337 |
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |      3191 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |      2507 |
+| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |      2482 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2017 |
+| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2003 |
+| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1951 |
+| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]], [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]] |      1932 |
+| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1905 |
+| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1864 |
+| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1778 |
+| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |      1769 |
+| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |      1700 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |      1677 |
+| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |      1658 |
+| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |      1657 |
+| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |      1598 |
+| [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |      1552 |
 
 *** by page count
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
+      | sort -S1G -nr | head -n20
+#+END_SRC
+
+| author                     |   pages | items | average pages |
+|----------------------------+---------+-------+---------------|
+| Johann Wolfgang von Goethe | 1177220 |  5090 |           231 |
+| Heinz G. Konsalik          |  983158 |  3191 |           308 |
+| Thomas Mann                |  929002 |  2507 |           370 |
+| Hermann Hesse              |  738020 |  3337 |           221 |
+| Rudolf Steiner             |  692874 |  3965 |           174 |
+| Stefan Zweig               |  670878 |  2482 |           270 |
+| Franz Kafka                |  538311 |  2017 |           266 |
+| Fyodor Dostoyevsky         |  529792 |  1086 |           487 |
+| Karl May                   |  507948 |  1504 |           337 |
+| Friedrich Nietzsche        |  472457 |  1778 |           265 |
+| Lion Feuchtwanger          |  459691 |  1022 |           449 |
+| Theodor Fontane            |  450836 |  1548 |           291 |
+| Marie Louise Fischer       |  435997 |  1677 |           259 |
+| Colleen McCullough         |  424189 |   143 |          2966 |
+| Erich Maria Remarque       |  414153 |  1179 |           351 |
+| Leo Tolstoy                |  395758 |  1077 |           367 |
+| Heinrich Böll              |  388619 |  1769 |           219 |
+| Friedrich Schiller         |  383585 |  2003 |           191 |
+| Stephen King               |  380219 |   799 |           475 |
+| Sigmund Freud              |  377503 |  1494 |           252 |
+
+*** by average page count
 
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -p "creator_wd.*.name,pages_norm" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($2 != "") {sum[$1]+=$2; count[$1]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
+  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
 	    > author_pages_stats.tsv
 #+END_SRC
 
 #+BEGIN_SRC sh
-  sort -nr author_pages_stats.tsv | head -n20
+  sort -S1G -nrk3 author_pages_stats.tsv | head -n20
 #+END_SRC
 
-| author                     |      pages |   items | average pages |
-|----------------------------+------------+---------+---------------|
-|                            | 1051287200 | 7086618 |           148 |
-| Johann Wolfgang von Goethe |    1201698 |    5221 |           230 |
-| Heinz G. Konsalik          |     983426 |    3192 |           308 |
-| Thomas Mann                |     931713 |    2517 |           370 |
-| Hermann Hesse              |     738460 |    3339 |           221 |
-| Rudolf Steiner             |     693045 |    3966 |           174 |
-| Stefan Zweig               |     671318 |    2485 |           270 |
-| Franz Kafka                |     538311 |    2017 |           266 |
-| Fyodor Dostoyevsky         |     530589 |    1088 |           487 |
-| Karl May                   |     507948 |    1504 |           337 |
-| Friedrich Nietzsche        |     472979 |    1781 |           265 |
-| Lion Feuchtwanger          |     459866 |    1023 |           449 |
-| Theodor Fontane            |     453552 |    1562 |           290 |
-| Marie Louise Fischer       |     435997 |    1677 |           259 |
-| Colleen McCullough         |     424189 |     143 |          2966 |
-| Erich Maria Remarque       |     414153 |    1179 |           351 |
-| Leo Tolstoy                |     400056 |    1106 |           361 |
-| Friedrich Schiller         |     399524 |    2077 |           192 |
-| Heinrich Böll              |     388619 |    1769 |           219 |
-| Stephen King               |     380219 |     799 |           475 |
-
-*** by average page count
-
-#+BEGIN_SRC sh
-  sort -nrk3 author_pages_stats.tsv | head -n20
-#+END_SRC
-
-| author                              |  pages | items | average pages | work                                                                             |
-|-------------------------------------+--------+-------+---------------+----------------------------------------------------------------------------------|
-| Peter Götz von Olenhusen            | 190192 |     1 |        190192 | [[http://d-nb.info/830994645][Börsen und Kartellrecht]]                                                          |
-| Antoine Furetière                   |  22924 |     2 |         11462 | [[http://d-nb.info/951007475][Dictionnaire universel, contenant generalement tous les mots françois]], [[http://d-nb.info/911347364][911347364]] |
-| Reinhard Baumgart                   | 340491 |    32 |         10640 |                                                                                  |
-| Karl Friedrich Masuhr               |  55128 |    10 |          5512 |                                                                                  |
-| César-Pierre Richelet               |  10588 |     2 |          5294 | [[http://d-nb.info/1026157692][1026157692]], [[http://d-nb.info/950750476][950750476]]                                                            |
-| Samael Aun Weor                     | 141110 |    27 |          5226 |                                                                                  |
-| Günther Bentele                     | 103739 |    27 |          3842 |                                                                                  |
-| Roland Berger                       |  27704 |     8 |          3463 |                                                                                  |
-| Jean Quatremer                      |   3376 |     1 |          3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]                                                   |
-| Colleen McCullough                  | 424189 |   143 |          2966 |                                                                                  |
-| Michael Hoffmann-Becking            |   2811 |     1 |          2811 | [[http://d-nb.info/1071359681][Beck'sches Formularbuch bürgerliches, Handels- und Wirtschaftsrecht]]              |
-| Dieter Hildebrandt                  | 266207 |   100 |          2662 |                                                                                  |
-| André Vauchez                       |   2536 |     1 |          2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]                                                          |
-| Peter Hartmann, Wolfgang Lauterbach |   2319 |     1 |          2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]                                                              |
-| Wolfgang Kleiber                    |  10787 |     5 |          2157 |                                                                                  |
-| Noam Chomsky                        | 197964 |    92 |          2151 |                                                                                  |
-| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |          2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]]                                                 |
-| Kari Jormakka                       |  10239 |     5 |          2047 |                                                                                  |
-| John Bernard Burke                  |   4052 |     2 |          2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]                                                             |
-| Paul Robert                         |   4044 |     2 |          2022 | [[http://d-nb.info/1111909199][Le petit Robert]], [[http://d-nb.info/575859679][Micro-Robert]]                                                    |
+| author                              |  pages | items | average pages | work                             |
+|-------------------------------------+--------+-------+---------------+----------------------------------|
+| Reinhard Baumgart                   | 340491 |    32 |         10640 |                                  |
+| Samael Aun Weor                     | 141110 |    27 |          5226 |                                  |
+| Günther Bentele                     | 103739 |    27 |          3842 |                                  |
+| Jean Quatremer                      |   3376 |     1 |          3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]   |
+| Pierre Alexis Ponson du Terrail     |   3200 |     1 |          3200 |                                  |
+| Colleen McCullough                  | 424189 |   143 |          2966 |                                  |
+| Dieter Hildebrandt                  | 266207 |   100 |          2662 |                                  |
+| André Vauchez                       |   2536 |     1 |          2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]          |
+| Wolfgang Lauterbach, Peter Hartmann |   2319 |     1 |          2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]              |
+| Peter Hartmann                      | 101951 |    46 |          2216 |                                  |
+| Wolfgang Kleiber                    |  10787 |     5 |          2157 |                                  |
+| Noam Chomsky                        | 197964 |    92 |          2151 |                                  |
+| Thomas Fischer, Herbert Tröndle     |   2052 |     1 |          2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]] |
+| Kari Jormakka                       |  10239 |     5 |          2047 |                                  |
+| John Bernard Burke                  |   4052 |     2 |          2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]             |
+| Egon Wiberg, Arnold F. Holleman     |   5633 |     3 |          1877 |                                  |
+| Frank Göttmann                      |   5561 |     3 |          1853 |                                  |
+| Lutz Meyer-Goßner                   |  25432 |    14 |          1816 |                                  |
+| Walter Bayer, Marcus Lutter         |   1779 |     1 |          1779 |                                  |
+| Marthe Vogt, Walter Pagel           |   1770 |     1 |          1770 |                                  |
 
 There are probably some errors among those ...
 
@@ -695,10 +743,12 @@ set format x "10^%T"
 set xlabel 'number of items'
 set ylabel 'mean number of pages per item'
 
-set label "Peter Goetz von Olenhusen" left at 1, 190192 offset .5,.5
-set label "Antoine Furetiere" left at 2, 11462 offset .5, .5
-set label "Reinhard Baumgart" left at 32, 10640 offset .5, .5
-set label "Colleen McCullough" left at 143, 2966 offset .5, .5
+#set label "Peter Goetz von Olenhusen" left at 1, 190192 offset .5,.5
+#set label "Antoine Furetiere" left at 2, 11462 offset .5, .5
+set label "Reinhard Baumgart" left at 32, 10640 offset .5, .3
+set label "Colleen McCullough" left at 143, 2966 offset .5, .3
+set label "Samael Aun Weor" left at 27, 5226 offset .5, .3
+set label "Guenther Bentele" left at 27, 3842 offset .5, .3
 set label "Johann\nWolfgang\nvon\nGoethe" left at 5221, 230 offset -1.8, 3.6
 
 plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
@@ -710,139 +760,37 @@ replot
 
 [[author_pages.png][author_pages.png]]
 
-*** by average page count (only writers)
-Only authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and with an
-[[https://www.wikidata.org/wiki/Property:P106][occupation]] that is a [[https://www.wikidata.org/wiki/Property:P279][subclass]] of [[https://www.wikidata.org/wiki/Q36180][writer]]:
-#+BEGIN_SRC sh
-  ./json2json.py -p "creator_wd.*.name,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($2 != "" && $3 != "") {sum[$1]+=$2; count[$1]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
-      > author_writer_pages_stats.tsv
-#+END_SRC
-
-#+BEGIN_SRC sh
-  sort -nrk3 author_writer_pages_stats.tsv | head -n20
-#+END_SRC
-
-| author                              |  pages | items | average pages |
-|-------------------------------------+--------+-------+---------------|
-| Antoine Furetière                   |  22924 |     2 |         11462 |
-| Reinhard Baumgart                   | 340491 |    32 |         10640 |
-| César-Pierre Richelet               |  10588 |     2 |          5294 |
-| Samael Aun Weor                     | 141110 |    27 |          5226 |
-| Günther Bentele                     | 103739 |    27 |          3842 |
-| Jean Quatremer                      |   3376 |     1 |          3376 |
-| Colleen McCullough                  | 424189 |   143 |          2966 |
-| Dieter Hildebrandt                  | 266207 |   100 |          2662 |
-| André Vauchez                       |   2536 |     1 |          2536 |
-| Wolfgang Lauterbach, Peter Hartmann |   2319 |     1 |          2319 |
-| Peter Hartmann                      | 101951 |    46 |          2216 |
-| Wolfgang Kleiber                    |  10787 |     5 |          2157 |
-| Noam Chomsky                        | 197964 |    92 |          2151 |
-| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |          2052 |
-| Kari Jormakka                       |  10239 |     5 |          2047 |
-| John Bernard Burke                  |   4052 |     2 |          2026 |
-| Egon Wiberg, Arnold F. Holleman     |   5633 |     3 |          1877 |
-| Frank Göttmann                      |   5561 |     3 |          1853 |
-| Lutz Meyer-Goßner                   |  25432 |    14 |          1816 |
-| Walter Bayer, Marcus Lutter         |   1779 |     1 |          1779 |
-
-
-#+BEGIN_SRC gnuplot :results silent
-reset
-set encoding utf8
-set term png enhanced size 800,600
-set out 'author_writer_pages.png'
-
-set grid
-set datafile separator "\t"
-set xrange [*:10000]
-set logscale
-set format y "10^%T"
-set format x "10^%T"
-
-set xlabel 'number of items'
-set ylabel 'mean number of pages per item'
-
-set label "Antoine Furetiere" left at 2, 11462 offset .5, .3
-set label "Reinhard Baumgart" left at 32, 10640 offset .5, .3
-set label "Cesar-Pierre Richelet" left at 2, 5294 offset .5, .3
-set label "Samael Aun Weor" left at 27, 5226 offset .5, .3
-set label "Guenther Bentele" left at 27, 3842 offset .5, .3
-set label "Colleen McCullough" left at 143, 2966 offset .5, .3
-set label "Johann\nWolfgang\nvon\nGoethe" left at 5221, 230 offset -1.8, 3.6
-
-plot 'author_writer_pages_stats.tsv' using 2:3 with points pt 7 title ''
-
-set term svg enhanced size 800,600
-set out 'author_writer_pages.svg'
-replot
-#+END_SRC
-
-[[author_writer_pages.png]]
-
-
 ** top works
 
-From all authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata:
 #+BEGIN_SRC sh
-  ./json2json.py -p "pages_norm,_id,title,creator_wd.*.name" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 != "" && $4 != "") print $1"\t"$2"\t"$3}' \
-      | sort -S1G -rn | head -n20
+  ./json2json.py -f -p "issued,pages_norm,title,_id,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {print $2"\t[[http://d-nb.info/"$4"]["$3"]]"}}' \
+      | sort -S1G -nr | head -n20
 #+END_SRC
 
-| title                                                                 | pages  |
-|-----------------------------------------------------------------------+--------|
-| [[http://d-nb.info/920918131][Tim]]                                                                   | 348333 |
-| [[http://d-nb.info/930916484][Selbstvergessenheit]]                                                   | 332331 |
-| [[http://d-nb.info/920996760][Denkzettel]]                                                            | 239240 |
-| [[http://d-nb.info/830994645][Börsen und Kartellrecht]]                                               | 190192 |
-| [[http://d-nb.info/880974125][Die fünfte Freiheit]]                                                   | 176150 |
-| [[http://d-nb.info/942067983][Revolutionäre Psychologie]]                                             | 137317 |
-| [[http://d-nb.info/910581096][Metaphorische Aktionen]]                                                | 114100 |
-| [[http://d-nb.info/959654496][Die Malerei im Bietigheimer Hornmoldhaus]]                              |  96104 |
-| [[http://d-nb.info/920285317][Neurologie]]                                                            |  51420 |
-| [[http://d-nb.info/931276837][Auf der Suche nach Europas Stärken]]                                    |  26580 |
-| [[http://d-nb.info/951007475][Dictionnaire universel, contenant generalement tous les mots françois]] |  22522 |
-| [[http://d-nb.info/1112954090][Kostengesetze]]                                                         |  22297 |
-| [[http://d-nb.info/820541613][Die grünen Augen]]                                                      |  21920 |
-| [[http://d-nb.info/958168091][Nicht mehr rauchen und dabei schlank bleiben]]                          |  13008 |
-| [[http://d-nb.info/950750476][Dictionnaire françois, contenant les mots et les choses]]               |  10112 |
-| [[http://d-nb.info/964760746][Flying Dutchmen]]                                                       |   9306 |
-| [[http://d-nb.info/964186179][Fado Alexandrino]]                                                      |   7969 |
-| [[http://d-nb.info/36896809X][Il giuoco delle perle di vetro]]                                        |   5616 |
-| [[http://d-nb.info/901336033][Der öffentliche Sektor]]                                                |   5242 |
-| [[http://d-nb.info/947104364][Getreidemarkt am Bodensee]]                                             |   5126 |
-
-From all authors that are documented with a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and
-with an [[https://www.wikidata.org/wiki/Property:P106][occupation]] that is a [[https://www.wikidata.org/wiki/Property:P279][subclass]] of [[https://www.wikidata.org/wiki/Q36180][writer]]:
-#+BEGIN_SRC sh
-  ./json2json.py -p "pages_norm,_id,title,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 != "" && $4 != "") print $1"\t"$2"\t"$3}' \
-      | sort -S1G -rn | head -n20
-#+END_SRC
-
-| title                                                                 |  pages |
-|-----------------------------------------------------------------------+--------|
-| [[http://d-nb.info/920918131][Tim]]                                                                   | 348333 |
-| [[http://d-nb.info/930916484][Selbstvergessenheit]]                                                   | 332331 |
-| [[http://d-nb.info/920996760][Denkzettel]]                                                            | 239240 |
-| [[http://d-nb.info/880974125][Die fünfte Freiheit]]                                                   | 176150 |
-| [[http://d-nb.info/942067983][Revolutionäre Psychologie]]                                             | 137317 |
-| [[http://d-nb.info/959654496][Die Malerei im Bietigheimer Hornmoldhaus]]                              |  96104 |
-| [[http://d-nb.info/951007475][Dictionnaire universel, contenant generalement tous les mots françois]] |  22522 |
-| [[http://d-nb.info/1112954090][Kostengesetze]]                                                         |  22297 |
-| [[http://d-nb.info/820541613][Die grünen Augen]]                                                      |  21920 |
-| [[http://d-nb.info/958168091][Nicht mehr rauchen und dabei schlank bleiben]]                          |  13008 |
-| [[http://d-nb.info/950750476][Dictionnaire françois, contenant les mots et les choses]]               |  10112 |
-| [[http://d-nb.info/964760746][Flying Dutchmen]]                                                       |   9306 |
-| [[http://d-nb.info/964186179][Fado Alexandrino]]                                                      |   7969 |
-| [[http://d-nb.info/36896809X][Il giuoco delle perle di vetro]]                                        |   5616 |
-| [[http://d-nb.info/947104364][Getreidemarkt am Bodensee]]                                             |   5126 |
-| [[http://d-nb.info/975045431][Die Waffen nieder!]]                                                    |   4292 |
-| [[http://d-nb.info/997086467][Aeneis]]                                                                |   4290 |
-| [[http://d-nb.info/970072074][Fastnachtsspiele, Tragödien und Komödien]]                              |   4114 |
-| [[http://d-nb.info/573274061][Das Gauklerschiff]]                                                     |   3840 |
-| [[http://d-nb.info/573274053][Atalanta]]                                                              |   3839 |
+| title                                        |  pages |
+|----------------------------------------------+--------|
+| [[http://d-nb.info/920918131][Tim]]                                          | 348333 |
+| [[http://d-nb.info/930916484][Selbstvergessenheit]]                          | 332331 |
+| [[http://d-nb.info/920996760][Denkzettel]]                                   | 239240 |
+| [[http://d-nb.info/880974125][Die fünfte Freiheit]]                          | 176150 |
+| [[http://d-nb.info/942067983][Revolutionäre Psychologie]]                    | 137317 |
+| [[http://d-nb.info/959654496][Die Malerei im Bietigheimer Hornmoldhaus]]     |  96104 |
+| [[http://d-nb.info/1112954090][Kostengesetze]]                                |  22297 |
+| [[http://d-nb.info/820541613][Die grünen Augen]]                             |  21920 |
+| [[http://d-nb.info/958168091][Nicht mehr rauchen und dabei schlank bleiben]] |  13008 |
+| [[http://d-nb.info/964760746][Flying Dutchmen]]                              |   9306 |
+| [[http://d-nb.info/964186179][Fado Alexandrino]]                             |   7969 |
+| [[http://d-nb.info/36896809X][Il giuoco delle perle di vetro]]               |   5616 |
+| [[http://d-nb.info/947104364][Getreidemarkt am Bodensee]]                    |   5126 |
+| [[http://d-nb.info/975045431][Die Waffen nieder!]]                           |   4292 |
+| [[http://d-nb.info/997086467][Aeneis]]                                       |   4290 |
+| [[http://d-nb.info/970072074][Fastnachtsspiele, Tragödien und Komödien]]     |   4114 |
+| [[http://d-nb.info/105133537X][Zivilprozessordnung]]                          |   3401 |
+| [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]               |   3376 |
+| [[http://d-nb.info/576168084][Complete Works]]                               |   3360 |
+| [[http://d-nb.info/944603440][Das grosse Buch der Olympischen Spiele]]       |   3320 |
 
 ** TODO publishers and pages
 5. Hauptanliegen sollten für dieses Mal die Verlage und deren

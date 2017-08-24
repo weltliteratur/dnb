@@ -7,6 +7,58 @@
    contain just small changes. We're using the original 2006 version
    here.
 
+*** ~1001-books_complete_list.csv~
+
+This CSV file has all book titles with number of pages per book,
+extracted by William McComish via GoodReads in 2012 (summing up to
+362,597 pages in total, cf.  [[http://www.umblaetterer.de/2012/08/20/362597-seiten/][here]]). Years of publication in column 3
+are not added for all books and can be ignored here.
+
+#+BEGIN_SRC python :results silent
+  import csv
+  from collections import Counter
+
+  with open('1001-books_complete_list.csv', 'rb') as csvfile:
+      reader = csv.reader(csvfile, quotechar='"')
+      next(reader, None)  # skip header
+      counts = Counter()
+      for row in reader:
+          counts[row[1]] += 1
+
+  with open('counts.tsv', "wt") as out:
+      for count in counts:
+          out.write(count + "\t" + str(counts[count]) + "\n")
+#+END_SRC
+
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set term svg enhanced size 800,600
+set out 'number_of_books.svg'
+set grid
+set xrange [0:1000]
+#set logscale y
+set format y "10^%T"
+set datafile separator "\t"
+
+set xlabel 'number of pages'
+set ylabel 'frequency'
+
+plot '<sort -n counts.tsv' using 1:2 with points pt 7 title ''
+
+set term png enhanced size 800,600
+set out 'number_of_books.png'
+replot
+#+END_SRC
+
+[[number_of_books.png]]
+
+*** ~1001-books_number_of_books_per_16-step_page_range.csv~
+
+Contains the number of books per 16-step page range. (Books with more
+than 1,009 pages are summed up -- there are 23 1,000-pager in this
+list.)
+
 #+BEGIN_SRC gnuplot :results silent
 reset
 
@@ -34,19 +86,6 @@ set term svg enhanced size 1600,400 font "Arial,8"
 set out 'number_of_books_25.svg'
 replot
 #+END_SRC
-
-*** ~1001-books_complete_list.csv~
-
-This CSV file has all book titles with number of pages per book,
-extracted by William McComish via GoodReads in 2012 (summing up to
-362,597 pages in total, cf.  [[http://www.umblaetterer.de/2012/08/20/362597-seiten/][here]]). Years of publication in column 3
-are not added for all books and can be ignored here.
-
-*** ~1001-books_number_of_books_per_16-step_page_range.csv~
-
-Contains the number of books per 16-step page range. (Books with more
-than 1,009 pages are summed up -- there are 23 1,000-pager in this
-list.)
 
 [[number_of_books_16.png]]
 

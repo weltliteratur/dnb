@@ -1048,52 +1048,52 @@ be regarded the same publisher.
 
 **** Aufbau
 
-| publisher                                                                            | items |   pages | mean pages |
-|--------------------------------------------------------------------------------------+-------+---------+------------|
-| Aufbau-Verl.                                                                         |  3819 | 1307744 |        342 |
-| Aufbau-Verlag                                                                        |  2132 |  728063 |        341 |
-| Aufbau-Taschenbuch-Verl.                                                             |  1364 |  456324 |        334 |
-| Aufbau-Taschenbuch                                                                   |   440 |  173037 |        393 |
-| Aufbau                                                                               |   300 |   93119 |        310 |
-| Aufbau Taschenbuch                                                                   |   142 |   52028 |        366 |
-| Aufbau-Bühnen-Vertrieb                                                               |    60 |    6496 |        108 |
-| Der nationale Aufbau                                                                 |    18 |    1925 |        106 |
-| Arbeitsgemeinschaft f. Kultur u. Aufbau                                              |     7 |    2236 |        319 |
-| Aufbau Verl.                                                                         |     6 |    2474 |        412 |
-| Buchkreis f. Besinnung u. Aufbau                                                     |     5 |     790 |        158 |
-| Aufbau-Bühnen-Vertrieb G.m.b.H.                                                      |     5 |     541 |        108 |
-| Der Nationale Aufbau                                                                 |     5 |     229 |         45 |
-| Aufbau-Bühnen-Vertrieb GmbH                                                          |     4 |     325 |         81 |
-| ATB, Aufbau Taschenbuch                                                              |     3 |     727 |        242 |
-| Aufbau-Tachenbuch-Verl.                                                              |     3 |    1626 |        542 |
-| Aufbau-Verl                                                                          |     3 |    1306 |        435 |
-| "Der nationale Aufbau"                                                               |     2 |    1214 |        607 |
-| Buchkreis für Besinnung u. Aufbau                                                    |     1 |      98 |         98 |
-| Aufbau-Bühnen Vertrieb                                                               |     1 |      97 |         97 |
-| Aufbau-Bühnenvertrieb G. m. b. H.                                                    |     1 |      92 |         92 |
-| [Aufbau-Bühnen-Vertrieb]                                                             |     1 |      91 |         91 |
-| Aufbau-Bühnen-Vertr.                                                                 |     1 |      91 |         91 |
-| Aufbau-Verl. in Komm.                                                                |     1 |      74 |         74 |
-| Aufbau-Bühnenvertrieb G.m.b.H.                                                       |     1 |      72 |         72 |
-| Aufbau taschenbuch                                                                   |     1 |     602 |        602 |
-| Aufbau Verlag                                                                        |     1 |     564 |        564 |
-| Aufbau-Taschen-Verl.                                                                 |     1 |     479 |        479 |
-| [Aufbau-Verl. in Komm.]                                                              |     1 |      46 |         46 |
-| Aufbau - Verl.                                                                       |     1 |     363 |        363 |
-| atb Aufbau Taschenbuch                                                               |     1 |     359 |        359 |
-| [Aufbau-Verl.]                                                                       |     1 |     331 |        331 |
-| Verlag "Deutscher Aufbau"                                                            |     1 |      31 |         31 |
-| Der Nationale Aufbau, Verlagsges.                                                    |     1 |      29 |         29 |
-| atb, Aufbau Taschenbuch                                                              |     1 |     287 |        287 |
-| Akadem. Arbeitsausschuß f. Deutschen Aufbau                                          |     1 |      27 |         27 |
-| Aufbau Taschenbuch-Verl.                                                             |     1 |     269 |        269 |
-| Atb, Aufbau Taschenbuch                                                              |     1 |     254 |        254 |
-| Aufbau- Verlag                                                                       |     1 |     245 |        245 |
-| Aufbau-Taschenbuch-Verl.***5108133                                                   |     1 |     239 |        239 |
-| Aufbau-Taschenbuchverl.                                                              |     1 |     239 |        239 |
-| Arbeitskreis evangelischer Pfarrer f. Frieden u. sozialen Aufbau im Land Brandenburg |     1 |      19 |         19 |
-| Aufbau-Taschenbuch-Verlag                                                            |     1 |     190 |        190 |
-| Aufbau Verlag GmbH                                                                   |     1 |     157 |        157 |
+| publisher                                                                              | items |   pages | mean pages |
+|----------------------------------------------------------------------------------------+-------+---------+------------|
+| Aufbau-Verl.                                                                           |  3819 | 1307744 |        342 |
+| Aufbau-Verlag                                                                          |  2132 |  728063 |        341 |
+| Aufbau-Taschenbuch-Verl.                                                               |  1364 |  456324 |        334 |
+| Aufbau-Taschenbuch                                                                     |   440 |  173037 |        393 |
+| Aufbau                                                                                 |   300 |   93119 |        310 |
+| Aufbau Taschenbuch                                                                     |   142 |   52028 |        366 |
+| Aufbau-Bühnen-Vertrieb                                                                 |    60 |    6496 |        108 |
+| +Der nationale Aufbau+                                                                 |    18 |    1925 |        106 |
+| +Arbeitsgemeinschaft f. Kultur u. Aufbau+                                              |     7 |    2236 |        319 |
+| Aufbau Verl.                                                                           |     6 |    2474 |        412 |
+| +Buchkreis f. Besinnung u. Aufbau+                                                     |     5 |     790 |        158 |
+| Aufbau-Bühnen-Vertrieb G.m.b.H.                                                        |     5 |     541 |        108 |
+| +Der Nationale Aufbau+                                                                 |     5 |     229 |         45 |
+| Aufbau-Bühnen-Vertrieb GmbH                                                            |     4 |     325 |         81 |
+| ATB, Aufbau Taschenbuch                                                                |     3 |     727 |        242 |
+| Aufbau-Tachenbuch-Verl.                                                                |     3 |    1626 |        542 |
+| Aufbau-Verl                                                                            |     3 |    1306 |        435 |
+| +"Der nationale Aufbau"+                                                               |     2 |    1214 |        607 |
+| +Buchkreis für Besinnung u. Aufbau+                                                    |     1 |      98 |         98 |
+| Aufbau-Bühnen Vertrieb                                                                 |     1 |      97 |         97 |
+| Aufbau-Bühnenvertrieb G. m. b. H.                                                      |     1 |      92 |         92 |
+| [Aufbau-Bühnen-Vertrieb]                                                               |     1 |      91 |         91 |
+| Aufbau-Bühnen-Vertr.                                                                   |     1 |      91 |         91 |
+| Aufbau-Verl. in Komm.                                                                  |     1 |      74 |         74 |
+| Aufbau-Bühnenvertrieb G.m.b.H.                                                         |     1 |      72 |         72 |
+| Aufbau taschenbuch                                                                     |     1 |     602 |        602 |
+| Aufbau Verlag                                                                          |     1 |     564 |        564 |
+| Aufbau-Taschen-Verl.                                                                   |     1 |     479 |        479 |
+| [Aufbau-Verl. in Komm.]                                                                |     1 |      46 |         46 |
+| Aufbau - Verl.                                                                         |     1 |     363 |        363 |
+| atb Aufbau Taschenbuch                                                                 |     1 |     359 |        359 |
+| [Aufbau-Verl.]                                                                         |     1 |     331 |        331 |
+| +Verlag "Deutscher Aufbau"+                                                            |     1 |      31 |         31 |
+| +Der Nationale Aufbau, Verlagsges.+                                                    |     1 |      29 |         29 |
+| atb, Aufbau Taschenbuch                                                                |     1 |     287 |        287 |
+| +Akadem. Arbeitsausschuß f. Deutschen Aufbau+                                          |     1 |      27 |         27 |
+| Aufbau Taschenbuch-Verl.                                                               |     1 |     269 |        269 |
+| Atb, Aufbau Taschenbuch                                                                |     1 |     254 |        254 |
+| Aufbau- Verlag                                                                         |     1 |     245 |        245 |
+| Aufbau-Taschenbuch-Verl.***5108133                                                     |     1 |     239 |        239 |
+| Aufbau-Taschenbuchverl.                                                                |     1 |     239 |        239 |
+| +Arbeitskreis evangelischer Pfarrer f. Frieden u. sozialen Aufbau im Land Brandenburg+ |     1 |      19 |         19 |
+| Aufbau-Taschenbuch-Verlag                                                              |     1 |     190 |        190 |
+| Aufbau Verlag GmbH                                                                     |     1 |     157 |        157 |
 
 **** Berlin
 
@@ -1449,37 +1449,37 @@ be regarded the same publisher.
 | W. Goldmann             |    87 |   21699 |        249 |
 | Goldmann Verlag         |    16 |    5778 |        361 |
 | [Goldmann]              |    14 |    5207 |        371 |
-| Halm & Goldmann         |     9 |     583 |         64 |
-| [Halm & Goldmann]       |     3 |     182 |         60 |
+| +Halm & Goldmann+       |     9 |     583 |         64 |
+| +[Halm & Goldmann]+     |     3 |     182 |         60 |
 | Goldmann-Verl.          |     3 |    1299 |        433 |
 | Wilhelm Goldmann, Verl. |     1 |      80 |         80 |
 | W. Goldmann Verl.       |     1 |      62 |         62 |
-| Halm u. Goldmann        |     1 |      59 |         59 |
+| +Halm u. Goldmann+      |     1 |      59 |         59 |
 | Goldmann Verl.          |     1 |     347 |        347 |
-| Karl Goldmann           |     1 |     251 |        251 |
-| K. Goldmann             |     1 |     135 |        135 |
-| Hahn & Goldmann         |     1 |     128 |        128 |
-| Goldmann-Dr.            |     1 |     126 |        126 |
+| +Karl Goldmann+         |     1 |     251 |        251 |
+| +K. Goldmann+           |     1 |     135 |        135 |
+| +Hahn & Goldmann+       |     1 |     128 |        128 |
+| +Goldmann-Dr.+          |     1 |     126 |        126 |
 
 **** Hanser
 
-| publisher                                    | items |   pages | mean pages |
-|----------------------------------------------+-------+---------+------------|
-| Hanser                                       |  3853 | 1053766 |        273 |
-| Carl Hanser Verlag                           |    98 |   29947 |        305 |
-| Hanser Berlin                                |    67 |   17257 |        257 |
-| Fachbuchverl. Leipzig im Hanser-Verl.        |     6 |    2795 |        465 |
-| Fachbuchverl. Leipzig im Carl-Hanser-Verl.   |     5 |    1718 |        343 |
-| BHP - Hanser und Partner                     |     1 |      80 |         80 |
-| Hanser Gardner                               |     1 |     612 |        612 |
-| Fachbuchverlag Leipzig im Carl Hanser Verlag |     1 |     600 |        600 |
-| C. Hanser [u.a.]                             |     1 |       3 |          3 |
-| [Hanser]                                     |     1 |     293 |        293 |
-| C. Hanser Verl.                              |     1 |     281 |        281 |
-| (Hanser)                                     |     1 |     275 |        275 |
-| Hanser **5107516                             |     1 |     252 |        252 |
-| Hanser, Carl                                 |     1 |       2 |          2 |
-| Wien : Hanser                                |     1 |     222 |        222 |
+| publisher                                      | items |   pages | mean pages |
+|------------------------------------------------+-------+---------+------------|
+| Hanser                                         |  3853 | 1053766 |        273 |
+| Carl Hanser Verlag                             |    98 |   29947 |        305 |
+| Hanser Berlin                                  |    67 |   17257 |        257 |
+| +Fachbuchverl. Leipzig im Hanser-Verl.+        |     6 |    2795 |        465 |
+| +Fachbuchverl. Leipzig im Carl-Hanser-Verl.+   |     5 |    1718 |        343 |
+| +BHP - Hanser und Partner+                     |     1 |      80 |         80 |
+| +Hanser Gardner+                               |     1 |     612 |        612 |
+| +Fachbuchverlag Leipzig im Carl Hanser Verlag+ |     1 |     600 |        600 |
+| C. Hanser [u.a.]                               |     1 |       3 |          3 |
+| [Hanser]                                       |     1 |     293 |        293 |
+| C. Hanser Verl.                                |     1 |     281 |        281 |
+| (Hanser)                                       |     1 |     275 |        275 |
+| Hanser **5107516                               |     1 |     252 |        252 |
+| Hanser, Carl                                   |     1 |       2 |          2 |
+| Wien : Hanser                                  |     1 |     222 |        222 |
 
 **** Heyne
 
@@ -1488,8 +1488,8 @@ be regarded the same publisher.
 | Heyne                          | 23442 | 7859581 |        335 |
 | Wilhelm Heyne Verlag           |   233 |  105761 |        453 |
 | [Heyne]                        |    45 |   14955 |        332 |
-| Coll. Rolf Heyne               |    22 |    9121 |        414 |
-| Heyne fliegt                   |     5 |    2216 |        443 |
+| +Coll. Rolf Heyne+             |    22 |    9121 |        414 |
+| +Heyne fliegt+                 |     5 |    2216 |        443 |
 | Wilhem Heyne Verlag            |     2 |     526 |        263 |
 | Wilhelm Heyne Verlag **5107652 |     1 |     475 |        475 |
 | Wilhelm  Heyne Verlag          |     1 |     416 |        416 |
@@ -1508,7 +1508,7 @@ be regarded the same publisher.
 | Hoffmann & Campe Verl.                         |     3 |    677 |        225 |
 | Hoffman u. Campe                               |     2 |    629 |        314 |
 | Hoffmann und Campe Verlag                      |     1 |    509 |        509 |
-| Jacob Van Campen                               |     1 |    403 |        403 |
+| +Jacob Van Campen+                             |     1 |    403 |        403 |
 | Hofmann und Campe                              |     1 |    297 |        297 |
 | Hoffman & Campe Verl.                          |     1 |    267 |        267 |
 | Hoffmann ; Campe                               |     1 |    223 |        223 |
@@ -1656,27 +1656,27 @@ be regarded the same publisher.
 | R. Piper & Co Verlag                        |     2 |     674 |        337 |
 | Verl. d. Marées-Gesellschaft R. Piper & Co. |     1 |      85 |         85 |
 | Piper ; Zürich                              |     1 |     298 |        298 |
-| E. Piper                                    |     1 |      23 |         23 |
-| E. Piper Ring-Verl.                         |     1 |      20 |         20 |
+| +E. Piper+                                  |     1 |      23 |         23 |
+| +E. Piper Ring-Verl.+                       |     1 |      20 |         20 |
 | R. Piper & Co                               |     1 |     192 |        192 |
 | Piper [in Komm.]                            |     1 |      19 |         19 |
 | R. Piper & Co. G. m. b. H.                  |     1 |     121 |        121 |
-| Piper & The Grüne Kraft                     |     1 |     117 |        117 |
+| +Piper & The Grüne Kraft+                   |     1 |     117 |        117 |
 | Verl. d. Marées-Gesellschaft Piper          |     1 |     102 |        102 |
 
 **** Rogner
 
-| publisher                               | items | pages | mean pages |
-|-----------------------------------------+-------+-------+------------|
-| Rogner und Bernhard                     |    86 | 22700 |        263 |
-| Rogner und Bernhard bei Zweitausendeins |    48 | 20085 |        418 |
-| Rogner u. Bernhard                      |    33 |  8608 |        260 |
-| Rogner & Bernhard                       |    32 | 10912 |        341 |
-| Rogner & Bernhard bei Zweitausendeins   |    11 |  3197 |        290 |
-| Rogner u. Bernhard bei Zweitausendeins  |    10 |  3492 |        349 |
-| Kein & Aber, vormals Rogner & Bernhard  |     1 |   320 |        320 |
-| Rogner and Bernhard bei Zweitausendeins |     1 |   302 |        302 |
-| Rogner und Bernard                      |     1 |   185 |        185 |
+| publisher                                | items | pages | mean pages |
+|------------------------------------------+-------+-------+------------|
+| Rogner und Bernhard                      |    86 | 22700 |        263 |
+| Rogner und Bernhard bei Zweitausendeins  |    48 | 20085 |        418 |
+| Rogner u. Bernhard                       |    33 |  8608 |        260 |
+| Rogner & Bernhard                        |    32 | 10912 |        341 |
+| Rogner & Bernhard bei Zweitausendeins    |    11 |  3197 |        290 |
+| Rogner u. Bernhard bei Zweitausendeins   |    10 |  3492 |        349 |
+| +Kein & Aber, vormals Rogner & Bernhard+ |     1 |   320 |        320 |
+| Rogner and Bernhard bei Zweitausendeins  |     1 |   302 |        302 |
+| Rogner und Bernard                       |     1 |   185 |        185 |
 
 **** Rowohlt
 

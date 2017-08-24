@@ -510,7 +510,7 @@ With all data filters except >= 1912:
 
 With all data filters:
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued,type,pages_norm,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,type,pages_norm,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $2}' \
       | sort -S1G | uniq -c > media_filtered_1912_freq.tsv
@@ -532,7 +532,7 @@ Combine into a table:
 |            |    11070 |                    |                 |                          |
 | Article    |   981677 |                    |                 |                          |
 | Collection |   393390 |                347 |              39 |                        1 |
-| Document   | 10632628 |            7434113 |         1047801 |                  1030524 |
+| Document   | 10632628 |            7434113 |         1047801 |                 1029608 |
 | Issue      |  1470688 |            1036770 |                 |                          |
 | Periodical |   489990 |                  8 |                 |                          |
 | Series     |   122866 |                 20 |                 |                          |
@@ -544,7 +544,7 @@ Combine into a table:
 
 Filter data:
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $2}' > pages.tsv
 #+END_SRC
@@ -629,38 +629,38 @@ replot
 
 *** by item count
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" \
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" \
 		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) print $4"\t"$5}' \
+      | awk -F'\t' '{if ($1 >= 1912) print "[[https://www.wikidata.org/wiki/"$5"]["$4"]]"}' \
       | sort -S1G | uniq -c | sort -nr | head -n20
 #+END_SRC
 
 | author                     | frequency |
 |----------------------------+-----------|
-| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |      5090 |
-| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |      3965 |
-| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |      3337 |
-| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |      3191 |
-| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |      2507 |
-| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |      2482 |
-| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2017 |
-| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2003 |
-| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1951 |
-| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]], [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]] |      1932 |
-| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1905 |
-| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1864 |
-| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1778 |
+| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |      5079 |
+| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |      3963 |
+| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |      3327 |
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |      3184 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |      2504 |
+| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |      2481 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2012 |
+| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2002 |
+| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1947 |
+| [[https://www.wikidata.org/wiki/Q6701, Q6714][Jacob Grimm, Wilhelm Grimm]] |      1922 |
+| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1904 |
+| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1858 |
+| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1774 |
 | [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |      1769 |
-| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |      1700 |
-| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |      1677 |
-| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |      1658 |
-| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |      1657 |
-| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |      1598 |
+| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |      1699 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |      1676 |
+| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |      1655 |
+| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |      1652 |
+| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |      1597 |
 | [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |      1552 |
 
 *** by page count
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nr | head -n20
@@ -668,31 +668,31 @@ replot
 
 | author                     |   pages | items | mean pages |
 |----------------------------+---------+-------+------------|
-| Johann Wolfgang von Goethe | 1177220 |  5090 |        231 |
-| Heinz G. Konsalik          |  983158 |  3191 |        308 |
-| Thomas Mann                |  929002 |  2507 |        370 |
-| Hermann Hesse              |  738020 |  3337 |        221 |
-| Rudolf Steiner             |  692874 |  3965 |        174 |
-| Stefan Zweig               |  670878 |  2482 |        270 |
-| Franz Kafka                |  538311 |  2017 |        266 |
+| Johann Wolfgang von Goethe | 1175521 |  5079 |        231 |
+| Heinz G. Konsalik          |  981279 |  3184 |        308 |
+| Thomas Mann                |  928709 |  2504 |        370 |
+| Hermann Hesse              |  736674 |  3327 |        221 |
+| Rudolf Steiner             |  692756 |  3963 |        174 |
+| Stefan Zweig               |  670705 |  2481 |        270 |
+| Franz Kafka                |  536735 |  2012 |        266 |
 | Fyodor Dostoyevsky         |  529792 |  1086 |        487 |
-| Karl May                   |  507948 |  1504 |        337 |
-| Friedrich Nietzsche        |  472457 |  1778 |        265 |
-| Lion Feuchtwanger          |  459691 |  1022 |        449 |
-| Theodor Fontane            |  450836 |  1548 |        291 |
-| Marie Louise Fischer       |  435997 |  1677 |        259 |
+| Karl May                   |  507154 |  1502 |        337 |
+| Friedrich Nietzsche        |  471276 |  1774 |        265 |
+| Lion Feuchtwanger          |  459611 |  1021 |        450 |
+| Theodor Fontane            |  450654 |  1547 |        291 |
+| Marie Louise Fischer       |  435630 |  1676 |        259 |
 | Colleen McCullough         |  424189 |   143 |       2966 |
 | Erich Maria Remarque       |  414153 |  1179 |        351 |
-| Leo Tolstoy                |  395758 |  1077 |        367 |
+| Leo Tolstoy                |  395747 |  1076 |        367 |
 | Heinrich Böll              |  388619 |  1769 |        219 |
-| Friedrich Schiller         |  383585 |  2003 |        191 |
+| Friedrich Schiller         |  383483 |  2002 |        191 |
 | Stephen King               |  380219 |   799 |        475 |
-| Sigmund Freud              |  377503 |  1494 |        252 |
+| Sigmund Freud              |  377159 |  1493 |        252 |
 
 *** by mean page count
 
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
 	    > author_pages_stats.tsv
@@ -702,28 +702,28 @@ replot
   sort -S1G -nrk3 author_pages_stats.tsv | head -n20
 #+END_SRC
 
-| author                              |  pages | items | mean pages | work                             |
-|-------------------------------------+--------+-------+------------+----------------------------------|
-| Reinhard Baumgart                   | 340491 |    32 |      10640 |                                  |
-| Samael Aun Weor                     | 141110 |    27 |       5226 |                                  |
-| Günther Bentele                     | 103739 |    27 |       3842 |                                  |
-| Jean Quatremer                      |   3376 |     1 |       3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]   |
-| Pierre Alexis Ponson du Terrail     |   3200 |     1 |       3200 |                                  |
-| Colleen McCullough                  | 424189 |   143 |       2966 |                                  |
-| Dieter Hildebrandt                  | 266207 |   100 |       2662 |                                  |
-| André Vauchez                       |   2536 |     1 |       2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]          |
-| Wolfgang Lauterbach, Peter Hartmann |   2319 |     1 |       2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]              |
-| Peter Hartmann                      | 101951 |    46 |       2216 |                                  |
-| Wolfgang Kleiber                    |  10787 |     5 |       2157 |                                  |
-| Noam Chomsky                        | 197964 |    92 |       2151 |                                  |
-| Thomas Fischer, Herbert Tröndle     |   2052 |     1 |       2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]] |
-| Kari Jormakka                       |  10239 |     5 |       2047 |                                  |
-| John Bernard Burke                  |   4052 |     2 |       2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]             |
-| Egon Wiberg, Arnold F. Holleman     |   5633 |     3 |       1877 |                                  |
-| Frank Göttmann                      |   5561 |     3 |       1853 |                                  |
-| Lutz Meyer-Goßner                   |  25432 |    14 |       1816 |                                  |
-| Walter Bayer, Marcus Lutter         |   1779 |     1 |       1779 |                                  |
-| Marthe Vogt, Walter Pagel           |   1770 |     1 |       1770 |                                  |
+| author                              |  pages | items | mean pages | work                                                    |
+|-------------------------------------+--------+-------+------------+---------------------------------------------------------|
+| Reinhard Baumgart                   | 340491 |    32 |      10640 |                                                         |
+| Samael Aun Weor                     | 141110 |    27 |       5226 |                                                         |
+| Günther Bentele                     | 103739 |    27 |       3842 |                                                         |
+| Jean Quatremer                      |   3376 |     1 |       3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]                          |
+| Pierre Alexis Ponson du Terrail     |   3200 |     1 |       3200 | [[http://d-nb.info/573875650][Rocambol, der Fürst der Katakomben]]                      |
+| Colleen McCullough                  | 424189 |   143 |       2966 |                                                         |
+| Dieter Hildebrandt                  | 266207 |   100 |       2662 |                                                         |
+| André Vauchez                       |   2536 |     1 |       2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]                                 |
+| Peter Hartmann, Wolfgang Lauterbach |   2319 |     1 |       2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]                                     |
+| Peter Hartmann                      | 101951 |    46 |       2216 |                                                         |
+| Wolfgang Kleiber                    |  10787 |     5 |       2157 |                                                         |
+| Noam Chomsky                        | 197964 |    92 |       2151 |                                                         |
+| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |       2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]]                        |
+| Kari Jormakka                       |  10239 |     5 |       2047 |                                                         |
+| John Bernard Burke                  |   4052 |     2 |       2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]                                    |
+| Hans Georg Ruppe, Markus Achatz     |   1964 |     1 |       1964 | [[http://d-nb.info/1014282373][Umsatzsteuergesetz]]                                      |
+| Arnold F. Holleman, Egon Wiberg     |   5633 |     3 |       1877 | [[http://d-nb.info/841120226][Lehrbuch der anorganischen Chemie]], [[http://d-nb.info/944635105][944635105]], [[http://d-nb.info/981617034][981617034]] |
+| Frank Göttmann                      |   5561 |     3 |       1853 | [[http://d-nb.info/760132070][760132070]], [[http://d-nb.info/770428584][770428584]], [[http://d-nb.info/947104364][947104364]]                         |
+| Lutz Meyer-Goßner                   |  25432 |    14 |       1816 |                                                         |
+| Walter Bayer, Marcus Lutter         |   1779 |     1 |       1779 | [[http://d-nb.info/1014557178][Europäisches Unternehmens- und Kapitalmarktrecht]]        |
 
 There are probably some errors among those ...
 
@@ -763,7 +763,7 @@ replot
 ** DONE top works
 
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,title,_id,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,title,_id,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {print $2"\t[[http://d-nb.info/"$4"]["$3"]]"}}' \
       | sort -S1G -nr | head -n20
@@ -801,15 +801,10 @@ ein Längenranking (Top-20?) pro Verlag – die kann man dann
 handbereinigen, falls mal nichtliterarische Werke darunter gefallen
 sind, denn es sind ja nicht so viele in einer Top-20-Liste.
 
-*Frage: wieviel Aufwand in die Normalisierung der Verlage stecken?*
-Optionen:
-- nicht normalisieren
-- einige wenige Verlage normalisieren
-
 *** DONE by item count
 
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $3}' \
       | sort -S1G | uniq -c | sort -S1G -nr | head -n20
@@ -819,29 +814,29 @@ Optionen:
 |------------------------------------+-------|
 | Rowohlt                            | 25735 |
 | Heyne                              | 23442 |
-| Reclam                             | 17852 |
+| Reclam                             | 17808 |
 | Suhrkamp                           | 15074 |
 | Goldmann                           | 14385 |
 | Dt. Taschenbuch-Verl.              | 11719 |
-| Ullstein                           | 10706 |
-| Herder                             |  9702 |
+| Ullstein                           | 10705 |
+| Herder                             |  9701 |
 | Fischer-Taschenbuch-Verl.          |  9550 |
-| Piper                              |  9257 |
-| Insel-Verl.                        |  6954 |
+| Piper                              |  9256 |
+| Insel-Verl.                        |  6951 |
 | Deutscher Taschenbuch-Verlag       |  5692 |
 | RM-Buch-und-Medien-Vertrieb [u.a.] |  5631 |
 | Fischer-Taschenbuch-Verlag         |  5313 |
 | Beck                               |  5130 |
-| Büchergilde Gutenberg              |  5062 |
+| Büchergilde Gutenberg              |  5061 |
 | Diogenes                           |  4863 |
-| S. Fischer                         |  4519 |
+| S. Fischer                         |  4518 |
 | Weltbild                           |  4388 |
 | Maier                              |  4289 |
 
 *** DONE by page count
 
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nr | head -n20
@@ -854,25 +849,25 @@ Optionen:
 | Goldmann                           |  4768034 | 14385 |        331 |
 | Suhrkamp                           |  3750752 | 15074 |        248 |
 | Dt. Taschenbuch-Verl.              |  3144621 | 11719 |        268 |
-| Ullstein                           |  3117354 | 10706 |        291 |
+| Ullstein                           |  3117050 | 10705 |        291 |
 | Fischer-Taschenbuch-Verl.          |  3105059 |  9550 |        325 |
-| Reclam                             |  3082447 | 17852 |        172 |
-| Piper                              |  2843569 |  9257 |        307 |
+| Reclam                             |  3078664 | 17808 |        172 |
+| Piper                              |  2843553 |  9256 |        307 |
 | RM-Buch-und-Medien-Vertrieb [u.a.] |  2242582 |  5631 |        398 |
-| Herder                             |  1925130 |  9702 |        198 |
+| Herder                             |  1924775 |  9701 |        198 |
 | Weltbild                           |  1858937 |  4388 |        423 |
-| Büchergilde Gutenberg              |  1711924 |  5062 |        338 |
+| Büchergilde Gutenberg              |  1711864 |  5061 |        338 |
 | Beck                               |  1691647 |  5130 |        329 |
-| Insel-Verl.                        |  1611640 |  6954 |        231 |
+| Insel-Verl.                        |  1611409 |  6951 |        231 |
 | Dt. Buch-Gemeinschaft              |  1475774 |  4287 |        344 |
-| S. Fischer                         |  1334634 |  4519 |        295 |
+| S. Fischer                         |  1334482 |  4518 |        295 |
 | Deutscher Taschenbuch-Verlag       |  1331032 |  5692 |        233 |
 | Fischer-Taschenbuch-Verlag         |  1322312 |  5313 |        248 |
 | Aufbau-Verl.                       |  1307744 |  3819 |        342 |
 
 Only items with no more than 5000 pages:
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912 && $2 <= 5000) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nr | head -n20
@@ -885,27 +880,26 @@ Only items with no more than 5000 pages:
 | Goldmann                           |  4419701 | 14384 |        307 |
 | Suhrkamp                           |  3750752 | 15074 |        248 |
 | Dt. Taschenbuch-Verl.              |  3144621 | 11719 |        268 |
-| Ullstein                           |  3117354 | 10706 |        291 |
-| Reclam                             |  3082447 | 17852 |        172 |
-| Piper                              |  2843569 |  9257 |        307 |
+| Ullstein                           |  3117050 | 10705 |        291 |
+| Reclam                             |  3078664 | 17808 |        172 |
+| Piper                              |  2843553 |  9256 |        307 |
 | Fischer-Taschenbuch-Verl.          |  2772728 |  9549 |        290 |
 | RM-Buch-und-Medien-Vertrieb [u.a.] |  2242582 |  5631 |        398 |
-| Herder                             |  1925130 |  9702 |        198 |
+| Herder                             |  1924775 |  9701 |        198 |
 | Weltbild                           |  1858937 |  4388 |        423 |
-| Büchergilde Gutenberg              |  1711924 |  5062 |        338 |
+| Büchergilde Gutenberg              |  1711864 |  5061 |        338 |
 | Beck                               |  1691647 |  5130 |        329 |
-| Insel-Verl.                        |  1611640 |  6954 |        231 |
+| Insel-Verl.                        |  1611409 |  6951 |        231 |
 | Dt. Buch-Gemeinschaft              |  1475774 |  4287 |        344 |
-| S. Fischer                         |  1334634 |  4519 |        295 |
+| S. Fischer                         |  1334482 |  4518 |        295 |
 | Deutscher Taschenbuch-Verlag       |  1331032 |  5692 |        233 |
 | Fischer-Taschenbuch-Verlag         |  1322312 |  5313 |        248 |
 | Aufbau-Verl.                       |  1307744 |  3819 |        342 |
 
-
 *** by mean page count
 
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nrk3 | head -n20
@@ -937,10 +931,10 @@ Only items with no more than 5000 pages:
 How is the number of items per publisher related to the average number
 of pages per publisher?
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
                  DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
-            > publisher_pages_stats.tsv
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", count[p], sum[p], int(sum[p]/count[p]), p)}' \
+            > publisher_page_stats.tsv
 #+END_SRC
 
 #+BEGIN_SRC gnuplot :results silent
@@ -955,7 +949,7 @@ set logscale
 set xlabel 'number of items
 set ylabel 'mean number of pages per item'
 
-plot 'publisher_pages_stats.tsv' using 2:3 with points pt 7 title ''
+plot 'publisher_page_stats.tsv' using 1:3 with points pt 7 title ''
 
 set term svg enhanced size 800,600
 set out 'publisher_pages.svg'
@@ -966,13 +960,6 @@ replot
 
 *** TODO normalisation
 **** TODO mapping table
-Extract data about all publishers:
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
-                 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", count[p], sum[p], int(sum[p]/count[p]), p)}' \
-            > publisher_page_stats.tsv
-#+END_SRC
 
 Select specific publishers from this list:
 | Ammann                      |
@@ -1018,6 +1005,7 @@ Cleaning up the publishers now by deleting all rows which should not
 be regarded the same publisher.
 
 **** Ammann
+
 | publisher         | items |  pages | mean pages |
 |-------------------+-------+--------+------------|
 | Ammann            |   484 | 121340 |        250 |
@@ -1025,6 +1013,7 @@ be regarded the same publisher.
 | Ammann Schweiz AG |     1 |     87 |         87 |
 
 **** Aufbau
+
 | publisher                                                                            | items |   pages | mean pages |
 |--------------------------------------------------------------------------------------+-------+---------+------------|
 | Aufbau-Verl.                                                                         |  3819 | 1307744 |        342 |
@@ -1498,13 +1487,13 @@ be regarded the same publisher.
 
 | publisher                   | items |   pages | mean pages |
 |-----------------------------+-------+---------+------------|
-| Insel-Verl.                 |  6954 | 1611640 |        231 |
+| Insel-Verl.                 |  6951 | 1611409 |        231 |
 | Insel-Verlag                |  2016 |  525820 |        260 |
 | Insel                       |   490 |  158769 |        324 |
 | Insel Verlag                |    93 |   23889 |        256 |
 | Insel Verl.                 |    73 |   13304 |        182 |
-| Inselverl.                  |    14 |    4689 |        334 |
 | [Insel-Verl.]               |    14 |    1356 |         96 |
+| Inselverl.                  |    13 |    4117 |        316 |
 | Im Insel-Verlag             |     7 |     957 |        136 |
 | Suhrkamp Insel Publ. Boston |     7 |     914 |        130 |
 | [Insel-Verlag]              |     6 |     381 |         63 |
@@ -1623,7 +1612,7 @@ be regarded the same publisher.
 
 | publisher                                   | items |   pages | mean pages |
 |---------------------------------------------+-------+---------+------------|
-| Piper                                       |  9257 | 2843569 |        307 |
+| Piper                                       |  9256 | 2843553 |        307 |
 | R. Piper & Co.                              |    94 |   21558 |        229 |
 | [Piper]                                     |    11 |    4047 |        367 |
 | Piper & Co.                                 |     8 |    1346 |        168 |
@@ -1711,10 +1700,11 @@ be regarded the same publisher.
 
 **** Schöffling
 
-| publisher        | items | pages | mean pages |
-| Schöffling       |   329 | 83966 |        255 |
-| Schöffling & Co. |    14 |  3941 |        281 |
-| [Schöffling]     |     2 |   579 |        289 |
+| publisher          | items | pages | mean pages |
+|--------------------+-------+-------+------------|
+| Schöffling         |   329 | 83966 |        255 |
+| Schöffling & Co.   |    14 |  3941 |        281 |
+| [Schöffling]       |     2 |   579 |        289 |
 
 **** Suhrkamp
 
@@ -1757,12 +1747,12 @@ be regarded the same publisher.
 
 | publisher                                         | items |   pages | mean pages |
 |---------------------------------------------------+-------+---------+------------|
-| Ullstein                                          | 10706 | 3117354 |        291 |
+| Ullstein                                          | 10705 | 3117050 |        291 |
 | Ullstein-Taschenbuchverl.                         |   196 |   65994 |        336 |
 | Ullstein Taschenbücher-Verl.                      |   192 |   38487 |        200 |
 | Moewig bei Ullstein                               |   153 |   39767 |        259 |
 | Ullstein A. G.                                    |   112 |   28946 |        258 |
-| Ullstein [A. G.]                                  |    60 |   17017 |        283 |
+| Ullstein [A. G.]                                  |    59 |   16767 |        284 |
 | Ullstein A.G.                                     |    37 |    9849 |        266 |
 | Ullstein A.-G.                                    |    31 |    7135 |        230 |
 | Ullstein [A.G.]                                   |    26 |    6892 |        265 |
@@ -1859,8 +1849,6 @@ be regarded the same publisher.
 | Wallstein Verl.   |     1 |    526 |        526 |
 | [Wallstein-Verl.] |     1 |     36 |         36 |
 
-("D A Wallstein" seems to have contained a TAB between "D" and "A")
-
 **** Wiesenburg
 
 | publisher         | items | pages | mean pages |
@@ -1870,51 +1858,27 @@ be regarded the same publisher.
 | Wiesenburg Verlag |     9 |  1342 |        149 |
 
 *** TODO ranking per publisher
-
-*** beware of errors
-#+BEGIN_SRC sh
-  zcat publisher.tsv.gz | sort -S1G -nr | grep Brockhaus | head -n20
-#+END_SRC
-
-| label                                          | frequency |
-|------------------------------------------------+-----------|
-| Brockhaus                                      |      5968 |
-| R. Brockhaus                                   |       868 |
-| F. A. Brockhaus                                |       671 |
-| Brockhaus, VEB                                 |       543 |
-| SCM R. Brockhaus                               |       494 |
-| SCM R.Brockhaus im SCM-Verlag                  |       221 |
-| VEB Brockhaus                                  |       193 |
-| Bibliogr. Inst. und Brockhaus                  |       121 |
-| [F. A. Brockhaus]                              |        65 |
-| Brockhaus VEB                                  |        63 |
-| Bibliogr. Inst. & Brockhaus                    |        62 |
-| F. A. Brockhaus Verlag                         |        53 |
-| Brockhaus, Wissenmedia in der InmediaONE] GmbH |        50 |
-| SCM R. Brockhaus im SCM Verlag GmbH & Co.KG    |        38 |
-| Theologischer Verlag Brockhaus                 |        34 |
-| [Brockhaus]                                    |        30 |
-| SCM R.Brockhaus                                |        25 |
-| Theologischer Verl. Brockhaus                  |        16 |
-| M. Brockhaus                                   |         9 |
-| SCM Brockhaus                                  |         8 |
-
-** temporal distribution
-Let's plot the median number of pages per decade:
-
-#+BEGIN_SRC sh
-  LC_ALL=C ./json2json.py -p "issued,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 != "" && $2 != "" && $3 != "") print int($1/10)"\t"$2}' \
-      | sort -S1G -nr \
-      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2\
-		 > decade_pages_stats.tsv
+** DONE temporal distribution
+Let's plot the median number of pages per year and per decade:
+#+BEGIN_SRC sh :results silent
+#  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+#      | awk -F'\t' '{print $1"\t"$2}' \
+#      | sort -S1G -nr \
+#              > issued_pages.tsv
+  cat issued_pages.tsv | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
+      | sed "s/,/./g" \
+            > issued_pages_stats.tsv
+  awk -F'\t' '{print int($1/10)"\t"$2}' issued_pages.tsv \
+      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
+      | sed "s/,/./g" \
+            > issued_pages_decade_stats.tsv
 #+END_SRC
 
 #+BEGIN_SRC gnuplot :results silent
 reset
 set encoding utf8
 set term png enhanced size 800,600
-set out 'decade_pages.png'
+set out 'issued_pages_decade.png'
 
 set grid
 set datafile separator "\t"
@@ -1923,12 +1887,29 @@ set xlabel 'year'
 set ylabel number of pages per decade'
 
 plot \
-  'decade_pages_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
-  'decade_pages_stats.tsv' using ($1*10):2 with linespoints pt 7 lw 2 lt 3 lc rgb "green" title 'median'
+  'issued_pages_decade_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
+  'issued_pages_decade_stats.tsv' using ($1*10):2 with linespoints pt 7 lw 2 lt 3 lc rgb "green" title 'median'
 
 set term svg enhanced size 800,600
-set out 'decade_pages.svg'
+set out 'issued_pages_decade.svg'
+replot
+
+
+# starting in 1912
+set xrange [1912:2020]
+
+set term png enhanced size 800,600
+set out 'issued_pages_decade_1912.png'
+
+plot \
+  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
+  'issued_pages_stats.tsv' using 1:2 with lines lw 2 lt 3 lc rgb "green" title 'median'
+
+set term svg enhanced size 800,600
+set out 'issued_pages_decade_1912.svg'
 replot
 #+END_SRC
 
-[[decade_pages.png]]
+[[issued_pages_decade.png]]
+
+[[issued_pages_decade_1912.png]]

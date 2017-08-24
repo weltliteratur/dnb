@@ -34,7 +34,7 @@ What is the difference between ~pages~ and ~extent~?
   ~isbd:P1053~ (which is "has extent") - so it is basically the same
 - We use ~extent~ when no valid ~pages~ are given.
 
-* analyse fields
+* preliminary analysis of the data fields
 We analyse the distribution of some metadata fields.
 ** pages
 ** extent
@@ -1861,10 +1861,10 @@ be regarded the same publisher.
 ** DONE temporal distribution
 Let's plot the median number of pages per year and per decade:
 #+BEGIN_SRC sh :results silent
-#  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
-#      | awk -F'\t' '{print $1"\t"$2}' \
-#      | sort -S1G -nr \
-#              > issued_pages.tsv
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{print $1"\t"$2}' \
+      | sort -S1G -nr \
+              > issued_pages.tsv
   cat issued_pages.tsv | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
       | sed "s/,/./g" \
             > issued_pages_stats.tsv

@@ -11,6 +11,8 @@
 # Author: rja
 #
 # Changes:
+# 2017-08-24 (rja)
+# - added support for normalising publisher names (--map-publisher)
 # 2017-08-23 (rja)
 # - refactored and added support to prune rows with empty columns
 # 2017-08-22 (rja)
@@ -165,6 +167,24 @@ def enrich(items, wikidata):
                     item["creator_wd"][creator] = wd[creator]
         yield item
 
+# map publisher names to normalised names
+def map_publisher(items, fname):
+    publishers = get_publisher_map(fname)
+    for item in items:
+        if "publisher" in item:
+            publisher = item["publisher"]
+            if publisher in publishers:
+                item["publisher_norm"] = publishers[publisher]
+        yield item
+
+def get_publisher_map(fname, sep="\t"):
+    publishers = dict()
+    with open(fname, "rt") as f:
+        for line in f:
+            name, normalised_name = line.strip().split(sep)
+            publishers[name] = normalised_name
+    return publishers
+
 # normalise an individual value
 def normalise_val(key, val):
     if key in strip_prefix:
@@ -227,6 +247,7 @@ if __name__ == '__main__':
     parser.add_argument('-e', '--elastic', action="store_true", help="add JSON for Elastic")
     parser.add_argument('-f', '--filter', action="store_true", help="filter rows with empty columns")
     parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns for given paths instead of JSON")
+    parser.add_argument('-m', '--map-publisher', type=str, metavar="FILE", help="map publisher names")
     parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator for --print", default='\t')
     parser.add_argument('-w', '--wikidata', type=str, metavar="F", help="enrich with Wikidata")
     parser.add_argument('-v', '--version', action="version", version="%(prog)s " + version)
@@ -239,6 +260,8 @@ if __name__ == '__main__':
         items = normalise(items)
     if args.wikidata:
         items = enrich(items, args.wikidata)
+    if args.map_publisher:
+        items = map_publisher(items, args.map_publisher)
     if args.print:
         items = gen_cols(items, args.print.split(","))
         if args.filter:

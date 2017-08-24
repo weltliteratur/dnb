@@ -666,30 +666,30 @@ replot
       | sort -S1G -nr | head -n20
 #+END_SRC
 
-| author                     |   pages | items | average pages |
-|----------------------------+---------+-------+---------------|
-| Johann Wolfgang von Goethe | 1177220 |  5090 |           231 |
-| Heinz G. Konsalik          |  983158 |  3191 |           308 |
-| Thomas Mann                |  929002 |  2507 |           370 |
-| Hermann Hesse              |  738020 |  3337 |           221 |
-| Rudolf Steiner             |  692874 |  3965 |           174 |
-| Stefan Zweig               |  670878 |  2482 |           270 |
-| Franz Kafka                |  538311 |  2017 |           266 |
-| Fyodor Dostoyevsky         |  529792 |  1086 |           487 |
-| Karl May                   |  507948 |  1504 |           337 |
-| Friedrich Nietzsche        |  472457 |  1778 |           265 |
-| Lion Feuchtwanger          |  459691 |  1022 |           449 |
-| Theodor Fontane            |  450836 |  1548 |           291 |
-| Marie Louise Fischer       |  435997 |  1677 |           259 |
-| Colleen McCullough         |  424189 |   143 |          2966 |
-| Erich Maria Remarque       |  414153 |  1179 |           351 |
-| Leo Tolstoy                |  395758 |  1077 |           367 |
-| Heinrich Böll              |  388619 |  1769 |           219 |
-| Friedrich Schiller         |  383585 |  2003 |           191 |
-| Stephen King               |  380219 |   799 |           475 |
-| Sigmund Freud              |  377503 |  1494 |           252 |
+| author                     |   pages | items | mean pages |
+|----------------------------+---------+-------+------------|
+| Johann Wolfgang von Goethe | 1177220 |  5090 |        231 |
+| Heinz G. Konsalik          |  983158 |  3191 |        308 |
+| Thomas Mann                |  929002 |  2507 |        370 |
+| Hermann Hesse              |  738020 |  3337 |        221 |
+| Rudolf Steiner             |  692874 |  3965 |        174 |
+| Stefan Zweig               |  670878 |  2482 |        270 |
+| Franz Kafka                |  538311 |  2017 |        266 |
+| Fyodor Dostoyevsky         |  529792 |  1086 |        487 |
+| Karl May                   |  507948 |  1504 |        337 |
+| Friedrich Nietzsche        |  472457 |  1778 |        265 |
+| Lion Feuchtwanger          |  459691 |  1022 |        449 |
+| Theodor Fontane            |  450836 |  1548 |        291 |
+| Marie Louise Fischer       |  435997 |  1677 |        259 |
+| Colleen McCullough         |  424189 |   143 |       2966 |
+| Erich Maria Remarque       |  414153 |  1179 |        351 |
+| Leo Tolstoy                |  395758 |  1077 |        367 |
+| Heinrich Böll              |  388619 |  1769 |        219 |
+| Friedrich Schiller         |  383585 |  2003 |        191 |
+| Stephen King               |  380219 |   799 |        475 |
+| Sigmund Freud              |  377503 |  1494 |        252 |
 
-*** by average page count
+*** by mean page count
 
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p "issued,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
@@ -702,28 +702,28 @@ replot
   sort -S1G -nrk3 author_pages_stats.tsv | head -n20
 #+END_SRC
 
-| author                              |  pages | items | average pages | work                             |
-|-------------------------------------+--------+-------+---------------+----------------------------------|
-| Reinhard Baumgart                   | 340491 |    32 |         10640 |                                  |
-| Samael Aun Weor                     | 141110 |    27 |          5226 |                                  |
-| Günther Bentele                     | 103739 |    27 |          3842 |                                  |
-| Jean Quatremer                      |   3376 |     1 |          3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]   |
-| Pierre Alexis Ponson du Terrail     |   3200 |     1 |          3200 |                                  |
-| Colleen McCullough                  | 424189 |   143 |          2966 |                                  |
-| Dieter Hildebrandt                  | 266207 |   100 |          2662 |                                  |
-| André Vauchez                       |   2536 |     1 |          2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]          |
-| Wolfgang Lauterbach, Peter Hartmann |   2319 |     1 |          2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]              |
-| Peter Hartmann                      | 101951 |    46 |          2216 |                                  |
-| Wolfgang Kleiber                    |  10787 |     5 |          2157 |                                  |
-| Noam Chomsky                        | 197964 |    92 |          2151 |                                  |
-| Thomas Fischer, Herbert Tröndle     |   2052 |     1 |          2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]] |
-| Kari Jormakka                       |  10239 |     5 |          2047 |                                  |
-| John Bernard Burke                  |   4052 |     2 |          2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]             |
-| Egon Wiberg, Arnold F. Holleman     |   5633 |     3 |          1877 |                                  |
-| Frank Göttmann                      |   5561 |     3 |          1853 |                                  |
-| Lutz Meyer-Goßner                   |  25432 |    14 |          1816 |                                  |
-| Walter Bayer, Marcus Lutter         |   1779 |     1 |          1779 |                                  |
-| Marthe Vogt, Walter Pagel           |   1770 |     1 |          1770 |                                  |
+| author                              |  pages | items | mean pages | work                             |
+|-------------------------------------+--------+-------+------------+----------------------------------|
+| Reinhard Baumgart                   | 340491 |    32 |      10640 |                                  |
+| Samael Aun Weor                     | 141110 |    27 |       5226 |                                  |
+| Günther Bentele                     | 103739 |    27 |       3842 |                                  |
+| Jean Quatremer                      |   3376 |     1 |       3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]   |
+| Pierre Alexis Ponson du Terrail     |   3200 |     1 |       3200 |                                  |
+| Colleen McCullough                  | 424189 |   143 |       2966 |                                  |
+| Dieter Hildebrandt                  | 266207 |   100 |       2662 |                                  |
+| André Vauchez                       |   2536 |     1 |       2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]          |
+| Wolfgang Lauterbach, Peter Hartmann |   2319 |     1 |       2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]              |
+| Peter Hartmann                      | 101951 |    46 |       2216 |                                  |
+| Wolfgang Kleiber                    |  10787 |     5 |       2157 |                                  |
+| Noam Chomsky                        | 197964 |    92 |       2151 |                                  |
+| Thomas Fischer, Herbert Tröndle     |   2052 |     1 |       2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]] |
+| Kari Jormakka                       |  10239 |     5 |       2047 |                                  |
+| John Bernard Burke                  |   4052 |     2 |       2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]             |
+| Egon Wiberg, Arnold F. Holleman     |   5633 |     3 |       1877 |                                  |
+| Frank Göttmann                      |   5561 |     3 |       1853 |                                  |
+| Lutz Meyer-Goßner                   |  25432 |    14 |       1816 |                                  |
+| Walter Bayer, Marcus Lutter         |   1779 |     1 |       1779 |                                  |
+| Marthe Vogt, Walter Pagel           |   1770 |     1 |       1770 |                                  |
 
 There are probably some errors among those ...
 
@@ -760,7 +760,7 @@ replot
 
 [[author_pages.png][author_pages.png]]
 
-** top works
+** DONE top works
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued,pages_norm,title,_id,creator_wd.*.occupation_writer" \
@@ -792,7 +792,7 @@ replot
 | [[http://d-nb.info/576168084][Complete Works]]                               |   3360 |
 | [[http://d-nb.info/944603440][Das grosse Buch der Olympischen Spiele]]       |   3320 |
 
-** TODO publishers and pages
+** TODO top publishers
 5. Hauptanliegen sollten für dieses Mal die Verlage und deren
 Seitenpolitik sein: Durchschnittliche Länge von Büchern pro Verlag
 (Suhrkamp, Rowohlt, Aufbau, Hanser, Eichborn, …) – wobei ich hier Bücher
@@ -806,41 +806,1072 @@ Optionen:
 - nicht normalisieren
 - einige wenige Verlage normalisieren
 
-*** DONE most frequent publishers
+*** DONE by item count
 
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -n -p publisher DNBTitel.json.gz | sort -S1G | uniq -c | gzip -c > publisher.tsv.gz
-#+END_SRC
-
-Top publishers:
 #+BEGIN_SRC sh
-  zcat publisher.tsv.gz | sort -S1G -nr | head -n20
+  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print $3}' \
+      | sort -S1G | uniq -c | sort -S1G -nr | head -n20
 #+END_SRC
 
-| publisher                       |   items |
-|---------------------------------+---------|
-|                                 | 5640251 |
-| GRIN Verlag GmbH                |  121456 |
-| Books on Demand                 |   97716 |
-| Springer                        |   83093 |
-| LAP LAMBERT Academic Publishing |   83033 |
-| [s. n.]                         |   78068 |
-| Springer Berlin Heidelberg      |   54125 |
-| Lang                            |   54075 |
-| John Wiley & Sons               |   50768 |
-| Heyne                           |   42233 |
-| Rowohlt                         |   40982 |
-| VDM Verlag Dr. Müller           |   40954 |
-| tredition                       |   32839 |
-| [s.n.]                          |   32549 |
-| Herder                          |   31734 |
-| GRIN Verlag                     |   31242 |
-| Shaker                          |   29769 |
-| Goldmann                        |   27502 |
-| Beck                            |   27324 |
-| Reclam                          |   26953 |
+| publisher                          | items |
+|------------------------------------+-------|
+| Rowohlt                            | 25735 |
+| Heyne                              | 23442 |
+| Reclam                             | 17852 |
+| Suhrkamp                           | 15074 |
+| Goldmann                           | 14385 |
+| Dt. Taschenbuch-Verl.              | 11719 |
+| Ullstein                           | 10706 |
+| Herder                             |  9702 |
+| Fischer-Taschenbuch-Verl.          |  9550 |
+| Piper                              |  9257 |
+| Insel-Verl.                        |  6954 |
+| Deutscher Taschenbuch-Verlag       |  5692 |
+| RM-Buch-und-Medien-Vertrieb [u.a.] |  5631 |
+| Fischer-Taschenbuch-Verlag         |  5313 |
+| Beck                               |  5130 |
+| Büchergilde Gutenberg              |  5062 |
+| Diogenes                           |  4863 |
+| S. Fischer                         |  4519 |
+| Weltbild                           |  4388 |
+| Maier                              |  4289 |
 
-**** But: beware of errors
+*** DONE by page count
+
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
+      | sort -S1G -nr | head -n20
+#+END_SRC
+
+| publisher                          | page sum | items | mean pages |
+|------------------------------------+----------+-------+------------|
+| Heyne                              |  7859581 | 23442 |        335 |
+| Rowohlt                            |  6033435 | 25735 |        234 |
+| Goldmann                           |  4768034 | 14385 |        331 |
+| Suhrkamp                           |  3750752 | 15074 |        248 |
+| Dt. Taschenbuch-Verl.              |  3144621 | 11719 |        268 |
+| Ullstein                           |  3117354 | 10706 |        291 |
+| Fischer-Taschenbuch-Verl.          |  3105059 |  9550 |        325 |
+| Reclam                             |  3082447 | 17852 |        172 |
+| Piper                              |  2843569 |  9257 |        307 |
+| RM-Buch-und-Medien-Vertrieb [u.a.] |  2242582 |  5631 |        398 |
+| Herder                             |  1925130 |  9702 |        198 |
+| Weltbild                           |  1858937 |  4388 |        423 |
+| Büchergilde Gutenberg              |  1711924 |  5062 |        338 |
+| Beck                               |  1691647 |  5130 |        329 |
+| Insel-Verl.                        |  1611640 |  6954 |        231 |
+| Dt. Buch-Gemeinschaft              |  1475774 |  4287 |        344 |
+| S. Fischer                         |  1334634 |  4519 |        295 |
+| Deutscher Taschenbuch-Verlag       |  1331032 |  5692 |        233 |
+| Fischer-Taschenbuch-Verlag         |  1322312 |  5313 |        248 |
+| Aufbau-Verl.                       |  1307744 |  3819 |        342 |
+
+Only items with no more than 5000 pages:
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912 && $2 <= 5000) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
+      | sort -S1G -nr | head -n20
+#+END_SRC
+
+| publisher                          | page sum | items | mean pages |
+|------------------------------------+----------+-------+------------|
+| Heyne                              |  7859581 | 23442 |        335 |
+| Rowohlt                            |  6033435 | 25735 |        234 |
+| Goldmann                           |  4419701 | 14384 |        307 |
+| Suhrkamp                           |  3750752 | 15074 |        248 |
+| Dt. Taschenbuch-Verl.              |  3144621 | 11719 |        268 |
+| Ullstein                           |  3117354 | 10706 |        291 |
+| Reclam                             |  3082447 | 17852 |        172 |
+| Piper                              |  2843569 |  9257 |        307 |
+| Fischer-Taschenbuch-Verl.          |  2772728 |  9549 |        290 |
+| RM-Buch-und-Medien-Vertrieb [u.a.] |  2242582 |  5631 |        398 |
+| Herder                             |  1925130 |  9702 |        198 |
+| Weltbild                           |  1858937 |  4388 |        423 |
+| Büchergilde Gutenberg              |  1711924 |  5062 |        338 |
+| Beck                               |  1691647 |  5130 |        329 |
+| Insel-Verl.                        |  1611640 |  6954 |        231 |
+| Dt. Buch-Gemeinschaft              |  1475774 |  4287 |        344 |
+| S. Fischer                         |  1334634 |  4519 |        295 |
+| Deutscher Taschenbuch-Verlag       |  1331032 |  5692 |        233 |
+| Fischer-Taschenbuch-Verlag         |  1322312 |  5313 |        248 |
+| Aufbau-Verl.                       |  1307744 |  3819 |        342 |
+
+
+*** by mean page count
+
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
+      | sort -S1G -nrk3 | head -n20
+#+END_SRC
+
+| publisher                                                                             | page sum | items | mean pages |
+|---------------------------------------------------------------------------------------+----------+-------+------------|
+| Dr.- und Verl.-Ges. Bietigheim                                                        |    96104 |     1 |      96104 |
+| Gnostische-Bibliothek-Verl.                                                           |   137634 |     2 |      68817 |
+| Deutscher Sparkassenverlag Stuttgart                                                  |     3295 |     1 |       3295 |
+| Ander                                                                                 |     3202 |     1 |       3202 |
+| Burke's Peerage Ltd.                                                                  |     2867 |     1 |       2867 |
+| Monte Avila                                                                           |     2516 |     1 |       2516 |
+| Juzanbô                                                                               |     2370 |     1 |       2370 |
+| Argument-Verl.                                                                        |   206100 |    99 |       2081 |
+| L' Arachnéen                                                                          |     1845 |     1 |       1845 |
+| Bundesanzeiger Verlag                                                                 |     3497 |     2 |       1748 |
+| World Islamic Call Soc.                                                               |     1633 |     1 |       1633 |
+| Libraries assocíés                                                                    |     1625 |     1 |       1625 |
+| Muze                                                                                  |     1600 |     1 |       1600 |
+| Ekdoseis Tziola                                                                       |     1599 |     1 |       1599 |
+| Ed. Almuzara                                                                          |     1595 |     1 |       1595 |
+| Ed. Horizonte                                                                         |     1580 |     1 |       1580 |
+| Verlagsanstalt f. Literatur u. Kunst                                                  |     4512 |     3 |       1504 |
+| Everyman's Libr.                                                                      |     1492 |     1 |       1492 |
+| Ministero per i Beni Culturali e Ambientali, Ufficio Centrale per i Beni Archivistici |     1423 |     1 |       1423 |
+| E.D.A.F.                                                                              |     1420 |     1 |       1420 |
+
+How is the number of items per publisher related to the average number
+of pages per publisher?
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+                 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
+            > publisher_pages_stats.tsv
+#+END_SRC
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set term png enhanced size 800,600
+set out 'publisher_pages.png'
+
+set grid
+set datafile separator "\t"
+set logscale
+
+set xlabel 'number of items
+set ylabel 'mean number of pages per item'
+
+plot 'publisher_pages_stats.tsv' using 2:3 with points pt 7 title ''
+
+set term svg enhanced size 800,600
+set out 'publisher_pages.svg'
+replot
+#+END_SRC
+
+[[publisher_pages.png]]
+
+*** TODO normalisation
+**** TODO mapping table
+Extract data about all publishers:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p "issued,pages_norm,publisher,creator_wd.*.occupation_writer" \
+                 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", count[p], sum[p], int(sum[p]/count[p]), p)}' \
+            > publisher_page_stats.tsv
+#+END_SRC
+
+Select specific publishers from this list:
+| Ammann                      |
+| Aufbau                      |
+| Berlin Verlag               |
+| Blumenbar                   |
+| Eichborn                    |
+| Goldmann                    |
+| Hanser                      |
+| Heyne                       |
+| Hoffmann und Campe          |
+| Insel                       |
+| Kiepenheuer & Witsch        |
+| Luchterhand Literaturverlag |
+| Manesse                     |
+| Merve                       |
+| Nagel & Kimche              |
+| Piper                       |
+| Rogner & Bernhard           |
+| Rowohlt                     |
+| Schöffling & Co.            |
+| Suhrkamp                    |
+| Ullstein                    |
+| Urs Engeler Editor          |
+| Verbrecher Verlag           |
+| Voland & Quist              |
+| Wallstein                   |
+| Wiesenburg                  |
+
+
+#+BEGIN_SRC sh :results raw
+  for publisher in Ammann Aufbau Berlin Blumenbar Eichborn Goldmann Hanser Heyne Campe Insel Kiepenheuer Luchterhand Manesse Merve Kimche Piper Rogner Rowohlt Schöffling Suhrkamp Ullstein Engeler Verbrecher Voland Wallstein Wiesenburg; do
+      echo "**** $publisher"
+      echo
+      echo "| publisher | items | pages | mean pages |"
+      grep $publisher publisher_page_stats.tsv | sort -nr | awk -F'\t' '{print "|"$4"|"$1"|"$2"|"$3"|"}'
+
+      echo
+  done
+#+END_SRC
+
+Cleaning up the publishers now by deleting all rows which should not
+be regarded the same publisher.
+
+**** Ammann
+| publisher         | items |  pages | mean pages |
+|-------------------+-------+--------+------------|
+| Ammann            |   484 | 121340 |        250 |
+| Ammann-Verl.      |     8 |   2667 |        333 |
+| Ammann Schweiz AG |     1 |     87 |         87 |
+
+**** Aufbau
+| publisher                                                                            | items |   pages | mean pages |
+|--------------------------------------------------------------------------------------+-------+---------+------------|
+| Aufbau-Verl.                                                                         |  3819 | 1307744 |        342 |
+| Aufbau-Verlag                                                                        |  2132 |  728063 |        341 |
+| Aufbau-Taschenbuch-Verl.                                                             |  1364 |  456324 |        334 |
+| Aufbau-Taschenbuch                                                                   |   440 |  173037 |        393 |
+| Aufbau                                                                               |   300 |   93119 |        310 |
+| Aufbau Taschenbuch                                                                   |   142 |   52028 |        366 |
+| Aufbau-Bühnen-Vertrieb                                                               |    60 |    6496 |        108 |
+| Der nationale Aufbau                                                                 |    18 |    1925 |        106 |
+| Arbeitsgemeinschaft f. Kultur u. Aufbau                                              |     7 |    2236 |        319 |
+| Aufbau Verl.                                                                         |     6 |    2474 |        412 |
+| Buchkreis f. Besinnung u. Aufbau                                                     |     5 |     790 |        158 |
+| Aufbau-Bühnen-Vertrieb G.m.b.H.                                                      |     5 |     541 |        108 |
+| Der Nationale Aufbau                                                                 |     5 |     229 |         45 |
+| Aufbau-Bühnen-Vertrieb GmbH                                                          |     4 |     325 |         81 |
+| ATB, Aufbau Taschenbuch                                                              |     3 |     727 |        242 |
+| Aufbau-Tachenbuch-Verl.                                                              |     3 |    1626 |        542 |
+| Aufbau-Verl                                                                          |     3 |    1306 |        435 |
+| "Der nationale Aufbau"                                                               |     2 |    1214 |        607 |
+| Buchkreis für Besinnung u. Aufbau                                                    |     1 |      98 |         98 |
+| Aufbau-Bühnen Vertrieb                                                               |     1 |      97 |         97 |
+| Aufbau-Bühnenvertrieb G. m. b. H.                                                    |     1 |      92 |         92 |
+| [Aufbau-Bühnen-Vertrieb]                                                             |     1 |      91 |         91 |
+| Aufbau-Bühnen-Vertr.                                                                 |     1 |      91 |         91 |
+| Aufbau-Verl. in Komm.                                                                |     1 |      74 |         74 |
+| Aufbau-Bühnenvertrieb G.m.b.H.                                                       |     1 |      72 |         72 |
+| Aufbau taschenbuch                                                                   |     1 |     602 |        602 |
+| Aufbau Verlag                                                                        |     1 |     564 |        564 |
+| Aufbau-Taschen-Verl.                                                                 |     1 |     479 |        479 |
+| [Aufbau-Verl. in Komm.]                                                              |     1 |      46 |         46 |
+| Aufbau - Verl.                                                                       |     1 |     363 |        363 |
+| atb Aufbau Taschenbuch                                                               |     1 |     359 |        359 |
+| [Aufbau-Verl.]                                                                       |     1 |     331 |        331 |
+| Verlag "Deutscher Aufbau"                                                            |     1 |      31 |         31 |
+| Der Nationale Aufbau, Verlagsges.                                                    |     1 |      29 |         29 |
+| atb, Aufbau Taschenbuch                                                              |     1 |     287 |        287 |
+| Akadem. Arbeitsausschuß f. Deutschen Aufbau                                          |     1 |      27 |         27 |
+| Aufbau Taschenbuch-Verl.                                                             |     1 |     269 |        269 |
+| Atb, Aufbau Taschenbuch                                                              |     1 |     254 |        254 |
+| Aufbau- Verlag                                                                       |     1 |     245 |        245 |
+| Aufbau-Taschenbuch-Verl.***5108133                                                   |     1 |     239 |        239 |
+| Aufbau-Taschenbuchverl.                                                              |     1 |     239 |        239 |
+| Arbeitskreis evangelischer Pfarrer f. Frieden u. sozialen Aufbau im Land Brandenburg |     1 |      19 |         19 |
+| Aufbau-Taschenbuch-Verlag                                                            |     1 |     190 |        190 |
+| Aufbau Verlag GmbH                                                                   |     1 |     157 |        157 |
+
+**** Berlin
+
+| publisher                                                                                                                           | items |  pages | mean pages |
+|-------------------------------------------------------------------------------------------------------------------------------------+-------+--------+------------|
+| Berlin-Verl.                                                                                                                        |   586 | 169277 |        288 |
+| Berliner Taschenbuch-Verl.                                                                                                          |   527 | 157416 |        298 |
+| Verl. Das Neue Berlin                                                                                                               |   492 | 138106 |        280 |
+| Rowohlt Berlin                                                                                                                      |   398 | 103526 |        260 |
+| Verlag Das Neue Berlin                                                                                                              |   374 |  98552 |        263 |
+| Das Neue Berlin                                                                                                                     |   272 |  80989 |        297 |
+| Berlin-Verl. Taschenbuch                                                                                                            |    85 |  29749 |        349 |
+| Berliner Handpresse                                                                                                                 |    84 |   2680 |         31 |
+| Hanser Berlin                                                                                                                       |    67 |  17257 |        257 |
+| Bloomsbury Berlin                                                                                                                   |    65 |  18634 |        286 |
+| BWV, Berliner Wiss.-Verl.                                                                                                           |    56 |  17796 |        317 |
+| Berlin Univ. Press                                                                                                                  |    54 |  12424 |        230 |
+| Berlin-Story-Verl.                                                                                                                  |    46 |   9657 |        209 |
+| Berlin Verlag                                                                                                                       |    30 |   9868 |        328 |
+| Berlin-Ed.                                                                                                                          |    26 |   2801 |        107 |
+| Berlin-Krimi-Verl.                                                                                                                  |    25 |   6472 |        258 |
+| Berliner Verl.                                                                                                                      |    24 |   5674 |        236 |
+| Das Neue Berlin Verl. Ges.                                                                                                          |    24 |   5326 |        221 |
+| Matthes & Seitz Berlin                                                                                                              |    24 |   5204 |        216 |
+| Berliner Künstlerprogramm d. DAAD                                                                                                   |    24 |   1770 |         73 |
+| Verl. für Berlin-Brandenburg                                                                                                        |    22 |   6237 |        283 |
+| Berlingske                                                                                                                          |    22 |   3743 |        170 |
+| Berlin-Verl. Spitz                                                                                                                  |    21 |   4814 |        229 |
+| Berlin Verlag Taschenbuch                                                                                                           |    19 |   6274 |        330 |
+| Berlin-Museum                                                                                                                       |    19 |    625 |         32 |
+| Verl. Das neue Berlin                                                                                                               |    19 |   5585 |        293 |
+| vbb, Verl. für Berlin-Brandenburg                                                                                                   |    18 |   4148 |        230 |
+| Berliner Bibliophilen-Abend                                                                                                         |    17 |    642 |         37 |
+| Neuer Berliner Buchvertrieb                                                                                                         |    15 |    915 |         61 |
+| Berliner Buchversand                                                                                                                |    14 |   3949 |        282 |
+| Westkreuz-Verl. Berlin/Bonn                                                                                                         |    13 |   2896 |        222 |
+| Berlin-Krimi-Verl., Be.bra-Verl.                                                                                                    |    12 |   3111 |        259 |
+| Berlin-Verlag                                                                                                                       |    12 |   2724 |        227 |
+| Das neue Berlin                                                                                                                     |    10 |   2685 |        268 |
+| Verlagshaus Berlin                                                                                                                  |     9 |    886 |         98 |
+| Presse- u. Informationsamt d. Landes Berlin                                                                                         |     9 |    575 |         63 |
+| Informationszentrum Berlin, Gedenk- u. Bildungsstätte Stauffenbergstrasse                                                           |     9 |    256 |         28 |
+| Berliner-Taschenbuch-Verl.                                                                                                          |     9 |   2353 |        261 |
+| Berlin-Information                                                                                                                  |     9 |   1589 |        176 |
+| DAAD, Berliner Künstlerprogramm                                                                                                     |     8 |    707 |         88 |
+| Berliner Künstlerprogramm des DAAD                                                                                                  |     8 |    406 |         50 |
+| BUP, Berlin Univ. Press                                                                                                             |     8 |   3508 |        438 |
+| Berlin Verl.                                                                                                                        |     8 |   2591 |        323 |
+| Berlinicke                                                                                                                          |     8 |   1170 |        146 |
+| Der Berliner Landesbeauftragte für die Unterlagen des Staatssicherheitsdienstes der Ehem. DDR                                       |     7 |    650 |         92 |
+| Berlin-Inst. für Bevölkerung und Entwicklung                                                                                        |     7 |    591 |         84 |
+| Berlin-Verlag Spitz                                                                                                                 |     6 |    996 |        166 |
+| Berliner Bibliophilen Abend                                                                                                         |     6 |    341 |         56 |
+| GNN-Verl. Sachsen/Berlin                                                                                                            |     6 |    133 |         22 |
+| wvb, Wiss. Verl. Berlin                                                                                                             |     6 |   1138 |        189 |
+| Verlag das Neue Berlin                                                                                                              |     5 |    996 |        199 |
+| Berlin Story Verlag                                                                                                                 |     5 |    930 |        186 |
+| Druck- u. Verl. Anst. Berlin                                                                                                        |     5 |    870 |        174 |
+| Berliner Verl.-Anst. Union                                                                                                          |     5 |    767 |        153 |
+| Friedrich-Ebert-Stiftung, Forum Berlin                                                                                              |     5 |    543 |        108 |
+| Neue Berliner Verlags-Ges.                                                                                                          |     5 |   1323 |        264 |
+| Galiani Berlin                                                                                                                      |     5 |   1120 |        224 |
+| Buchh. d. Berliner ev. Missionsges.                                                                                                 |     5 |   1003 |        200 |
+| Palma Publishing Berlin                                                                                                             |     4 |    972 |        243 |
+| OEZ-Berlin-Verl.                                                                                                                    |     4 |    940 |        235 |
+| Berliner Inst. für Vergleichende Sozialforschung                                                                                    |     4 |     72 |         18 |
+| Berlin Inst. for Population and Development                                                                                         |     4 |    698 |        174 |
+| dvb, Druck- u. Verlagsanst. Berlin                                                                                                  |     4 |    661 |        165 |
+| Buchh. d. Berliner ev. Missionsgesellschaft                                                                                         |     4 |     60 |         15 |
+| Berlin-Werbung Berolina                                                                                                             |     4 |    170 |         42 |
+| Berliner Festspiele                                                                                                                 |     4 |    156 |         39 |
+| Berlin University Press                                                                                                             |     4 |   1248 |        312 |
+| [Berliner Kulturbuchvertrieb]                                                                                                       |     3 |     95 |         31 |
+| Verlag für Berlin-Brandenburg                                                                                                       |     3 |    952 |        317 |
+| Verlag Das neue Berlin                                                                                                              |     3 |    931 |        310 |
+| Das Neue Berlin [Verl. Ges.]                                                                                                        |     3 |    848 |        282 |
+| Berliner Verlag                                                                                                                     |     3 |    764 |        254 |
+| Verl. Neues Berlin                                                                                                                  |     3 |    629 |        209 |
+| Berliner Inst. für Vgl. Sozialforschung                                                                                             |     3 |     60 |         20 |
+| Berlingske Forlag                                                                                                                   |     3 |    592 |        197 |
+| Buchh. d. Berliner evang. Missionsgesellschaft                                                                                      |     3 |     38 |         12 |
+| Dt. Akad. Austauschdienst, Berliner Künstlerprogramm                                                                                |     3 |    291 |         97 |
+| Berlin-Brandenburgische Akad. der Wiss.                                                                                             |     3 |    243 |         81 |
+| Konsistorium der Evang. Kirche in Berlin-Brandenburg                                                                                |     3 |    134 |         44 |
+| Evang. Konsistorium Berlin-Brandenburg, Generalkonvent f. Krankenseelsorge                                                          |     3 |    121 |         40 |
+| Ed. Ost im Verl. Das Neue Berlin                                                                                                    |     3 |   1171 |        390 |
+| Berlin Historica                                                                                                                    |     3 |   1020 |        340 |
+| Berliner Handpresse bei Claassen                                                                                                    |     2 |     91 |         45 |
+| Berliner Wissenschafts-Verlag                                                                                                       |     2 |    840 |        420 |
+| Edition Berliner Unterwelten im Ch. Links Verlag                                                                                    |     2 |    762 |        381 |
+| Ed. Berliner Unterwelten                                                                                                            |     2 |    762 |        381 |
+| Landesvorstand Gross-Berlin d. SED                                                                                                  |     2 |     72 |         36 |
+| Berliner Taschenbuch.Verl.                                                                                                          |     2 |    700 |        350 |
+| Neue Berliner Verlags-Gesellschaft                                                                                                  |     2 |    665 |        332 |
+| Springer Berlin                                                                                                                     |     2 |    638 |        319 |
+| Berlingske Forl.                                                                                                                    |     2 |    625 |        312 |
+| Berliner Debatte Wiss.-Verl.                                                                                                        |     2 |    623 |        311 |
+| BWV, Berliner Wissenschafts-Verlag                                                                                                  |     2 |    574 |        287 |
+| Verl. "Berlin-Wien"                                                                                                                 |     2 |    561 |        280 |
+| Kulturverlag Kadmos Berlin                                                                                                          |     2 |    541 |        270 |
+| Rowohlt Berlin***5106439                                                                                                            |     2 |    536 |        268 |
+| Berliner Handpresse b. Propyläen                                                                                                    |     2 |     52 |         26 |
+| "Berlin-Wien"                                                                                                                       |     2 |    516 |        258 |
+| Berliner Taschenbuchverl.                                                                                                           |     2 |    516 |        258 |
+| Berliner Börsenzeitung                                                                                                              |     2 |     50 |         25 |
+| Berliner Taschenbuch-Verl                                                                                                           |     2 |    470 |        235 |
+| Verl. Berlin-Wien                                                                                                                   |     2 |    453 |        226 |
+| [Friedrich-Berlin-Verl.-Ges.]                                                                                                       |     2 |     45 |         22 |
+| Europa-Verl. Berlin                                                                                                                 |     2 |    429 |        214 |
+| Berlin-Historica-Verl.                                                                                                              |     2 |    426 |        213 |
+| Ges. d. Freunde d. Berliner Philharmonie                                                                                            |     2 |     40 |         20 |
+| Berliner Union                                                                                                                      |     2 |    393 |        196 |
+| Das neue Berlin Verl. Ges.                                                                                                          |     2 |    361 |        180 |
+| [Berliner Bibliophilen-Abend]                                                                                                       |     2 |     35 |         17 |
+| Verlagshaus Axel Springer, Information Berlin                                                                                       |     2 |     33 |         16 |
+| Staatl. Museen zu Berlin                                                                                                            |     2 |    322 |        161 |
+| Berlin-Ed. im be.bra-Verl.                                                                                                          |     2 |    302 |        151 |
+| [Der Theaterverl. Friedrich Berlin]                                                                                                 |     2 |     30 |         15 |
+| Berlinica                                                                                                                           |     2 |    277 |        138 |
+| [Der Theaterverlag Friedrich Berlin]                                                                                                |     2 |     26 |         13 |
+| Wissenschaftlicher Verlag Berlin                                                                                                    |     2 |    260 |        130 |
+| Inst. für Städtebau Berlin d. Dt. Akad. für Städtebau u. Landesplanung                                                              |     2 |     21 |         10 |
+| Arbeitsgemeinschaft d. Evang. Jugend (AEJ) in d. Bundesrepublik Deutschland u. Berlin West e.V.                                     |     2 |     21 |         10 |
+| Heimatdienstverl. [Buchh. d. Berliner ev. Missionsges.]                                                                             |     2 |    207 |        103 |
+| E. Berlin                                                                                                                           |     2 |    207 |        103 |
+| Euphorion-Verlag Berlin                                                                                                             |     2 |    201 |        100 |
+| Verl. Berliner Union [in Komm.]                                                                                                     |     2 |    171 |         85 |
+| Volkswirtschaftl. Verl. Berlin-Lichterfelde                                                                                         |     2 |    158 |         79 |
+| Landesvorstand Berlin der DKP                                                                                                       |     2 |    156 |         78 |
+| Berliner Verlagsbüro Biel                                                                                                           |     2 |    153 |         76 |
+| [Berliner Kommissionsbuchh.]                                                                                                        |     2 |    145 |         72 |
+| Verlag Berliner Union [in Komm.]                                                                                                    |     2 |    136 |         68 |
+| Berlin-Institut für Bevölkerung und Entwicklung                                                                                     |     2 |    115 |         57 |
+| Berlin. Galerie                                                                                                                     |     2 |    114 |         57 |
+| Berliner Morgenpost, Ullsteinhaus                                                                                                   |     2 |    111 |         55 |
+| Europa Verl. Berlin                                                                                                                 |     2 |   1049 |        524 |
+| Internat. Inst. of Management, Wissenschaftszentrum Berlin                                                                          |     2 |    104 |         52 |
+| Stiftung Gedenkstätte Berlin-Hohenschönhausen                                                                                       |     1 |     96 |         96 |
+| Eulenspiegel-Das-Neue-Berlin-Verl.-Ges.                                                                                             |     1 |     95 |         95 |
+| H. P. V.-Berlin G. m. b. H. (Historisch-Politischer Verl.)                                                                          |     1 |     94 |         94 |
+| Berliner Künstlerprogramm/DAAD                                                                                                      |     1 |     93 |         93 |
+| Lotos Berlin                                                                                                                        |     1 |     91 |         91 |
+| Verein zur Förderung von Community Education in der Bundesrepublik Deutschland und Berlin (West)                                    |     1 |     89 |         89 |
+| Werkstatt Berlin 1988                                                                                                               |     1 |      8 |          8 |
+| Landeszentrale f. polit. Bildungsarbeit Berlin                                                                                      |     1 |     88 |         88 |
+| Akad.-Verl. Berlin                                                                                                                  |     1 |    880 |        880 |
+| Verein der Freunde der Staatsbibliothek zu Berlin                                                                                   |     1 |     87 |         87 |
+| Pädag. Zentrum Berlin, Referat II E Gesellschaftswiss.                                                                              |     1 |     87 |         87 |
+| Verl. Berliner Union [in Komm. f. Deutschland]                                                                                      |     1 |     86 |         86 |
+| Deutsch-Mexikanische Gesellschaft Berlin e.V.                                                                                       |     1 |     85 |         85 |
+| Der Berliner Landesbeauftragte für die Unterlagen des Staatssicherheitsdienstes der Ehemaligen DDR                                  |     1 |     80 |         80 |
+| Bildungswerk Berlin der Heinrich-Böll-Stiftung                                                                                      |     1 |     80 |         80 |
+| Berlin Information                                                                                                                  |     1 |     79 |         79 |
+| Berliner Jugend- u. Kindertheater Genschow-Stobrawa                                                                                 |     1 |     79 |         79 |
+| Staatl. Museen zu Berlin, Kunstgewerbemuseum                                                                                        |     1 |     78 |         78 |
+| Verein f. d. Geschichte Berlins                                                                                                     |     1 |      7 |          7 |
+| S[ozialistische] E[inheitspartei] D[eutschlands], Bezirksleitg Groß-Berlin                                                          |     1 |      7 |          7 |
+| Berlin : Parey                                                                                                                      |     1 |      7 |          7 |
+| Friedrich-Ebert-Stiftung, Landesbüro Berlin                                                                                         |     1 |     76 |         76 |
+| [Berliner Kommissionsbuchhandlung]                                                                                                  |     1 |     75 |         75 |
+| Berliner Theater-Verl. Oesterheld & Co.                                                                                             |     1 |     72 |         72 |
+| Generaldirektion der Stiftung Preussische Schlösser und Gärten Berlin-Brandenburg                                                   |     1 |     71 |         71 |
+| KinderbuchVerl. Berlin                                                                                                              |     1 |     70 |         70 |
+| Freunde der Erde Berlin                                                                                                             |     1 |     70 |         70 |
+| Zentrale d. Hausfrauenvereins Groß-Berlin E. V.                                                                                     |     1 |     67 |         67 |
+| Werbestelle Berliner graphischer Betriebe e. V.                                                                                     |     1 |     67 |         67 |
+| Versuchsanst. f. Statik d. Baukonstruktionen an d. Techn. Hochschule Berlin                                                         |     1 |      6 |          6 |
+| Berlinische Verlagsanst.                                                                                                            |     1 |      6 |          6 |
+| Inst. für Unternehmungsführung im Fachbereich Wirtschaftswiss. d. Freien Univ. Berlin                                               |     1 |     66 |         66 |
+| Humanistischer Verb. Deutschlands, Landesverb. Berlin                                                                               |     1 |     65 |         65 |
+| [Berliner Kommiss. Buchh.]                                                                                                          |     1 |     65 |         65 |
+| Breitkopf & Härtel ; Berlin-Grunewald : Verlagsanstalt für Litteratur u. Kunst (Hermann Klemm)                                      |     1 |    652 |        652 |
+| Europa im Nahen Osten - Der Nahe Osten in Europa c/o Wissenschaftskolleg zu Berlin                                                  |     1 |     64 |         64 |
+| Die Moschee Berlin der Lahore-Ahmadiyya-Bewegung zur Verbreitung Islamischen Wissens                                                |     1 |     64 |         64 |
+| Berlinische Galerie                                                                                                                 |     1 |     64 |         64 |
+| BerlinLine-Entertainment                                                                                                            |     1 |     63 |         63 |
+| Kinetischer Verlag Berlin                                                                                                           |     1 |     59 |         59 |
+| DKP Berlin                                                                                                                          |     1 |     59 |         59 |
+| AL - Bereich Berlin-Politik]                                                                                                        |     1 |     59 |         59 |
+| Generaldirektion d. Staatl. Museen zu Berlin                                                                                        |     1 |     56 |         56 |
+| Berliner Krippenverein                                                                                                              |     1 |      5 |          5 |
+| Institut f. Philosophie d. Humboldt-Universität zu Berlin                                                                           |     1 |     55 |         55 |
+| Presse- u. Informationsamt d. FU Berlin                                                                                             |     1 |     54 |         54 |
+| Berliner Börsen-Zeitung                                                                                                             |     1 |     54 |         54 |
+| "Helle Panke" e.V. - Rosa-Luxemburg-Stiftung Berlin                                                                                 |     1 |     51 |         51 |
+| Inst. für Genossenschaftswesen an der Humboldt-Univ. zu Berlin                                                                      |     1 |     50 |         50 |
+| Berlinskie gosmuzei, Peredneaziatskij Muzej                                                                                         |     1 |     50 |         50 |
+| Wissenschaftszentrum Berlin, Internat. Inst. für Management u. Verwaltung                                                           |     1 |     49 |         49 |
+| Berlin Story Verl.                                                                                                                  |     1 |    491 |        491 |
+| Der Präsident des Abgeordnetenhauses von Berlin                                                                                     |     1 |     48 |         48 |
+| Buchhandlung d. Berliner ev. Missionsgesellschaft                                                                                   |     1 |     48 |         48 |
+| Berliner Unterwelten                                                                                                                |     1 |     48 |         48 |
+| S[ozialistische] E[inheitspartei] D[eutschlands] Groß-Berlin, Kommission zur Erforschung d. Geschichte d. Berliner Arbeiterbewegung |     1 |     47 |         47 |
+| Berliner Tierschutzverein u. Deutscher Lehrer-Tierschutz Verein                                                                     |     1 |     46 |         46 |
+| [Berliner Kommissions-Buchh.]                                                                                                       |     1 |     46 |         46 |
+| Landesbildstelle Berlin                                                                                                             |     1 |     45 |         45 |
+| [Berliner Münzblätter]                                                                                                              |     1 |      4 |          4 |
+| Verband Berliner Spezialgeschäfte                                                                                                   |     1 |     44 |         44 |
+| Evang. Konsistorium Berlin-Brandenburg, Fachkonvent f. Seelsorge im Krankenhaus                                                     |     1 |     44 |         44 |
+| Verlag des Neue Berlin                                                                                                              |     1 |    422 |        422 |
+| Berlin Verl. Taschenbuch                                                                                                            |     1 |    413 |        413 |
+| Sozialdemokratische Partei Deutschlands, Landesverb. Groß-Berlin                                                                    |     1 |     40 |         40 |
+| Partner für Berlin, Ges. für Hauptstadt-Marketing                                                                                   |     1 |     40 |         40 |
+| Galerie der Berliner Graphikpresse                                                                                                  |     1 |     39 |         39 |
+| Berliner Handels-Gesellschaft                                                                                                       |     1 |     39 |         39 |
+| VBB, Verl. für Berlin-Brandenburg                                                                                                   |     1 |    384 |        384 |
+| Histor. Komm. zu Berlin                                                                                                             |     1 |     38 |         38 |
+| [Magistrat v. Groß-Berlin, Abt. f. Volksbildung, Hauptamt Kunst u, Literatur]                                                       |     1 |     37 |         37 |
+| Berliner Verl. Taschenbuch                                                                                                          |     1 |    367 |        367 |
+| Verlag Neues Berlin                                                                                                                 |     1 |    362 |        362 |
+| Verl. d. Berliner Börsen-Zeitung                                                                                                    |     1 |     35 |         35 |
+| Konsistorium d. Evang. Kirche in Berlin-Brandenburg (Berlin-West), Fachkonvent für Seelsorge im Krankenhaus                         |     1 |     34 |         34 |
+| Forschungsschwerpunkt Marktprozess u. Unternehmensentwicklung, Wiss.-Zentrum Berlin für Sozialforschung                             |     1 |     33 |         33 |
+| Neue Berliner Verlags-G. m. b. H.                                                                                                   |     1 |    323 |        323 |
+| Zentraleinrichtung zur Förderung von Frauenstudien und Frauenforschung an der Freien Univ. Berlin                                   |     1 |     32 |         32 |
+| Verein der Berliner Künstler                                                                                                        |     1 |     32 |         32 |
+| Bundesbeauftragter f. d. Förderg d. Berliner Wirtsch                                                                                |     1 |     32 |         32 |
+| Buchh. d. Berliner ev. Missions-Gesellschaft                                                                                        |     1 |     32 |         32 |
+| Berliner Handpresse bei Propyläen                                                                                                   |     1 |     32 |         32 |
+| Merseburger-Berlin                                                                                                                  |     1 |    319 |        319 |
+| Verlag d. Brandenburg. u. Berliner Hauptvereins d. Ev. Bundes                                                                       |     1 |     31 |         31 |
+| Landesvorst. Groß-Berlin d. SED, Abt. Kommunalpolitik                                                                               |     1 |     31 |         31 |
+| Konsistorium d. Evang. Kirche in Berlin-Brandenburg (Berlin-West)                                                                   |     1 |     31 |         31 |
+| Jüdische Verlagsanstalt Berlin                                                                                                      |     1 |     31 |         31 |
+| Staatl. Museen zu Berlin, Islam. Museum                                                                                             |     1 |     30 |         30 |
+| Verlag Das  Neue Berlin                                                                                                             |     1 |    300 |        300 |
+| Jüdische Verl.-Anst. Berlin                                                                                                         |     1 |    298 |        298 |
+| Konsistorium d. Evang. Kirche in Berlin-Brandenburg, Fachkonvent für Seelsorge im Krankenhaus                                       |     1 |     29 |         29 |
+| INFLA-Berlin, Verein der Deutschlandsammler                                                                                         |     1 |     28 |         28 |
+| Verf. Berlin-Wien                                                                                                                   |     1 |    280 |        280 |
+| Wiss. Verl. Berlin Gaudig und Veit                                                                                                  |     1 |    273 |        273 |
+| Sender Freies Berlin                                                                                                                |     1 |     27 |         27 |
+| Konsistorium d. Evang. Kirche in Berlin-Brandenburg                                                                                 |     1 |     27 |         27 |
+| Euphorion Verlag, Berlin                                                                                                            |     1 |     27 |         27 |
+| Berlin.Krimi.Verl., Be.bra-Verl.                                                                                                    |     1 |    271 |        271 |
+| Westkreuz-Verl. Berlin-Bonn                                                                                                         |     1 |    264 |        264 |
+| Berliner Debatte                                                                                                                    |     1 |    264 |        264 |
+| Neue Berliner Verlagsges.                                                                                                           |     1 |    259 |        259 |
+| Verein der Berliner Künstlerinnen 1867                                                                                              |     1 |    256 |        256 |
+| Stiftung Preußische Schlösser und Gärten Berlin-Brandenburg                                                                         |     1 |    256 |        256 |
+| Historische Komm. zu Berlin, Pressestelle                                                                                           |     1 |     25 |         25 |
+| Berlin Ed.                                                                                                                          |     1 |    246 |        246 |
+| Neue Berliner Verlagsgesellsch. m. b. H.                                                                                            |     1 |    243 |        243 |
+| Verein f. Geschichte Berlins                                                                                                        |     1 |     24 |         24 |
+| Forschungszentrum Strukturpolitik (IIMV), Wissenschaftszentrum Berlin für Sozialforschung                                           |     1 |     24 |         24 |
+| Verlag "Berlin-Wien"                                                                                                                |     1 |    241 |        241 |
+| [Anthroposoph. Bücherstube in Berlin]                                                                                               |     1 |    238 |        238 |
+| Berliner Wiss.-Verl.                                                                                                                |     1 |    228 |        228 |
+| Berliner Taschenbuch Verl.                                                                                                          |     1 |    224 |        224 |
+| RIAS Berlin, Abt. Presse und Information                                                                                            |     1 |     22 |         22 |
+| Landesleitg Groß-Berlin d. Sozialist. Einheitspartei Deutschl.                                                                      |     1 |     22 |         22 |
+| Akad. Auskunftsamt Berlin                                                                                                           |     1 |     22 |         22 |
+| Berlin : Orell Füssli                                                                                                               |     1 |    220 |        220 |
+| Berliner-Taschenbuchverl.                                                                                                           |     1 |    218 |        218 |
+| Kunstgewerbemuseum Berlin                                                                                                           |     1 |    217 |        217 |
+| Verlag Das Junge Berlin                                                                                                             |     1 |    207 |        207 |
+| Karl Dietz Verlag Berlin                                                                                                            |     1 |    207 |        207 |
+| TU Berlin, Lehrstuhl f. Entwerfen 6                                                                                                 |     1 |     20 |         20 |
+| Inst. u. Lehrstuhl f. Landschaftsbau u. Gartenkunst, Techn. Univ. Berlin                                                            |     1 |     20 |         20 |
+| Der Beauftrage des Berliner Senats für Integration und Migration                                                                    |     1 |    200 |        200 |
+| Berlin ; Bern ; Bruxelles ; New York, NY ; Oxford ; Wien : Lang                                                                     |     1 |    199 |        199 |
+| bup Berlin University Press                                                                                                         |     1 |    193 |        193 |
+| Eher, Zweigniederlassg Berlin                                                                                                       |     1 |    192 |        192 |
+| Verl. das Neue Berlin                                                                                                               |     1 |    190 |        190 |
+| Bildungswerk d. BBK Berlin                                                                                                          |     1 |    183 |        183 |
+| Humboldt-Univ. zu Berlin, Sekt. Rechtswiss., Abt. Weiterbildung und Fernstudium                                                     |     1 |    182 |        182 |
+| Histor. Komm. zu Berlin, Pressestelle                                                                                               |     1 |     18 |         18 |
+| GEW-Hauptvorstand und die Landesverb. Berlin und Brandenburg                                                                        |     1 |     18 |         18 |
+| Berliner Missionswerk                                                                                                               |     1 |     18 |         18 |
+| Arbeitskreis Homosexualität in d. ÖTV Berlin                                                                                        |     1 |     18 |         18 |
+| Förderkreis Polizeihistorische Sammlung Berlin                                                                                      |     1 |    178 |        178 |
+| vbb, Verlag für Berlin-Brandenburg                                                                                                  |     1 |    176 |        176 |
+| Verl. Das Neu Berlin                                                                                                                |     1 |    175 |        175 |
+| GEDOK Berlin                                                                                                                        |     1 |    175 |        175 |
+| W. Berlinicke                                                                                                                       |     1 |    174 |        174 |
+| Verl. Braune Bücher Berlin C. Rentsch                                                                                               |     1 |    174 |        174 |
+| Berliner Börsen-Zeitung G.m.b.H.                                                                                                    |     1 |     17 |         17 |
+| Berlin-Verlag Taschenbuch                                                                                                           |     1 |    170 |        170 |
+| edition.fotoTAPETA Berlin                                                                                                           |     1 |    167 |        167 |
+| Neuer Berliner Buchvertrieb [Kribe-Verl.]                                                                                           |     1 |    165 |        165 |
+| Universitätsbibliothek d. Techn. Univ. Berlin [Vertrieb]                                                                            |     1 |    164 |        164 |
+| Landesverb. Gross-Berlin d. SED, Abt. Werbung, Presse, Rundfunk                                                                     |     1 |     16 |         16 |
+| Forschungsstelle f. Physik hoher Energien d. Forschungsgemeinschaft d. Deutschen Akademie d. Wissenschaften zu Berlin               |     1 |     16 |         16 |
+| Druck- u. Verl.-Anst. Berlin                                                                                                        |     1 |    157 |        157 |
+| Verlag Berliner Buchversand                                                                                                         |     1 |    156 |        156 |
+| Berlin-Ed. im Be.bra-Verl.                                                                                                          |     1 |    156 |        156 |
+| Wirtschaftspolitische Abteilg des Bezirks Mitte, Gau Groß-Berlin d. N. S. D. A. P.                                                  |     1 |     15 |         15 |
+| Kameradschaft Berlin d. ehem. 2. Garde-Res.-Regts [H. Koplin]                                                                       |     1 |     15 |         15 |
+| [Friedrich-Berlin-Verl.]                                                                                                            |     1 |     15 |         15 |
+| Freunde d. Islam Berlin                                                                                                             |     1 |     15 |         15 |
+| Berlingska Boktr.                                                                                                                   |     1 |     15 |         15 |
+| Berliner Landesverband d. Vertriebenen                                                                                              |     1 |     15 |         15 |
+| www Verl. Berlin                                                                                                                    |     1 |    151 |        151 |
+| Verlag Berliner Hefte                                                                                                               |     1 |    143 |        143 |
+| Landesvorst. d. SED Groß-Berlin [Literaturvertrieb]                                                                                 |     1 |     14 |         14 |
+| Berliner Theater- u. Konzert-Agentur GmbH                                                                                           |     1 |     14 |         14 |
+| [Berliner Mennoniten-Gemeinde]                                                                                                      |     1 |     14 |         14 |
+| Berlingske Bogtrykkeri                                                                                                              |     1 |    140 |        140 |
+| Landeskomm. Berlin gegen Gewalt                                                                                                     |     1 |    138 |        138 |
+| Berliner Evang. Missionsges.                                                                                                        |     1 |    138 |        138 |
+| Wiss. Verl. Berlin                                                                                                                  |     1 |    132 |        132 |
+| Ges. für Nachrichtenerfassung und Nachrichtenverbreitung, Verl.-Ges. für Sachsen/Berlin mbH                                         |     1 |    130 |        130 |
+| Druck- und Verlagsanst. Berlin                                                                                                      |     1 |    130 |        130 |
+| Berliner Buch- u. Kunstverl.                                                                                                        |     1 |    127 |        127 |
+| Berlin : Teubner                                                                                                                    |     1 |    124 |        124 |
+| VIB - Veranstaltungen in Berlin                                                                                                     |     1 |    122 |        122 |
+| Kameradschaft Berlin d. ehem. 2. Garde-Reserver-Regiments [O. Rodestock]                                                            |     1 |     12 |         12 |
+| [Kameradschaft Berlin d. ehem. 2. Garde-Reserve-Regiments, O. Rodestock]                                                            |     1 |     12 |         12 |
+| Institut f. Hochenergiephysik d. Deutschen Akademie d. Wissenschaften zu Berlin                                                     |     1 |     12 |         12 |
+| Gesellschaft f. dt.-sowjet. Freundschaft, Bezirksvorst. Gross-Berlin                                                                |     1 |     12 |         12 |
+| Förderverein d. Evang. Sammlung Berlin                                                                                              |     1 |     12 |         12 |
+| Berliner Handpresse bei Propyläen-Verlag                                                                                            |     1 |     12 |         12 |
+| Berlinische Verlagsanstalt                                                                                                          |     1 |    118 |        118 |
+| Bezirksamt Tiergarten von Berlin, Abt. Gesundheitswesen                                                                             |     1 |    116 |        116 |
+| BWV Berliner Wiss.-Verl.                                                                                                            |     1 |    114 |        114 |
+| Humboldt-Univ. zu Berlin, Sekt. Pädagogik, Abt. Weiterbildung und Fernstudium                                                       |     1 |    112 |        112 |
+| BHV Berlin historica                                                                                                                |     1 |    112 |        112 |
+| Berliner Tierschutz-Verein                                                                                                          |     1 |    112 |        112 |
+| Berliner Festspiele GmbH                                                                                                            |     1 |    112 |        112 |
+| Initiative Hauptstadt Berlin e.V.                                                                                                   |     1 |     11 |         11 |
+| Freie Univ. Berlin, Fachbereich Mathematik                                                                                          |     1 |     11 |         11 |
+| Berliner Münzblätter                                                                                                                |     1 |     11 |         11 |
+| Berliner Graphikpresse                                                                                                              |     1 |     11 |         11 |
+| Dr.-Haus Berlin-Mitte                                                                                                               |     1 |    109 |        109 |
+| Berliner Verleger- u. Buchhändlervereinigung e.V.                                                                                   |     1 |    109 |        109 |
+| Berliner Verleger- u. Buchhändlervereinigung                                                                                        |     1 |    109 |        109 |
+| Der Beauftragte des Senats von Berlin für Integration und Migration                                                                 |     1 |    104 |        104 |
+| Verlag d. Berliner Münzblätter                                                                                                      |     1 |     10 |         10 |
+| Staatl. Museen zu Berlin, Vorderasiat. Museum                                                                                       |     1 |     10 |         10 |
+| Ehemals Staatl. Museen Berlin                                                                                                       |     1 |     10 |         10 |
+
+**** Blumenbar
+
+| publisher       | items | pages | mean pages |
+|-----------------+-------+-------+------------|
+| Blumenbar-Verl. |    36 |  8386 |        232 |
+| Blumenbar       |    15 |  3332 |        222 |
+
+**** Eichborn
+
+| publisher       | items |  pages | mean pages |
+|-----------------+-------+--------+------------|
+| Eichborn        |  1593 | 416556 |        261 |
+| Eichborn-Verl.  |     8 |   2710 |        338 |
+| [Eichborn]      |     2 |    588 |        294 |
+| Eichborn-Verlag |     1 |    199 |        199 |
+
+**** Goldmann
+
+| publisher               | items |   pages | mean pages |
+|-------------------------+-------+---------+------------|
+| Goldmann                | 14385 | 4768034 |        331 |
+| W. Goldmann             |    87 |   21699 |        249 |
+| Goldmann Verlag         |    16 |    5778 |        361 |
+| [Goldmann]              |    14 |    5207 |        371 |
+| Halm & Goldmann         |     9 |     583 |         64 |
+| [Halm & Goldmann]       |     3 |     182 |         60 |
+| Goldmann-Verl.          |     3 |    1299 |        433 |
+| Wilhelm Goldmann, Verl. |     1 |      80 |         80 |
+| W. Goldmann Verl.       |     1 |      62 |         62 |
+| Halm u. Goldmann        |     1 |      59 |         59 |
+| Goldmann Verl.          |     1 |     347 |        347 |
+| Karl Goldmann           |     1 |     251 |        251 |
+| K. Goldmann             |     1 |     135 |        135 |
+| Hahn & Goldmann         |     1 |     128 |        128 |
+| Goldmann-Dr.            |     1 |     126 |        126 |
+
+**** Hanser
+
+| publisher                                    | items |   pages | mean pages |
+|----------------------------------------------+-------+---------+------------|
+| Hanser                                       |  3853 | 1053766 |        273 |
+| Carl Hanser Verlag                           |    98 |   29947 |        305 |
+| Hanser Berlin                                |    67 |   17257 |        257 |
+| Fachbuchverl. Leipzig im Hanser-Verl.        |     6 |    2795 |        465 |
+| Fachbuchverl. Leipzig im Carl-Hanser-Verl.   |     5 |    1718 |        343 |
+| BHP - Hanser und Partner                     |     1 |      80 |         80 |
+| Hanser Gardner                               |     1 |     612 |        612 |
+| Fachbuchverlag Leipzig im Carl Hanser Verlag |     1 |     600 |        600 |
+| C. Hanser [u.a.]                             |     1 |       3 |          3 |
+| [Hanser]                                     |     1 |     293 |        293 |
+| C. Hanser Verl.                              |     1 |     281 |        281 |
+| (Hanser)                                     |     1 |     275 |        275 |
+| Hanser **5107516                             |     1 |     252 |        252 |
+| Hanser, Carl                                 |     1 |       2 |          2 |
+| Wien : Hanser                                |     1 |     222 |        222 |
+
+**** Heyne
+
+| publisher                      | items |   pages | mean pages |
+|--------------------------------+-------+---------+------------|
+| Heyne                          | 23442 | 7859581 |        335 |
+| Wilhelm Heyne Verlag           |   233 |  105761 |        453 |
+| [Heyne]                        |    45 |   14955 |        332 |
+| Coll. Rolf Heyne               |    22 |    9121 |        414 |
+| Heyne fliegt                   |     5 |    2216 |        443 |
+| Wilhem Heyne Verlag            |     2 |     526 |        263 |
+| Wilhelm Heyne Verlag **5107652 |     1 |     475 |        475 |
+| Wilhelm  Heyne Verlag          |     1 |     416 |        416 |
+| Heyne]                         |     1 |     365 |        365 |
+| Wilh. Heyne Verl.              |     1 |     352 |        352 |
+| Heyne***5107652                |     1 |     297 |        297 |
+| Wilh. Heyne                    |     1 |     159 |        159 |
+
+**** Campe
+
+| publisher                                      | items |  pages | mean pages |
+|------------------------------------------------+-------+--------+------------|
+| Hoffmann und Campe                             |  2172 | 679717 |        312 |
+| Hoffmann u. Campe                              |   657 | 215995 |        328 |
+| Hoffmann & Campe                               |   157 |  39303 |        250 |
+| Hoffmann & Campe Verl.                         |     3 |    677 |        225 |
+| Hoffman u. Campe                               |     2 |    629 |        314 |
+| Hoffmann und Campe Verlag                      |     1 |    509 |        509 |
+| Jacob Van Campen                               |     1 |    403 |        403 |
+| Hofmann und Campe                              |     1 |    297 |        297 |
+| Hoffman & Campe Verl.                          |     1 |    267 |        267 |
+| Hoffmann ; Campe                               |     1 |    223 |        223 |
+| Frölich u. Kaufmann im Hoffmann-u.-Campe-Verl. |     1 |    205 |        205 |
+| Hoffmann un[d] Campe                           |     1 |    174 |        174 |
+| Hoffmann und Campe, Heinrich-Heine-Verl.       |     1 |    164 |        164 |
+| Hoffmann un Campe                              |     1 |    142 |        142 |
+
+**** Insel
+
+| publisher                   | items |   pages | mean pages |
+|-----------------------------+-------+---------+------------|
+| Insel-Verl.                 |  6954 | 1611640 |        231 |
+| Insel-Verlag                |  2016 |  525820 |        260 |
+| Insel                       |   490 |  158769 |        324 |
+| Insel Verlag                |    93 |   23889 |        256 |
+| Insel Verl.                 |    73 |   13304 |        182 |
+| Inselverl.                  |    14 |    4689 |        334 |
+| [Insel-Verl.]               |    14 |    1356 |         96 |
+| Im Insel-Verlag             |     7 |     957 |        136 |
+| Suhrkamp Insel Publ. Boston |     7 |     914 |        130 |
+| [Insel-Verlag]              |     6 |     381 |         63 |
+| Insel-Verl                  |     6 |    1765 |        294 |
+| im Insel-Verlag             |     4 |      13 |          3 |
+| Insel-Verl.***5107848       |     3 |     528 |        176 |
+| Insel -Verl.                |     2 |     803 |        401 |
+| Leipzig : Insel-Verl.       |     2 |     382 |        191 |
+| Inselverlag                 |     2 |     291 |        145 |
+| Insel.-Verl.                |     2 |    1306 |        653 |
+| Insel- Verl.                |     2 |    1274 |        637 |
+| Insel-Verl. in Komm.        |     2 |     124 |         62 |
+| Insel. Verlag               |     1 |      91 |         91 |
+| Insel-Verlag]               |     1 |     661 |        661 |
+| Insel[-Verlag]              |     1 |      35 |         35 |
+| Insel-Verlag.               |     1 |     327 |        327 |
+| Insel.Verl.                 |     1 |     230 |        230 |
+| Verlags-Insel               |     1 |      21 |         21 |
+| [Insel Verl.]               |     1 |      18 |         18 |
+| S. Insel                    |     1 |      16 |         16 |
+| Insel-Verlag in Komm.]      |     1 |     146 |        146 |
+| Suhrkamp/Insel              |     1 |    1032 |       1032 |
+
+**** Kiepenheuer
+
+| publisher                                  | items |  pages | mean pages |
+|--------------------------------------------+-------+--------+------------|
+| Kiepenheuer und Witsch                     |  1507 | 433979 |        287 |
+| Kiepenheuer                                |  1253 | 325725 |        259 |
+| Kiepenheuer & Witsch                       |  1237 | 386322 |        312 |
+| Kiepenheuer u. Witsch                      |   294 |  91417 |        310 |
+| G. Kiepenheuer                             |   157 |  34399 |        219 |
+| Kiepenheuer-Bühnenvertriebs-GmbH           |    62 |   4357 |         70 |
+| Kiepenheuer Bühnenvertriebs-GmbH           |    57 |   2847 |         49 |
+| Müller & Kiepenheuer                       |    56 |   7323 |        130 |
+| Müller und Kiepenheuer                     |    20 |   5516 |        275 |
+| Kiepenheuer Bühnenvertriebs-GMBH           |    17 |   1232 |         72 |
+| Müller u. Kiepenheuer                      |    12 |   2536 |        211 |
+| Kiepenheuer, Bühnenvertriebs-GmbH          |     8 |    559 |         69 |
+| Kiepenheuer, Abt. Bühnenvertr.             |     5 |    496 |         99 |
+| Gustav Kiepenheuer                         |     4 |    622 |        155 |
+| Verlag Kiepenheuer & Witsch                |     4 |   1127 |        281 |
+| Kiepenheuer und Witsch [in Komm.]          |     3 |    360 |        120 |
+| Müller & J. Kiepenheuer                    |     2 |    400 |        200 |
+| Müller & [J.] Kiepenheuer                  |     2 |    335 |        167 |
+| Gustav Kiepenheuer Bühnenvertriebs-GmbH    |     2 |    253 |        126 |
+| Kiepenheuer-Bühnen-Vertriebs-GmbH          |     2 |    248 |        124 |
+| Kiepenheuer-Bühnenvertriebs-GMBH           |     2 |    209 |        104 |
+| Kiepenheuer Bühnen-Vertriebs-GmbH          |     2 |    195 |         97 |
+| Theaterverl. Kiepenheuer u. Witsch         |     2 |    158 |         79 |
+| Kiepenheuer-Bühnenvertriebs-Ges.           |     2 |    152 |         76 |
+| Gustav-Kiepenheuer-Bühnenvertriebs-GmbH    |     1 |     96 |         96 |
+| Kiepenheuer Bühnenvertr. G. m. b. H.       |     1 |     92 |         92 |
+| Gustav Kiepenheuer Bühnenvetriebs G.m.b.H. |     1 |     89 |         89 |
+| Kiepenheuer Bühnenvertriebs-GmbH.          |     1 |     79 |         79 |
+| Verlag Kiepenheuer & Witsch Bühnenvertrieb |     1 |     71 |         71 |
+| Verlag Kiepenheuer u. Witsch               |     1 |    520 |        520 |
+| Kiepenheuer [& Witsch]                     |     1 |    463 |        463 |
+| [Kiepenheuer]                              |     1 |    461 |        461 |
+| [Kiepenheuer & Witsch]                     |     1 |    434 |        434 |
+| Kiepenheuervertriebs-GmbH                  |     1 |     38 |         38 |
+| Verlag d. Dichtung G. Kiepenheuer          |     1 |     34 |         34 |
+| [Kiepenheuer & Witsch in Komm.]            |     1 |    292 |        292 |
+| Kiepenheuer,                               |     1 |    289 |        289 |
+| Kiepenheuer und& Witsch                    |     1 |    285 |        285 |
+| Kiepenheuer, Witsch & Co                   |     1 |    250 |        250 |
+| E. Kiepenheuer                             |     1 |    231 |        231 |
+| Kiepenheuer u. Witsch [in Komm.]           |     1 |    183 |        183 |
+| G. Kiepenheuerl                            |     1 |    167 |        167 |
+
+**** Luchterhand
+
+| publisher                    | items |  pages | mean pages |
+|------------------------------+-------+--------+------------|
+| Luchterhand                  |  2387 | 578934 |        242 |
+| Luchterhand-Literaturverl.   |   405 |  90944 |        224 |
+| Luchterhand-Literatur-Verl.  |     9 |   2189 |        243 |
+| [Luchterhand-Literaturverl.] |     6 |   1872 |        312 |
+| Luchterhand Literaturverl.   |     4 |   1128 |        282 |
+| Luchterhand Literaturverlag  |     2 |    390 |        195 |
+| Luchterhand, Literaturverl.  |     2 |    321 |        160 |
+| Luchterhand-Verl.            |     1 |     66 |         66 |
+
+**** Manesse
+
+| publisher                     | items |  pages | mean pages |
+|-------------------------------+-------+--------+------------|
+| Manesse-Verl.                 |   797 | 342248 |        429 |
+| Manesse-Verlag                |   192 |  96549 |        502 |
+| Manesse Verl.                 |   176 |  85037 |        483 |
+| Manesse                       |    16 |   5889 |        368 |
+| Manesse Verlag                |    15 |   4953 |        330 |
+| Manesse Verl. Conzett & Huber |     7 |   3199 |        457 |
+| Manesse-Verl. Conzett & Huber |     2 |   1729 |        864 |
+
+**** Merve
+
+| publisher            | items | pages | mean pages |
+|----------------------+-------+-------+------------|
+| Merve-Verl.          |   119 | 17498 |        147 |
+| Merve-Verlag         |    48 |  6102 |        127 |
+| Merve                |    13 |  1984 |        152 |
+| Merve Verlag         |     4 |   497 |        124 |
+| Merve -Verl.***90117 |     1 |   109 |        109 |
+
+**** Kimche
+
+| publisher                       | items | pages | mean pages |
+|---------------------------------+-------+-------+------------|
+| Nagel und Kimche                |   306 | 57944 |        189 |
+| Nagel & Kimche                  |   131 | 29431 |        224 |
+| Nagel u. Kimche                 |    37 |  6968 |        188 |
+| ; Frauenfeld : Nagel und Kimche |     1 |    87 |         87 |
+
+**** Piper
+
+| publisher                                   | items |   pages | mean pages |
+|---------------------------------------------+-------+---------+------------|
+| Piper                                       |  9257 | 2843569 |        307 |
+| R. Piper & Co.                              |    94 |   21558 |        229 |
+| [Piper]                                     |    11 |    4047 |        367 |
+| Piper & Co.                                 |     8 |    1346 |        168 |
+| R. Piper                                    |     4 |    1246 |        311 |
+| Kabel by Piper                              |     4 |    1021 |        255 |
+| Zürich : Piper                              |     3 |     824 |        274 |
+| R. Piper & Co Verlag                        |     2 |     674 |        337 |
+| Verl. d. Marées-Gesellschaft R. Piper & Co. |     1 |      85 |         85 |
+| Piper ; Zürich                              |     1 |     298 |        298 |
+| E. Piper                                    |     1 |      23 |         23 |
+| E. Piper Ring-Verl.                         |     1 |      20 |         20 |
+| R. Piper & Co                               |     1 |     192 |        192 |
+| Piper [in Komm.]                            |     1 |      19 |         19 |
+| R. Piper & Co. G. m. b. H.                  |     1 |     121 |        121 |
+| Piper & The Grüne Kraft                     |     1 |     117 |        117 |
+| Verl. d. Marées-Gesellschaft Piper          |     1 |     102 |        102 |
+
+**** Rogner
+
+| publisher                               | items | pages | mean pages |
+|-----------------------------------------+-------+-------+------------|
+| Rogner und Bernhard                     |    86 | 22700 |        263 |
+| Rogner und Bernhard bei Zweitausendeins |    48 | 20085 |        418 |
+| Rogner u. Bernhard                      |    33 |  8608 |        260 |
+| Rogner & Bernhard                       |    32 | 10912 |        341 |
+| Rogner & Bernhard bei Zweitausendeins   |    11 |  3197 |        290 |
+| Rogner u. Bernhard bei Zweitausendeins  |    10 |  3492 |        349 |
+| Kein & Aber, vormals Rogner & Bernhard  |     1 |   320 |        320 |
+| Rogner and Bernhard bei Zweitausendeins |     1 |   302 |        302 |
+| Rogner und Bernard                      |     1 |   185 |        185 |
+
+**** Rowohlt
+
+| publisher                            | items |   pages | mean pages |
+|--------------------------------------+-------+---------+------------|
+| Rowohlt                              | 25735 | 6033435 |        234 |
+| Rowohlt-Taschenbuch-Verl.            |  3843 | 1184020 |        308 |
+| Rowohlt Berlin                       |   398 |  103526 |        260 |
+| E. Rowohlt                           |   214 |   54114 |        252 |
+| Rowohlt-Taschenbuch-Verlag           |   154 |   37430 |        243 |
+| Rowohlt Taschenbuch Verlag           |   145 |   50687 |        349 |
+| Rowohlt Polaris                      |    43 |   17294 |        402 |
+| Rowohlt-Theater-Verlag               |    37 |    5157 |        139 |
+| Rowohlt G. m. b. H.                  |    21 |    6662 |        317 |
+| Rowohlt[-Taschenbuch-Verl.]          |    11 |    2155 |        195 |
+| Rowohlt-Taschenbuchverl.             |     7 |    2182 |        311 |
+| Rowohlt G.m.b.H.                     |     6 |    1880 |        313 |
+| Ernst Rowohlt                        |     5 |     647 |        129 |
+| Rowohlt, Theater-Verlag              |     5 |     601 |        120 |
+| [E. Rowohlt]                         |     5 |     175 |         35 |
+| Rowohlt-Taschenbuch-Verl.***5108801  |     3 |     929 |        309 |
+| Rowohlt-Taschenbuch Verl.            |     3 |     832 |        277 |
+| Rowohlt-Verl.                        |     3 |     580 |        193 |
+| Rowohlt Verl.                        |     3 |     115 |         38 |
+| Rowohlt-Taschenbuch-Verl             |     3 |    1050 |        350 |
+| [Rowohlt-Taschenbuch-Verl.]          |     3 |    1044 |        348 |
+| Rowohlt Verlag                       |     2 |     806 |        403 |
+| Rowohlt-Taschenbuch-verl.            |     2 |     632 |        316 |
+| Rowohlt Taschenbuch                  |     2 |     575 |        287 |
+| Rowohlt Berlin***5106439             |     2 |     536 |        268 |
+| Ernst Rowohlt Verl.                  |     2 |     280 |        140 |
+| Rowohlt- Taschenbuch-Verlag          |     1 |     511 |        511 |
+| Rowohlt Taschenbuch-Verl.            |     1 |     511 |        511 |
+| Rowohlt [Verl. G.m.b.H.]             |     1 |     398 |        398 |
+| Rowohlt Verl. G. m. b. H.            |     1 |     394 |        394 |
+| RowohltTtaschenbuch-Verl.            |     1 |     391 |        391 |
+| Rowohlt-Taschenbuch--Verl.           |     1 |     379 |        379 |
+| Rowohlts                             |     1 |     375 |        375 |
+| Rowohlt V.                           |     1 |      37 |         37 |
+| E. Rowohlt Verl.                     |     1 |     336 |        336 |
+| Rowohlt Hundert Augen                |     1 |     301 |        301 |
+| Ernst Rowohlt Verlag                 |     1 |     281 |        281 |
+| Rowohlt-Taschnebuch-Verl.            |     1 |     252 |        252 |
+| [J. Rowohlt]                         |     1 |      24 |         24 |
+| Rowohlt-Taschenbuch-Verl. **5108801  |     1 |     235 |        235 |
+| Rowohlt-Taschenbuch -Verl.           |     1 |     220 |        220 |
+| Rowohlt-Taschenbuch -Verl.***5108801 |     1 |     190 |        190 |
+| Rowohlt-Taschenbuchverlag            |     1 |     176 |        176 |
+| [Rowohlt]                            |     1 |      16 |         16 |
+| Rowohlt-Taschenbuch.Verl.            |     1 |     154 |        154 |
+| Rowohlt-Taschenbuch-Ausg.            |     1 |     151 |        151 |
+| Rowohlt-Tashenbuch-Verl.             |     1 |     142 |        142 |
+| Rowohlt-[Taschenbuch-Verl.]          |     1 |     141 |        141 |
+| Rowohlt [G. m. b. H.]                |     1 |     110 |        110 |
+
+**** Schöffling
+
+| publisher        | items | pages | mean pages |
+| Schöffling       |   329 | 83966 |        255 |
+| Schöffling & Co. |    14 |  3941 |        281 |
+| [Schöffling]     |     2 |   579 |        289 |
+
+**** Suhrkamp
+
+| publisher                                 | items |   pages | mean pages |
+|-------------------------------------------+-------+---------+------------|
+| Suhrkamp                                  | 15074 | 3750752 |        248 |
+| Suhrkamp Verlag                           |    72 |   18108 |        251 |
+| Suhrkamp-Taschenbuch-Verlag [in Komm.]    |    53 |   13156 |        248 |
+| Suhrkamp-Theaterverlag                    |    29 |    1892 |         65 |
+| Jüdischer Verl. im Suhrkamp-Verl.         |    23 |    4718 |        205 |
+| Suhrkamp-Verl.                            |    22 |    6175 |        280 |
+| Suhrkamp [in Komm.]                       |    17 |    3611 |        212 |
+| S. Fischer Verl. [Suhrkamp]               |    17 |    2305 |        135 |
+| Suhrkamp-Taschenbuch-Verlag               |    14 |    3913 |        279 |
+| Suhrkamp Insel Publ. Boston               |     7 |     914 |        130 |
+| Suhrkamp-Theaterverl.                     |     7 |     573 |         81 |
+| [Suhrkamp]                                |     7 |    2803 |        400 |
+| Suhrkamp Verl.                            |     6 |     700 |        116 |
+| Jüdischer Verlag im Suhrkamp Verlag       |     6 |    1795 |        299 |
+| Suhrkamp-Taschenbuchverlag [in Komm.]     |     4 |     906 |        226 |
+| Suhrkamp vorm. S. Fischer                 |     4 |     795 |        198 |
+| Suhrkamp-Taschenbuch-Verl.                |     3 |     813 |        271 |
+| Suhrkamp Publ.                            |     2 |     787 |        393 |
+| Suhrkamp Publ. New York                   |     2 |     484 |        242 |
+| Suhrkamp-Taschenbuch- Verlag [in Komm.]   |     2 |     218 |        109 |
+| Suhrkamp, Theaterverlag                   |     1 |      82 |         82 |
+| Suhrkamp-Theater-Verl.                    |     1 |      75 |         75 |
+| Suhrkamp Theaterverl.                     |     1 |      53 |         53 |
+| Suhrkamp-Verl. vorm. S. Fischer           |     1 |     507 |        507 |
+| Suhrkamp, Theaterverl.                    |     1 |      48 |         48 |
+| Suhrkamp-Taschenbuch-Velag [in Komm.]     |     1 |     338 |        338 |
+| Suhrkamp-Verlag                           |     1 |     251 |        251 |
+| Suhrkamp55                                |     1 |     211 |        211 |
+| S. Fischer [Suhrkamp-Verl.]               |     1 |     109 |        109 |
+| Suhrkamp/Insel                            |     1 |    1032 |       1032 |
+| S. Fischer Verl. [Suhrkamp.]              |     1 |     102 |        102 |
+| Jüdischer Verl. im Suhrkamp-Verl.***98602 |     1 |     100 |        100 |
+
+**** Ullstein
+
+| publisher                                         | items |   pages | mean pages |
+|---------------------------------------------------+-------+---------+------------|
+| Ullstein                                          | 10706 | 3117354 |        291 |
+| Ullstein-Taschenbuchverl.                         |   196 |   65994 |        336 |
+| Ullstein Taschenbücher-Verl.                      |   192 |   38487 |        200 |
+| Moewig bei Ullstein                               |   153 |   39767 |        259 |
+| Ullstein A. G.                                    |   112 |   28946 |        258 |
+| Ullstein [A. G.]                                  |    60 |   17017 |        283 |
+| Ullstein A.G.                                     |    37 |    9849 |        266 |
+| Ullstein A.-G.                                    |    31 |    7135 |        230 |
+| Ullstein [A.G.]                                   |    26 |    6892 |        265 |
+| Ullstein-Verl.                                    |    22 |    9888 |        449 |
+| Ullstein-Taschenbuch-Verl.                        |    17 |    6151 |        361 |
+| Ullstein-Taschenbücher-Verl.                      |    16 |    3237 |        202 |
+| Ullstein Taschenbücher Verl.                      |    15 |    2926 |        195 |
+| Ullstein [& Co.]                                  |     8 |    2063 |        257 |
+| Ullstein [A.-G.]                                  |     7 |    1715 |        245 |
+| Econ-Ullstein-List-Verl.                          |     6 |    2874 |        479 |
+| Ullstein & Co.                                    |     6 |    2000 |        333 |
+| Ullstein Extra                                    |     6 |    1521 |        253 |
+| Ullstein AG                                       |     4 |     785 |        196 |
+| Safari bei Ullstein                               |     4 |    1151 |        287 |
+| [Ullstein & Co.]                                  |     4 |    1100 |        275 |
+| Ullstein Taschenbuch Verlag                       |     3 |     933 |        311 |
+| Fridolin-Verlag Ullstein A.-G.                    |     3 |      87 |         29 |
+| Ullstein [Deutscher Verl.]                        |     3 |     838 |        279 |
+| Verlag Ullstein                                   |     3 |     515 |        171 |
+| Ullstein]                                         |     3 |    1462 |        487 |
+| Ullstein Taschenbuchverl.                         |     2 |     635 |        317 |
+| Ullstein extra                                    |     2 |     616 |        308 |
+| [Ullstein]                                        |     2 |     564 |        282 |
+| Propyläen-Verl. Ullstein                          |     2 |     463 |        231 |
+| Verlag Ullstein GmbH                              |     2 |     446 |        223 |
+| Ullstein Taschenbuch-Verl.                        |     2 |     387 |        193 |
+| Ullstein Mosby                                    |     2 |     181 |         90 |
+| Ullstein & Kindler                                |     2 |     135 |         67 |
+| Berliner Morgenpost, Ullsteinhaus                 |     2 |     111 |         55 |
+| Ullstein/Kindler                                  |     1 |      95 |         95 |
+| Ullsteinhaus                                      |     1 |      64 |         64 |
+| Bauwelt-Verlag Ullstein [A. G.]                   |     1 |      63 |         63 |
+| Ullstein-Kindler                                  |     1 |     562 |        562 |
+| Verlag der Ullstein-Schnittmuster                 |     1 |      48 |         48 |
+| Deutscher Verl. d. Ullstein A.G.                  |     1 |     476 |        476 |
+| [Ullstein A.G.]                                   |     1 |      42 |         42 |
+| Slowo [Verlagsgesellschaft, durch Ullstein & Co.] |     1 |     359 |        359 |
+| Slowo-Verlagsgesellschaft [durch Ullstein & Co]   |     1 |     333 |        333 |
+| Bauwelt-Verl. [Ullstein]                          |     1 |      32 |         32 |
+| Ullstein [Taschenbücher Verl.]                    |     1 |     313 |        313 |
+| Ullstein-Taschenbuch                              |     1 |     301 |        301 |
+| Ullsteine                                         |     1 |     285 |        285 |
+| Ullstein Verl.                                    |     1 |     281 |        281 |
+| Rot-Blau Verl. Ullstein                           |     1 |     279 |        279 |
+| Rot-Blau-Verl. [Ullstein]                         |     1 |     247 |        247 |
+| Ullstein Bücher                                   |     1 |     246 |        246 |
+| Ullstein, Kindler                                 |     1 |     215 |        215 |
+| Ullstein-Taschenbücher-Verlag                     |     1 |     193 |        193 |
+| Ullstein **5109136                                |     1 |     188 |        188 |
+| Ullstein Taschenbücher- Verl.                     |     1 |     173 |        173 |
+| Verl. Ullstein                                    |     1 |     171 |        171 |
+| Slowo Verlagsgesellschaft [durch Ullstein & Co.]  |     1 |     151 |        151 |
+| Ullstein Taschen-bücher Verl.                     |     1 |     149 |        149 |
+| Ullstein Taschenbücherverl.                       |     1 |     127 |        127 |
+| Verl. d. Grünen Post Ullstein                     |     1 |     119 |        119 |
+
+**** Engeler
+
+| publisher      | items | pages | mean pages |
+|----------------+-------+-------+------------|
+| Engeler        |    89 | 15134 |        170 |
+| [Engeler]      |    10 |  1263 |        126 |
+| Engeler-Verlag |     4 |   496 |        124 |
+| U. Engeler     |     1 |   197 |        197 |
+| [Urs Engeler]  |     1 |   122 |        122 |
+
+**** Verbrecher
+
+| publisher         | items | pages | mean pages |
+|-------------------+-------+-------+------------|
+| Verbrecher-Verl.  |   119 | 28389 |        238 |
+| Verbrecher Verlag |    23 |  8541 |        371 |
+| Verbrecher        |     1 |   255 |        255 |
+| Verbrecher Verl.  |     1 |   199 |        199 |
+
+**** Voland
+
+| publisher                  | items | pages | mean pages |
+|----------------------------+-------+-------+------------|
+| Voland & Quist             |    18 |  3590 |        199 |
+| Voland                     |    16 |  3457 |        216 |
+| Verlag Voland & Quist      |     3 |   771 |        257 |
+| Voland und Quist           |     1 |   171 |        171 |
+| Verlag Voland & Quist GmbH |     1 |   157 |        157 |
+
+**** Wallstein
+
+| publisher         | items |  pages | mean pages |
+|-------------------+-------+--------+------------|
+| Wallstein-Verl.   |   498 | 127736 |        256 |
+| Wallstein Verlag  |    47 |  12373 |        263 |
+| Wallstein         |    15 |   3425 |        228 |
+| D A Wallstein     |     2 |    864 |        432 |
+| Wallstein Verl.   |     1 |    526 |        526 |
+| [Wallstein-Verl.] |     1 |     36 |         36 |
+
+("D A Wallstein" seems to have contained a TAB between "D" and "A")
+
+**** Wiesenburg
+
+| publisher         | items | pages | mean pages |
+|-------------------+-------+-------+------------|
+| Wiesenburg-Verl.  |   123 | 17655 |        143 |
+| Wiesenburg        |    15 |  2046 |        136 |
+| Wiesenburg Verlag |     9 |  1342 |        149 |
+
+*** TODO ranking per publisher
+
+*** beware of errors
 #+BEGIN_SRC sh
   zcat publisher.tsv.gz | sort -S1G -nr | grep Brockhaus | head -n20
 #+END_SRC
@@ -867,120 +1898,6 @@ Top publishers:
 | Theologischer Verl. Brockhaus                  |        16 |
 | M. Brockhaus                                   |         9 |
 | SCM Brockhaus                                  |         8 |
-*** TODO average extent per publisher
-**** extract raw data
-#+BEGIN_SRC sh
-  ./json2json.py -n -p publisher,pages_norm | gzip -c > publisher_pages.tsv.gz
-#+END_SRC
-**** DONE filter outliers and errors
-remove:
-- pages > 5000
-- no pages
-- no publisher
-
-#+BEGIN_SRC sh
-  zcat publisher_pages.tsv.gz \
-      | awk -F'\t' '{if ($1 != "" && $2 != "" && $2 <= 5000) print $1"\t"$2}' \
-      | gzip -c > publisher_pages_filtered.tsv.gz
-#+END_SRC
-
-**** TODO ranking per publisher
-
-have to clarify normalisation first
-
-
-**** DONE average book length per publisher
-
-# would be easy with sqlite3 - install!
-
-Count per publisher:
-#+BEGIN_SRC sh :results silent
-  zcat publisher_pages_filtered.tsv.gz \
-      | awk -F'\t' '{sum[$1]+=$2; count[$1]+=1} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", p, sum[p], count[p], int(sum[p]/count[p]))}' \
-	    > publisher_pages_stats.tsv
-#+END_SRC
-
-***** top 20 by page sum
-#+BEGIN_SRC sh
-  sort -t$'\t' -rnk2 publisher_pages_stats.tsv | head -n20
-#+END_SRC
-
-| publisher                          |    pages | items | mean |
-|------------------------------------+----------+-------+------|
-| Springer                           | 21319843 | 65100 |  327 |
-| Lang                               | 14134698 | 51255 |  276 |
-| Heyne                              | 12587106 | 41094 |  306 |
-| Beck                               | 10391848 | 24630 |  422 |
-| Rowohlt                            |  9237092 | 40148 |  230 |
-| Goldmann                           |  7776002 | 26491 |  294 |
-| Herder                             |  5811171 | 29036 |  200 |
-| Suhrkamp                           |  5675784 | 21129 |  269 |
-| Ullstein                           |  5310460 | 19025 |  279 |
-| Reclam                             |  4885858 | 25831 |  189 |
-| Dt. Taschenbuch-Verl.              |  4489154 | 17122 |  262 |
-| Piper                              |  4349318 | 14524 |  299 |
-| Fischer-Taschenbuch-Verl.          |  4060245 | 14549 |  279 |
-| Shaker                             |  4013108 | 22838 |  176 |
-| RM-Buch-und-Medien-Vertrieb [u.a.] |  3813996 | 11215 |  340 |
-| Weltbild                           |  3586937 | 10636 |  337 |
-| Oldenbourg                         |  3469927 | 11820 |  294 |
-| Thieme                             |  3317355 | 12559 |  264 |
-| de Gruyter                         |  3281362 | 10534 |  312 |
-| Kohlhammer                         |  3239885 | 14734 |  220 |
-
-***** top 20 by mean page count
-
-#+BEGIN_SRC sh
-   sort -t$'\t' -rnk4 publisher_pages_stats.tsv | head -n20
-#+END_SRC
-
-| publisher                                                                    | pages | items | mean |
-|------------------------------------------------------------------------------+-------+-------+------|
-| Ronny Szpetecki                                                              |  4676 |     1 | 4676 |
-| Kantonale Denkmalpflege Graubünden                                           |  4248 |     1 | 4248 |
-| Großversandhaus Quelle                                                       |  3947 |     1 | 3947 |
-| Didacta, Ausstellungs- und Verl.-Ges.                                        |  3700 |     1 | 3700 |
-| Chemical Rubber Publishing Co.                                               |  3604 |     1 | 3604 |
-| Deutscher Sparkassenverlag Stuttgart                                         |  3295 |     1 | 3295 |
-| Ander                                                                        |  6398 |     2 | 3199 |
-| Maṭbaʿat al-Ahrām                                                            |  3056 |     1 | 3056 |
-| Deutsche Demokratische Republik, Staatl. Plankommission, Statist. Zentralamt |  2967 |     1 | 2967 |
-| Burke's Peerage Ltd.                                                         |  2867 |     1 | 2867 |
-| [PONS GmbH]                                                                  |  2837 |     1 | 2837 |
-| Life Publ. International                                                     |  2776 |     1 | 2776 |
-| Genfer Bibelgesellschaft                                                     |  2673 |     1 | 2673 |
-| Hakubunkan Verl.                                                             |  2633 |     1 | 2633 |
-| McClelland and Stewart Inc.                                                  |  2573 |     1 | 2573 |
-| Schraad                                                                      |  2560 |     1 | 2560 |
-| Verlagsh. Freya G. m. b. H.                                                  |  2516 |     1 | 2516 |
-| Monte Avila                                                                  |  2516 |     1 | 2516 |
-| Pierer, Heymann                                                              |  2500 |     1 | 2500 |
-| Jixie-Gongye-Chubanshe                                                       |  2462 |     1 | 2462 |
-***** scatter plot
-
-How is the number of items per publisher related to the average number
-of pages per publisher?
-
-#+BEGIN_SRC gnuplot :results silent
-reset
-set term png enhanced size 800,600
-set out 'publisher_pages.png'
-
-set grid
-set datafile separator "\t"
-set logscale
-
-set xlabel 'number of items
-set ylabel 'mean number of pages per item'
-
-plot 'publisher_pages_stats.tsv' using 3:4 with points pt 7 title ''
-
-set term svg enhanced size 800,600
-set out 'publisher_pages.svg'
-replot
-#+END_SRC
-
-[[publisher_pages.png]]
 
 ** temporal distribution
 Let's plot the median number of pages per decade:

@@ -646,7 +646,7 @@ replot
 | [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2012 |
 | [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2002 |
 | [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1947 |
-| [[https://www.wikidata.org/wiki/Q6701, Q6714][Jacob Grimm, Wilhelm Grimm]] |      1922 |
+| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]], [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]] |      1922 |
 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1904 |
 | [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1858 |
 | [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1774 |
@@ -657,6 +657,11 @@ replot
 | [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |      1652 |
 | [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |      1597 |
 | [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |      1552 |
+
+One restriction here is that we do not count works with more than one
+author for the individual authors. For instance, Jacob Grimm and
+Wilhelm Grimm appear only as a pair, although, individually, they
+would score higher if the works they co-authored were split up.
 
 *** by page count
 #+BEGIN_SRC sh

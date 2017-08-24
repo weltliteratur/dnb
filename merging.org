@@ -1883,6 +1883,9 @@ be regarded the same publisher.
 | Wallstein Verl.   |     1 |    526 |        526 |
 | [Wallstein-Verl.] |     1 |     36 |         36 |
 
+There was likely a TAB between "D" and "A" in "D A Wallstein" which
+needs to be fixed.
+
 **** Wiesenburg
 
 | publisher         | items | pages | mean pages |
@@ -1892,6 +1895,38 @@ be regarded the same publisher.
 | Wiesenburg Verlag |     9 |  1342 |        149 |
 
 *** TODO ranking per publisher
+
+**** Aufbau-Verlag
+#+BEGIN_SRC sh
+  ./json2json.py -f -m publisher_map.tsv -p "issued_norm,pages_norm,title,_id,publisher_norm,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912 && $5 == "Aufbau-Verlag") {print $2"\t[[http://d-nb.info/"$4"]["$3"]]"}}' \
+      | sort -S1G -nr | head -n20
+#+END_SRC
+
+| book                              | pages |
+|-----------------------------------+-------|
+| [[http://d-nb.info/988488205][Der Pate von Bombay]]               |  1359 |
+| [[http://d-nb.info/1001932447][Krieg und Frieden]]                 |  1291 |
+| [[http://d-nb.info/576696439][Der Leidensweg]]                    |  1286 |
+| [[http://d-nb.info/576696420][Der Leidensweg]]                    |  1286 |
+| [[http://d-nb.info/1011565994][Wolf unter Wölfen]]                 |  1243 |
+| [[http://d-nb.info/98848823X][Anna Karenina]]                     |  1227 |
+| [[http://d-nb.info/945188846][Der Platz]]                         |  1211 |
+| [[http://d-nb.info/988488272][Die Brüder Karamasow]]              |  1200 |
+| [[http://d-nb.info/949346470][Anna Karenina]]                     |  1183 |
+| [[http://d-nb.info/451896025][Ästhetik]]                          |  1174 |
+| [[http://d-nb.info/983973261][Im Garten der sieben Dämmerungen]]  |  1133 |
+| [[http://d-nb.info/957514654][Der Garten der sieben Dämmerungen]] |  1133 |
+| [[http://d-nb.info/984042229][Krieg und Frieden]]                 |  1087 |
+| [[http://d-nb.info/994945302][Historien]]                         |  1086 |
+| [[http://d-nb.info/994945329][Tragödien]]                         |  1066 |
+| [[http://d-nb.info/369361520][Peter der Erste]]                   |  1054 |
+| [[http://d-nb.info/574987029][Der Zauberberg]]                    |  1034 |
+| [[http://d-nb.info/573077118][Wolf unter den Wölfen]]             |  1031 |
+| [[http://d-nb.info/800292839][Der Zauberberg]]                    |  1028 |
+| [[http://d-nb.info/574987053][Der Zauberberg]]                    |  1028 |
+
 ** DONE temporal distribution
 Let's plot the median number of pages per year and per decade:
 #+BEGIN_SRC sh :results silent

@@ -627,6 +627,13 @@ replot
 
 - TODO: plot distribution of the number of authors per work
 
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
+	    > author_pages_stats.tsv
+#+END_SRC
+
 *** by item count
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" \
@@ -661,14 +668,46 @@ replot
 One restriction here is that we do not count works with more than one
 author for the individual authors. For instance, Jacob Grimm and
 Wilhelm Grimm appear only as a pair, although, individually, they
-would score higher if the works they co-authored were split up.
+would score higher if the works they co-authored were split up:
+
+#+BEGIN_SRC sh
+  grep "Jacob Grimm" author_pages_stats.tsv
+#+END_SRC
+
+| author                                                          |  pages | items | mean pages |
+|-----------------------------------------------------------------+--------+-------+------------|
+| *Jacob Grimm*, Wilhelm Grimm                                    | 247233 |  1922 |        128 |
+| *Jacob Grimm*                                                   |  14650 |    89 |        164 |
+| Ludwig Bechstein, *Jacob Grimm*, Wilhelm Grimm                  |   1043 |     9 |        115 |
+| Bettina von Arnim, *Jacob Grimm*, Wilhelm Grimm                 |    418 |     1 |        418 |
+| Walt Disney, *Jacob Grimm*                                      |     29 |     1 |         29 |
+| Jernej Kopitar, *Jacob Grimm*                                   |    217 |     1 |        217 |
+| Karl Hartwig Gregor von Meusebach, *Jacob Grimm*, Wilhelm Grimm |    426 |     1 |        426 |
+| Johann Andreas Christian Löhr, *Jacob Grimm*, Wilhelm Grimm     |    128 |     1 |        128 |
+|-----------------------------------------------------------------+--------+-------+------------|
+| *sum*                                                           | 264144 |  2025 |        130 |
+#+TBLFM: @10$2=vsum(@I..@II)::@10$3=vsum(@I..@II)::@10$4=$-2/$-1;%2.0f
+
+#+BEGIN_SRC sh
+  grep "Wilhelm Grimm" author_pages_stats.tsv
+#+END_SRC
+
+| author                                                          |  pages | items | mean pages |
+|-----------------------------------------------------------------+--------+-------+------------|
+| Jacob Grimm, *Wilhelm Grimm*                                    | 247233 |  1922 |        128 |
+| *Wilhelm Grimm*                                                 |   2598 |    13 |        199 |
+| Bettina von Arnim, Jacob Grimm, *Wilhelm Grimm*                 |    418 |     1 |        418 |
+| Ludwig Bechstein, Jacob Grimm, *Wilhelm Grimm*                  |   1043 |     9 |        115 |
+| Karl Hartwig Gregor von Meusebach, Jacob Grimm, *Wilhelm Grimm* |    426 |     1 |        426 |
+| Johann Andreas Christian Löhr, Jacob Grimm, *Wilhelm Grimm*     |    128 |     1 |        128 |
+|-----------------------------------------------------------------+--------+-------+------------|
+| *sum*                                                           | 251846 |  1947 |        129 |
+#+TBLFM: @8$2=vsum(@I..@II)::@8$3=vsum(@I..@II)::@8$4=$-2/$-1;%2.0f
 
 *** by page count
+
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
-      | sort -S1G -nr | head -n20
+  sort -S1G -nr author_pages_stats.tsv | head -n20
 #+END_SRC
 
 | author                     |   pages | items | mean pages |
@@ -695,13 +734,6 @@ would score higher if the works they co-authored were split up.
 | Sigmund Freud              |  377159 |  1493 |        252 |
 
 *** by mean page count
-
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
-	    > author_pages_stats.tsv
-#+END_SRC
 
 #+BEGIN_SRC sh
   sort -S1G -nrk3 author_pages_stats.tsv | head -n20
@@ -933,8 +965,8 @@ Only items with no more than 5000 pages:
 | Ministero per i Beni Culturali e Ambientali, Ufficio Centrale per i Beni Archivistici |     1423 |     1 |       1423 |
 | E.D.A.F.                                                                              |     1420 |     1 |       1420 |
 
-How is the number of items per publisher related to the average number
-of pages per publisher?
+How is the number of items per publisher related to the mean number of
+pages per publisher?
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
                  DNBTitel_normalised_enriched.json.gz \

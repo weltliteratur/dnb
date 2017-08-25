@@ -157,7 +157,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M80.2,16.7 L80.2,542.4 L775.0,542.4 L775.0,16.7 L80.2,16.7 Z  '/>	<g transform="translate(565.8,73.4)" stroke="none" fill="rgb(255,0,0)" font-family="Arial" font-size="12.00"  text-anchor="end">
+	<path stroke='black'  d='M80.2,16.7 L80.2,542.4 L775.0,542.4 L775.0,16.7 L80.2,16.7 Z  '/>	<g transform="translate(563.4,73.4)" stroke="none" fill="rgb(255,0,0)" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" >250</tspan></text>
 	</g>
 	<g transform="translate(574.2,73.4)" stroke="none" fill="rgb(255,0,0)" font-family="Arial" font-size="12.00"  text-anchor="start">

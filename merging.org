@@ -767,7 +767,7 @@ There are probably some errors among those ...
 #+BEGIN_SRC gnuplot :results silent
 reset
 set encoding utf8
-set term pngcairo enhanced size 800,600 font "Verdana,10"
+set term pngcairo enhanced size 800,600
 set out 'author_pages.png'
 
 set grid
@@ -2865,7 +2865,7 @@ set ylabel 'items with that number of pages'
 set logscale
 set xrange [10:1000]
 
-set label "250" right at 250,500 tc rgb 'red'
+set label "250" right at 250,500 tc rgb 'red' offset -.3,0
 set label "260" left at 260,500 tc rgb 'red' offset .3,0
 set arrow from 250,1 to 250,1000 nohead lc rgb 'red'
 set arrow from 260,1 to 260,1000 nohead lc rgb 'red'

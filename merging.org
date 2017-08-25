@@ -828,13 +828,6 @@ replot
 | [[http://d-nb.info/944603440][Das grosse Buch der Olympischen Spiele]]       |   3320 |
 
 ** DONE top publishers
-5. Hauptanliegen sollten für dieses Mal die Verlage und deren
-Seitenpolitik sein: Durchschnittliche Länge von Büchern pro Verlag
-(Suhrkamp, Rowohlt, Aufbau, Hanser, Eichborn, …) – wobei ich hier Bücher
-über 5.000 Seiten weglassen würde, weil das offenbar Fehler sind. – Und
-ein Längenranking (Top-20?) pro Verlag – die kann man dann
-handbereinigen, falls mal nichtliterarische Werke darunter gefallen
-sind, denn es sind ja nicht so viele in einer Top-20-Liste.
 
 *** DONE by item count
 
@@ -996,7 +989,6 @@ replot
 [[publisher_pages.png]]
 
 *** DONE normalisation
-**** DONE mapping table
 
 Select specific publishers from this list:
 | Ammann                      |
@@ -1015,6 +1007,7 @@ Select specific publishers from this list:
 | Merve                       |
 | Nagel & Kimche              |
 | Piper                       |
+| Reclam                      |
 | Rogner & Bernhard           |
 | Rowohlt                     |
 | Schöffling & Co.            |
@@ -1025,7 +1018,6 @@ Select specific publishers from this list:
 | Voland & Quist              |
 | Wallstein                   |
 | Wiesenburg                  |
-
 
 #+BEGIN_SRC sh :results raw
   for publisher in Ammann Aufbau Berlin Blumenbar Eichborn Goldmann Hanser Heyne Campe Insel Kiepenheuer Luchterhand Manesse Merve Kimche Piper Rogner Rowohlt Schöffling Suhrkamp Ullstein Engeler Verbrecher Voland Wallstein Wiesenburg; do
@@ -1038,7 +1030,14 @@ Select specific publishers from this list:
 #+END_SRC
 
 Cleaning up the publishers now by deleting all rows which should not
-be regarded the same publisher.
+be regarded the same publisher and then creating a big intermediate
+file:
+#+BEGIN_SRC sh
+  ./json2json.py -m publisher_map.tsv -f -p "issued_norm,pages_norm,publisher_norm,title,_id,creator_wd.*.name,creator_wd.*.id,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print $0}' \
+  > publisher_data.tsv
+#+END_SRC
 
 **** Ammann
 
@@ -1930,6 +1929,10 @@ needs to be fixed.
 
 These rankings only comprise the normalised publishers!
 
+TODO: The rankings by page count and mean page count are currently
+without the 5000 pages limit ... but only Goldmann is affected due to
+the error with [[http://d-nb.info/920918131][Tim]].
+
 **** by item count
 #+BEGIN_SRC sh
   cut -f3 publisher_data.tsv | sort -S1G | uniq -c | sort -nr
@@ -2040,14 +2043,6 @@ These rankings only comprise the normalised publishers!
 | Merve                       |    26190 |   185 |        141 |
 
 *** DONE ranking per publisher
-
-Create big intermediate file:
-#+BEGIN_SRC sh
-  ./json2json.py -m publisher_map.tsv -f -p "issued_norm,pages_norm,publisher_norm,title,_id,creator_wd.*.name,creator_wd.*.id,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) print $0}' \
-  > publisher_data.tsv
-#+END_SRC
 
 Iterate over publishers:
 #+BEGIN_SRC sh :results raw

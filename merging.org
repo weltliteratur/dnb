@@ -476,7 +476,7 @@ TODO: add Wikidata fields
 
 ** fill index
 
-* TODO analysis
+* DONE analysis
 data filters:
 1. ~issued_norm~ >= 1912
 2. author has [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata
@@ -827,7 +827,7 @@ replot
 | [[http://d-nb.info/576168084][Complete Works]]                               |   3360 |
 | [[http://d-nb.info/944603440][Das grosse Buch der Olympischen Spiele]]       |   3320 |
 
-** TODO top publishers
+** DONE top publishers
 5. Hauptanliegen sollten für dieses Mal die Verlage und deren
 Seitenpolitik sein: Durchschnittliche Länge von Büchern pro Verlag
 (Suhrkamp, Rowohlt, Aufbau, Hanser, Eichborn, …) – wobei ich hier Bücher
@@ -2885,3 +2885,54 @@ replot
 #+END_SRC
 
 [[issued_1955.png]]
+** comparison to [[1001-books]] top list
+
+Plot cumulative frequency distribution of the number of pages:
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'cumulative_page_distrib.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'number of pages'
+set ylabel 'P[x >= number of pages]'
+set logscale x
+
+# divide the y-value by the number of books in the dataset
+plot \
+  '1001-books/counts.tsv' using 1:($2/1001) smooth cumulative with lines title '1001',\
+  'pages_freq.tsv' using 1:($2/1029609) smooth cumulative with lines title 'DNB'
+
+set term svg enhanced size 800,600
+set out 'cumulative_page_distrib.svg'
+replot
+
+#+END_SRC
+
+[[cumulative_page_distrib.png]]
+
+There page distribution for the 1001 book list shows a skew towards
+books with longer pages. Let's compare two specific ranges of pages:
+more than 1000 pages vs. between 100 dnd 400 pages.
+
+#+BEGIN_SRC sh
+  echo "dataset\t>1000 pages\t100-400 pages\tratio"
+  for file in 1001-books/counts.tsv pages_freq.tsv; do
+      awk -F'\t' '
+          {
+            SUM += $2; 
+            if ($1 > 1000) SUMBIG += $2; 
+            if ($1 >= 100 && $1 <= 400) SUMSMALL += $2
+          } END {
+            printf("%s\t%s (%2.1f%%)\t%s (%2.1f%%)\t%2.3f\n", FILENAME, SUMBIG, SUMBIG/SUM*100, SUMSMALL, SUMSMALL/SUM*100, SUMBIG/SUMSMALL)
+          }' $file
+  done
+
+#+END_SRC
+
+| dataset    | >1000 pages | 100-400 pages  | ratio |
+|------------+-------------+----------------+-------|
+| 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.034 |
+| DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.006 |

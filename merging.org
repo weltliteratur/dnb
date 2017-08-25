@@ -868,6 +868,8 @@ sind, denn es sind ja nicht so viele in einer Top-20-Liste.
 | Weltbild                           |  4388 |
 | Maier                              |  4289 |
 
+After normalisation (see below)
+
 *** DONE by page count
 
 #+BEGIN_SRC sh
@@ -993,8 +995,8 @@ replot
 
 [[publisher_pages.png]]
 
-*** TODO normalisation
-**** TODO mapping table
+*** DONE normalisation
+**** DONE mapping table
 
 Select specific publishers from this list:
 | Ammann                      |
@@ -1897,7 +1899,99 @@ needs to be fixed.
 | Wiesenburg        |    15 |  2046 |        136 |
 | Wiesenburg Verlag |     9 |  1342 |        149 |
 
-*** TODO ranking per publisher
+*** top normalised publishers
+
+These rankings only comprise the normalised publishers!
+
+**** by item count
+#+BEGIN_SRC sh
+  cut -f3 publisher_data.tsv | sort -S1G | uniq -c | sort -nr | head -n20
+#+END_SRC
+
+| publisher                   | items |
+|-----------------------------+-------|
+| Rowohlt                     | 30680 |
+| Heyne                       | 23728 |
+| Suhrkamp                    | 15383 |
+| Goldmann                    | 14508 |
+| Ullstein                    | 11685 |
+| Insel                       |  9697 |
+| Piper                       |  9388 |
+| Aufbau                      |  8302 |
+| Hanser                      |  4025 |
+| Kiepenheuer & Witsch        |  3056 |
+| Hoffmann und Campe          |  2999 |
+| Luchterhand Literaturverlag |  2816 |
+| Eichborn                    |  1604 |
+| Manesse                     |  1205 |
+| Berlin Verlag               |   636 |
+| Wallstein                   |   562 |
+| Ammann                      |   493 |
+| Nagel & Kimche              |   475 |
+| Schöffling & Co.            |   345 |
+| Rogner & Bernhard           |   222 |
+
+**** by page count
+
+#+BEGIN_SRC sh
+  awk -F'\t' '{sum[$3]+=$2; count[$3]+=1} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}'  publisher_data.tsv \
+      | sort -S1G -nr | head -n20
+#+END_SRC
+
+| publisher                   | page sum | items | mean pages |
+|-----------------------------+----------+-------+------------|
+| Heyne                       |  7982887 | 23728 |        336 |
+| Rowohlt                     |  7513069 | 30680 |        244 |
+| Goldmann                    |  4802506 | 14508 |        331 |
+| Suhrkamp                    |  3818326 | 15383 |        248 |
+| Ullstein                    |  3379183 | 11685 |        289 |
+| Piper                       |  2875086 |  9388 |        306 |
+| Aufbau                      |  2828951 |  8302 |        340 |
+| Insel                       |  2348033 |  9697 |        242 |
+| Hanser                      |  1102298 |  4025 |        273 |
+| Hoffmann und Campe          |   938302 |  2999 |        312 |
+| Kiepenheuer & Witsch        |   916034 |  3056 |        299 |
+| Luchterhand Literaturverlag |   675844 |  2816 |        240 |
+| Manesse                     |   539604 |  1205 |        447 |
+| Eichborn                    |   420053 |  1604 |        261 |
+| Berlin Verlag               |   184460 |   636 |        290 |
+| Wallstein                   |   144096 |   562 |        256 |
+| Ammann                      |   124094 |   493 |        251 |
+| Nagel & Kimche              |    94430 |   475 |        198 |
+| Schöffling & Co.            |    88486 |   345 |        256 |
+| Rogner & Bernhard           |    69481 |   222 |        312 |
+
+**** by mean page count
+
+#+BEGIN_SRC sh
+  awk -F'\t' '{sum[$3]+=$2; count[$3]+=1} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}'  publisher_data.tsv \
+      | sort -S1G -nrk3 | head -n20
+#+END_SRC
+
+| publisher                   | page sum | items | mean pages |
+|-----------------------------+----------+-------+------------|
+| Manesse                     |   539604 |  1205 |        447 |
+| Aufbau                      |  2828951 |  8302 |        340 |
+| Heyne                       |  7982887 | 23728 |        336 |
+| Goldmann                    |  4802506 | 14508 |        331 |
+| Hoffmann und Campe          |   938302 |  2999 |        312 |
+| Rogner & Bernhard           |    69481 |   222 |        312 |
+| Piper                       |  2875086 |  9388 |        306 |
+| Kiepenheuer & Witsch        |   916034 |  3056 |        299 |
+| Berlin Verlag               |   184460 |   636 |        290 |
+| Ullstein                    |  3379183 | 11685 |        289 |
+| Hanser                      |  1102298 |  4025 |        273 |
+| Eichborn                    |   420053 |  1604 |        261 |
+| Verbrecher Verlag           |    37384 |   144 |        259 |
+| Schöffling & Co.            |    88486 |   345 |        256 |
+| Wallstein                   |   144096 |   562 |        256 |
+| Ammann                      |   124094 |   493 |        251 |
+| Suhrkamp                    |  3818326 | 15383 |        248 |
+| Rowohlt                     |  7513069 | 30680 |        244 |
+| Insel                       |  2348033 |  9697 |        242 |
+| Luchterhand Literaturverlag |   675844 |  2816 |        240 |
+
+*** DONE ranking per publisher
 
 Create big intermediate file:
 #+BEGIN_SRC sh
@@ -1908,77 +2002,670 @@ Create big intermediate file:
 #+END_SRC
 
 Iterate over publishers:
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :results raw
   for publisher in $(awk -F'\t' '{print $2}' publisher_map.tsv | sort -u | sed "s/ /###/g"); do
     # get publisher name
     publisher=$(echo $publisher | sed "s/###/ /g")
     #echo "$publisher\t" $(awk -F'\t' -v p="$publisher" '{if ($3 == p) print $2"\t hier dann Titel, Autor, Jahr"}' publisher_data.tsv | wc -l)
     # extract all works
-    echo "**** $publisher"
-    echo
+    echo "\n**** $publisher\n"
     echo "| pages | author: title (year) |"
-    awk -F'\t' -v p="$publisher" '{if ($3 == p) print $2"\t hier dann Titel, Autor, Jahr"}' publisher_data.tsv
+    awk -F'\t' -v p="$publisher" '{if ($3 == p) print "| "$2" | [[https://www.wikidata.org/wiki/"$7"]["$6"]]: [[http://d-nb.info/"$5"]["$4"]] ("$1")"}' publisher_data.tsv | sort -t'|' -nrk2 | head -n20
   done
 #+END_SRC
 
-|   493 | Ammann                      |
-|  8302 | Aufbau                      |
-|   636 | Berlin Verlag               |
-|    51 | Blumenbar                   |
-|  1604 | Eichborn                    |
-| 14508 | Goldmann                    |
-|  4025 | Hanser                      |
-| 23728 | Heyne                       |
-|  2999 | Hoffmann und Campe          |
-|  9697 | Insel                       |
-|  3056 | Kiepenheuer & Witsch        |
-|  2816 | Luchterhand Literaturverlag |
-|  1205 | Manesse                     |
-|   185 | Merve                       |
-|   475 | Nagel & Kimche              |
-|  9388 | Piper                       |
-|   222 | Rogner & Bernhard           |
-| 30680 | Rowohlt                     |
-|   345 | Schöffling & Co.            |
-| 15383 | Suhrkamp                    |
-| 11685 | Ullstein                    |
-|   105 | Urs Engeler Editor          |
-|   144 | Verbrecher Verlag           |
-|    39 | Voland & Quist              |
-|   562 | Wallstein                   |
-|   147 | Wiesenburg                  |
+TODO: How to deal with duplicates due to different editions of the
+same work?
 
+**** Ammann
 
-**** Aufbau-Verlag
-#+BEGIN_SRC sh
-  ./json2json.py -f -m publisher_map.tsv -p "issued_norm,pages_norm,title,_id,publisher_norm,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912 && $5 == "Aufbau-Verlag") {print $2"\t[[http://d-nb.info/"$4"]["$3"]]"}}' \
-      | sort -S1G -nr | head -n20
-#+END_SRC
+| pages | author: title (year)                                                             |
+|-------+----------------------------------------------------------------------------------|
+|  1271 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/96916162X][Die Brüder Karamasow]] (2003)                                  |
+|  1013 | [[https://www.wikidata.org/wiki/Q360512][Baltasar Gracián]]: [[http://d-nb.info/962921181][Das Kritikon]] (2001)                                            |
+|  1007 | [[https://www.wikidata.org/wiki/Q112360][Ulrich Holbein]]: [[http://d-nb.info/988651920][Narratorium]] (2008)                                               |
+|   962 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/954596382][Böse Geister]] (1998)                                          |
+|   909 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/946388520][Der Idiot]] (1996)                                             |
+|   829 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/1006191569][Ein grüner Junge]] (2006)                                      |
+|   781 | [[https://www.wikidata.org/wiki/Q41488][Wole Soyinka]]: [[http://d-nb.info/986658448][Brich auf in früher Dämmerung]] (2008)                               |
+|   776 | [[https://www.wikidata.org/wiki/Q173481][Fernando Pessoa]]: [[http://d-nb.info/981183441][Poesia]] (2007)                                                   |
+|   766 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/943400821][Verbrechen und Strafe]] (1994)                                 |
+|   680 | [[https://www.wikidata.org/wiki/Q173481][Fernando Pessoa]]: [[http://d-nb.info/998742155][Das Buch der Unruhe des Hilfsbuchhalters Fernando Soares]] (2010) |
+|   661 | [[https://www.wikidata.org/wiki/Q299965][Ralph Ellison]]: [[http://d-nb.info/945487029][Der unsichtbare Mann]] (1995)                                       |
+|   652 | [[https://www.wikidata.org/wiki/Q3619926][Antonio Moresco]]: [[http://d-nb.info/975062093][Aufbrüche]] (2005)                                                |
+|   647 | [[https://www.wikidata.org/wiki/Q20743984][Wilfried Meichtry]]: [[http://d-nb.info/982519621][Verliebte Feinde]] (2007)                                       |
+|   631 | [[https://www.wikidata.org/wiki/Q288193][Éric Hazan]]: [[http://d-nb.info/977876217][Die Erfindung von Paris]] (2006)                                       |
+|   630 | [[https://www.wikidata.org/wiki/Q122622][Ralph Dutli]]: [[http://d-nb.info/967370353][Meine Zeit, mein Tier]] (2003)                                        |
+|   607 | [[https://www.wikidata.org/wiki/Q1369013][Svend Aage Madsen]]: [[http://d-nb.info/958888019][Sieben Generationen Wahnsinn]] (2000)                           |
+|   576 | [[https://www.wikidata.org/wiki/Q216980][Constantine P. Cavafy]]: [[http://d-nb.info/951719416][Das Gesamtwerk]] (1997)                                     |
+|   573 | [[https://www.wikidata.org/wiki/Q173481][Fernando Pessoa]]: [[http://d-nb.info/988651939][Das Buch der Unruhe des Hilfsbuchhalters Bernardo Soares]] (2008) |
+|   573 | [[https://www.wikidata.org/wiki/Q173481][Fernando Pessoa]]: [[http://d-nb.info/977876187][Das Buch der Unruhe des Hilfsbuchhalters Bernardo Soares]] (2006) |
+|   573 | [[https://www.wikidata.org/wiki/Q173481][Fernando Pessoa]]: [[http://d-nb.info/967638356][Das Buch der Unruhe des Hilfsbuchhalters Bernardo Soares]] (2003) |
 
-| book                              | pages |
-|-----------------------------------+-------|
-| [[http://d-nb.info/988488205][Der Pate von Bombay]]               |  1359 |
-| [[http://d-nb.info/1001932447][Krieg und Frieden]]                 |  1291 |
-| [[http://d-nb.info/576696439][Der Leidensweg]]                    |  1286 |
-| [[http://d-nb.info/576696420][Der Leidensweg]]                    |  1286 |
-| [[http://d-nb.info/1011565994][Wolf unter Wölfen]]                 |  1243 |
-| [[http://d-nb.info/98848823X][Anna Karenina]]                     |  1227 |
-| [[http://d-nb.info/945188846][Der Platz]]                         |  1211 |
-| [[http://d-nb.info/988488272][Die Brüder Karamasow]]              |  1200 |
-| [[http://d-nb.info/949346470][Anna Karenina]]                     |  1183 |
-| [[http://d-nb.info/451896025][Ästhetik]]                          |  1174 |
-| [[http://d-nb.info/983973261][Im Garten der sieben Dämmerungen]]  |  1133 |
-| [[http://d-nb.info/957514654][Der Garten der sieben Dämmerungen]] |  1133 |
-| [[http://d-nb.info/984042229][Krieg und Frieden]]                 |  1087 |
-| [[http://d-nb.info/994945302][Historien]]                         |  1086 |
-| [[http://d-nb.info/994945329][Tragödien]]                         |  1066 |
-| [[http://d-nb.info/369361520][Peter der Erste]]                   |  1054 |
-| [[http://d-nb.info/574987029][Der Zauberberg]]                    |  1034 |
-| [[http://d-nb.info/573077118][Wolf unter den Wölfen]]             |  1031 |
-| [[http://d-nb.info/800292839][Der Zauberberg]]                    |  1028 |
-| [[http://d-nb.info/574987053][Der Zauberberg]]                    |  1028 |
+**** Aufbau
+
+| pages | author: title (year)                                      |
+|-------+-----------------------------------------------------------|
+|  1359 | [[https://www.wikidata.org/wiki/Q188388][Vikram Chandra]]: [[http://d-nb.info/988488205][Der Pate von Bombay]] (2009)                |
+|  1291 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/1001932447][Krieg und Frieden]] (2010)                     |
+|  1286 | [[https://www.wikidata.org/wiki/Q192279][Aleksey Nikolayevich Tolstoy]]: [[http://d-nb.info/576696439][Der Leidensweg]] (1959)       |
+|  1286 | [[https://www.wikidata.org/wiki/Q192279][Aleksey Nikolayevich Tolstoy]]: [[http://d-nb.info/576696420][Der Leidensweg]] (1955)       |
+|  1243 | [[https://www.wikidata.org/wiki/Q76539][Hans Fallada]]: [[http://d-nb.info/1011565994][Wolf unter Wölfen]] (2011)                    |
+|  1227 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/98848823X][Anna Karenina]] (2008)                         |
+|  1211 | [[https://www.wikidata.org/wiki/Q734835][Friedrich Gorenstein]]: [[http://d-nb.info/945188846][Der Platz]] (1995)                    |
+|  1200 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/988488272][Die Brüder Karamasow]] (2008)           |
+|  1183 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/949346470][Anna Karenina]] (1996)                         |
+|  1174 | [[https://www.wikidata.org/wiki/Q9235][Georg Wilhelm Friedrich Hegel]]: [[http://d-nb.info/451896025][Ästhetik]] (1955)            |
+|  1133 | [[https://www.wikidata.org/wiki/Q1937860][Miquel de Palol]]: [[http://d-nb.info/983973261][Im Garten der sieben Dämmerungen]] (2007)  |
+|  1133 | [[https://www.wikidata.org/wiki/Q1937860][Miquel de Palol]]: [[http://d-nb.info/957514654][Der Garten der sieben Dämmerungen]] (1999) |
+|  1087 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/984042229][Krieg und Frieden]] (2008)                     |
+|  1086 | [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]: [[http://d-nb.info/994945302][Historien]] (2009)                     |
+|  1066 | [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]: [[http://d-nb.info/994945329][Tragödien]] (2009)                     |
+|  1054 | [[https://www.wikidata.org/wiki/Q192279][Aleksey Nikolayevich Tolstoy]]: [[http://d-nb.info/369361520][Peter der Erste]] (1952)      |
+|  1034 | [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]: [[http://d-nb.info/574987029][Der Zauberberg]] (1953)                        |
+|  1031 | [[https://www.wikidata.org/wiki/Q76539][Hans Fallada]]: [[http://d-nb.info/573077118][Wolf unter den Wölfen]] (1957)                |
+|  1028 | [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]: [[http://d-nb.info/800292839][Der Zauberberg]] (1979)                        |
+|  1028 | [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]: [[http://d-nb.info/574987053][Der Zauberberg]] (1965)                        |
+
+**** Berlin Verlag
+
+| pages | author: title (year)                                       |
+|-------+------------------------------------------------------------|
+|  1065 | [[https://www.wikidata.org/wiki/Q345612][Harold Bloom]]: [[http://d-nb.info/959672850][Shakespeare]] (2000)                           |
+|  1036 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/98823310X][Die Flüsterer]] (2008)                        |
+|   976 | [[https://www.wikidata.org/wiki/Q1176307][David Remnick]]: [[http://d-nb.info/1002305357][Barack Obama]] (2010)                         |
+|   975 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/988235137][Die Tragödie eines Volkes]] (2008)            |
+|   975 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/954488067][Die Tragödie eines Volkes]] (1998)            |
+|   975 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/1059212692][Russland]] (2014)                             |
+|   920 | [[https://www.wikidata.org/wiki/Q164106][Péter Esterházy]]: [[http://d-nb.info/96571876X][Harmonia Caelestis]] (2003)                 |
+|   920 | [[https://www.wikidata.org/wiki/Q164106][Péter Esterházy]]: [[http://d-nb.info/962717940][Harmonia caelestis]] (2001)                 |
+|   888 | [[https://www.wikidata.org/wiki/Q164106][Péter Esterházy]]: [[http://d-nb.info/977043355][Einführung in die schöne Literatur]] (2006) |
+|   789 | [[https://www.wikidata.org/wiki/Q66213][Ingo Schulze]]: [[http://d-nb.info/975080997][Neue Leben]] (2005)                            |
+|   781 | [[https://www.wikidata.org/wiki/Q206939][Elvis Costello]]: [[http://d-nb.info/1070832766][Unfaithful music - mein Leben]] (2015)       |
+|   747 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/101137501X][Krimkrieg]] (2011)                            |
+|   745 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/104840286X][Krimkrieg]] (2014)                            |
+|   729 | [[https://www.wikidata.org/wiki/Q47619][Nadine Gordimer]]: [[http://d-nb.info/1044442301][Erlebte Zeiten]] (2013)                     |
+|   720 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/967810116][Nataschas Tanz]] (2003)                       |
+|   720 | [[https://www.wikidata.org/wiki/Q513285][Orlando Figes]]: [[http://d-nb.info/1008348937][Nataschas Tanz]] (2011)                       |
+|   713 | [[https://www.wikidata.org/wiki/Q212730][Steven Pinker]]: [[http://d-nb.info/967810906][Das unbeschriebene Blatt]] (2003)             |
+|   693 | [[https://www.wikidata.org/wiki/Q183492][Margaret Atwood]]: [[http://d-nb.info/963099469][Der blinde Mörder]] (2000)                  |
+|   681 | [[https://www.wikidata.org/wiki/Q547794][Richard Ford]]: [[http://d-nb.info/983999910][Die Lage des Landes]] (2007)                   |
+|   652 | [[https://www.wikidata.org/wiki/Q1739650][Kerstin Decker]]: [[http://d-nb.info/1097279103][Die Schwester]] (2016)                       |
+
+**** Blumenbar
+
+| pages | author: title (year)                                                       |
+|-------+----------------------------------------------------------------------------|
+|   429 | [[https://www.wikidata.org/wiki/Q2991109][Tony Parsons]]: [[http://d-nb.info/979539048][Als wir unsterblich waren]] (2007)                             |
+|   428 | [[https://www.wikidata.org/wiki/Q237039][Joseba Sarrionandia]]: [[http://d-nb.info/985243570][Der gefrorene Mann]] (2007)                             |
+|   424 | [[https://www.wikidata.org/wiki/Q373468][Sebastian Horsley]]: [[http://d-nb.info/988532603][Dandy in der Unterwelt]] (2009)                           |
+|   415 | [[https://www.wikidata.org/wiki/Q17411248][Edan Lepucki]]: [[http://d-nb.info/1063356881][California]] (2015)                                            |
+|   349 | [[https://www.wikidata.org/wiki/Q379855][Murathan Mungan]]: [[http://d-nb.info/998409618][Städte aus Frauen]] (2010)                                  |
+|   333 | [[https://www.wikidata.org/wiki/Q459925][B. J. Novak]]: [[http://d-nb.info/1050838920][Cornflakes mit Johnny Depp]] (2014)                             |
+|   325 | [[https://www.wikidata.org/wiki/Q1680251][Alban Lefranc]]: [[http://d-nb.info/988532581][Angriffe]] (2008)                                             |
+|   323 | [[https://www.wikidata.org/wiki/Q219780][Hunter S. Thompson]]: [[http://d-nb.info/998409650][Rum Diary]] (2010)                                       |
+|   319 | [[https://www.wikidata.org/wiki/Q3370589][Paul Beatty]]: [[http://d-nb.info/994461399][Slumberland]] (2009)                                            |
+|   318 | [[https://www.wikidata.org/wiki/Q343886][Imran Ayata]]: [[http://d-nb.info/1011922673][Mein Name ist Revolution]] (2011)                               |
+|   318 | [[https://www.wikidata.org/wiki/Q1276][Leonard Cohen]]: [[http://d-nb.info/994461356][Das Lieblingsspiel]] (2009)                                   |
+|   317 | [[https://www.wikidata.org/wiki/Q106611][Raul Zelik]]: [[http://d-nb.info/97489527X][Berliner Verhältnisse]] (2005)                                   |
+|   315 | [[https://www.wikidata.org/wiki/Q1752806, Q96128][Alexander Wall, Ingo Niermann]]: [[http://d-nb.info/1001835581][Deutscher Sohn]] (2010)                       |
+|   310 | [[https://www.wikidata.org/wiki/Q1449654][Franz Xaver Karl]]: [[http://d-nb.info/969722486][Starschnitt]] (2004)                                       |
+|   286 | [[https://www.wikidata.org/wiki/Q106611][Raul Zelik]]: [[http://d-nb.info/982504268][Der bewaffnete Freund]] (2007)                                   |
+|   283 | [[https://www.wikidata.org/wiki/Q219780][Hunter S. Thompson]]: [[http://d-nb.info/971244995][The rum diary]] (2004)                                   |
+|   269 | [[https://www.wikidata.org/wiki/Q99503][Wolfgang Schmidbauer]]: [[http://d-nb.info/985243635][Das Buch der Ängste]] (2007)                           |
+|   268 | [[https://www.wikidata.org/wiki/Q2439782][Tom Kummer]]: [[http://d-nb.info/982509278][Blow up]] (2007)                                                 |
+|   258 | [[https://www.wikidata.org/wiki/Q1578066][Hans-Peter Kunisch]]: [[http://d-nb.info/978000560][Die Verlängerung des Markts in den Abend hinein]] (2006) |
+|   257 | [[https://www.wikidata.org/wiki/Q1317903][Thomas Palzer]]: [[http://d-nb.info/974895245][Ruin]] (2005)                                                 |
+
+**** Eichborn
+
+| pages | author: title (year)                                                                        |
+|-------+---------------------------------------------------------------------------------------------|
+|  1814 | [[https://www.wikidata.org/wiki/Q2501352][Urs Richle]]: [[http://d-nb.info/946561486][Der weisse Chauffeur]] (1996)                                                     |
+|  1222 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/967526825][Krieg und Frieden]] (2003)                                                       |
+|  1081 | [[https://www.wikidata.org/wiki/Q2163863][Rolf Vollmann]]: [[http://d-nb.info/950298603][Die wunderbaren Falschmünzer]] (1997)                                          |
+|   954 | [[https://www.wikidata.org/wiki/Q444765][Paul Verhaeghen]]: [[http://d-nb.info/979687187][Omega minor]] (2006)                                                         |
+|   941 | [[https://www.wikidata.org/wiki/Q6694][Alexander von Humboldt]]: [[http://d-nb.info/97716859X][Kosmos]] (2004)                                                       |
+|   941 | [[https://www.wikidata.org/wiki/Q6694][Alexander von Humboldt]]: [[http://d-nb.info/971346879][Kosmos]] (2004)                                                       |
+|   852 | [[https://www.wikidata.org/wiki/Q218960][Laurence Sterne]]: [[http://d-nb.info/979691044][Leben und Ansichten von Tristram Shandy, Gentleman]] (2006)                  |
+|   827 | [[https://www.wikidata.org/wiki/Q65157][Robert Kurz]]: [[http://d-nb.info/991626621][Schwarzbuch Kapitalismus]] (2009)                                                |
+|   816 | [[https://www.wikidata.org/wiki/Q65157][Robert Kurz]]: [[http://d-nb.info/949280844][Schwarzbuch Kapitalismus]] (1999)                                                |
+|   813 | [[https://www.wikidata.org/wiki/Q356546][Max Aub]]: [[http://d-nb.info/965881326][Bittere Mandeln]] (2003)                                                             |
+|   798 | [[https://www.wikidata.org/wiki/Q268466][Faye Kellerman]]: [[http://d-nb.info/930823397][Becca]] (1993)                                                                |
+|   774 | [[https://www.wikidata.org/wiki/Q88507][Michael Roes]]: [[http://d-nb.info/947805745][Rubʿ al-Khali - leeres Viertel]] (1996)                                         |
+|   762 | [[https://www.wikidata.org/wiki/Q31220][Hans Jakob Christoffel von Grimmelshausen]]: [[http://d-nb.info/996182322][Der abenteuerliche Simplicissimus deutsch]] (2009) |
+|   762 | [[https://www.wikidata.org/wiki/Q31220][Hans Jakob Christoffel von Grimmelshausen]]: [[http://d-nb.info/993982646][Der abenteuerliche Simplicissimus deutsch]] (2009) |
+|   741 | [[https://www.wikidata.org/wiki/Q1412300][Hédi Kaddour]]: [[http://d-nb.info/993841724][Waltenberg]] (2009)                                                             |
+|   735 | [[https://www.wikidata.org/wiki/Q1650024][Steffen Kopetzky]]: [[http://d-nb.info/963088580][Grand Tour oder die Nacht der Großen Complication]] (2002)                  |
+|   731 | [[https://www.wikidata.org/wiki/Q43444][Gustave Flaubert]]: [[http://d-nb.info/96982243X][Universalenzyklopädie der menschlichen Dummheit]] (2004)                    |
+|   720 | [[https://www.wikidata.org/wiki/Q77862][Dietrich Schwanitz]]: [[http://d-nb.info/96534858X][Bildung]] (2002)                                                          |
+|   702 | [[https://www.wikidata.org/wiki/Q62073][Walter Moers]]: [[http://d-nb.info/952280892][Die 13 1/2 Leben des Käpt'n Blaubär]] (1998)                                    |
+|   671 | [[https://www.wikidata.org/wiki/Q210059][Neil Gaiman]]: [[http://d-nb.info/1060743752][American gods]] (2015)                                                           |
+
+**** Goldmann
+
+|  pages | author: title (year)                                            |
+|--------+-----------------------------------------------------------------|
+| 348333 | [[https://www.wikidata.org/wiki/Q228801][Colleen McCullough]]: [[http://d-nb.info/920918131][Tim]] (1992)                                  |
+|   1512 | [[https://www.wikidata.org/wiki/Q2337224, Q1430052][Stefan Niggemeier, Michael Reufsteck]]: [[http://d-nb.info/974162469][Das Fernsehlexikon]] (2005) |
+|   1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/951583093][Die Festung]] (1997)                     |
+|   1355 | [[https://www.wikidata.org/wiki/Q335167][Alan Bullock]]: [[http://d-nb.info/955704324][Hitler und Stalin]] (1999)                          |
+|   1340 | [[https://www.wikidata.org/wiki/Q335167][Alan Bullock]]: [[http://d-nb.info/95305750X][Hitler und Stalin]] (1998)                          |
+|   1340 | [[https://www.wikidata.org/wiki/Q335167][Alan Bullock]]: [[http://d-nb.info/931669677][Hitler und Stalin]] (1993)                          |
+|   1332 | [[https://www.wikidata.org/wiki/Q293028][Margaret George]]: [[http://d-nb.info/963205080][Heinrich VIII.]] (2001)                          |
+|   1332 | [[https://www.wikidata.org/wiki/Q293028][Margaret George]]: [[http://d-nb.info/958125589][Heinrich VIII.]] (1999)                          |
+|   1332 | [[https://www.wikidata.org/wiki/Q293028][Margaret George]]: [[http://d-nb.info/95164405X][Heinrich VIII.]] (1997)                          |
+|   1332 | [[https://www.wikidata.org/wiki/Q293028][Margaret George]]: [[http://d-nb.info/911455701][Heinrich VIII., mein Leben]] (1991)              |
+|   1326 | [[https://www.wikidata.org/wiki/Q297538][Dan Simmons]]: [[http://d-nb.info/965954285][Endymion]] (2003)                                    |
+|   1313 | [[https://www.wikidata.org/wiki/Q148285][Bhagwan Shree Rajneesh]]: [[http://d-nb.info/993815332][Das Buch der Geheimnisse]] (2009)         |
+|   1293 | [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]: [[http://d-nb.info/972463674][Rilke reloaded]] (2004)                       |
+|   1278 | [[https://www.wikidata.org/wiki/Q2078892][Peter Watson]]: [[http://d-nb.info/986654310][Ideen]] (2008)                                      |
+|   1271 | [[https://www.wikidata.org/wiki/Q316802][James Clavell]]: [[http://d-nb.info/965693252][Noble House]] (2002)                               |
+|   1247 | [[https://www.wikidata.org/wiki/Q316802][James Clavell]]: [[http://d-nb.info/969359241][Gai-jin]] (2003)                                   |
+|   1247 | [[https://www.wikidata.org/wiki/Q316802][James Clavell]]: [[http://d-nb.info/951681974][Gai-jin]] (1997)                                   |
+|   1247 | [[https://www.wikidata.org/wiki/Q316802][James Clavell]]: [[http://d-nb.info/944560962][Gai-jin]] (1995)                                   |
+|   1240 | [[https://www.wikidata.org/wiki/Q456958][William Gaddis]]: [[http://d-nb.info/960039570][Die Fälschung der Welt]] (2000)                   |
+|   1225 | [[https://www.wikidata.org/wiki/Q316802][James Clavell]]: [[http://d-nb.info/965548562][Shōgun]] (2002)                                    |
+
+**** Hanser
+
+| pages | author: title (year)                                        |
+|-------+-------------------------------------------------------------|
+|  1672 | [[https://www.wikidata.org/wiki/Q77204][Joseph Freiherr von Eichendorff]]: [[http://d-nb.info/760043035][Werke]] (1971)               |
+|  1606 | [[https://www.wikidata.org/wiki/Q77204][Joseph Freiherr von Eichendorff]]: [[http://d-nb.info/451062442][Werke]] (1959)               |
+|  1590 | [[https://www.wikidata.org/wiki/Q77204][Joseph Freiherr von Eichendorff]]: [[http://d-nb.info/451062817][Werke in einem Band]] (1955) |
+|  1511 | [[https://www.wikidata.org/wiki/Q63699][Eduard Mörike]]: [[http://d-nb.info/780204875][Sämtliche Werke]] (1976)                       |
+|  1511 | [[https://www.wikidata.org/wiki/Q63699][Eduard Mörike]]: [[http://d-nb.info/453424740][Sämtliche Werke]] (1964)                       |
+|  1465 | [[https://www.wikidata.org/wiki/Q161842][Jaan Kross]]: [[http://d-nb.info/945804903][Das Leben des Balthasar Rüssow]] (1995)           |
+|  1462 | [[https://www.wikidata.org/wiki/Q63699][Eduard Mörike]]: [[http://d-nb.info/453424694][Sämtliche Werke]] (1954)                       |
+|  1452 | [[https://www.wikidata.org/wiki/Q77208][Horst Bienek]]: [[http://d-nb.info/960145605][Gleiwitz]] (2000)                               |
+|  1439 | [[https://www.wikidata.org/wiki/Q213675][Gottfried August Bürger]]: [[http://d-nb.info/880103329][Sämtliche Werke]] (1987)             |
+|  1433 | [[https://www.wikidata.org/wiki/Q92620][Bjarne Stroustrup]]: [[http://d-nb.info/1056934190][Die C++-Programmiersprache]] (2015)        |
+|  1403 | [[https://www.wikidata.org/wiki/Q4441][Emily Dickinson]]: [[http://d-nb.info/1062993268][Sämtliche Gedichte]] (2015)                  |
+|  1378 | [[https://www.wikidata.org/wiki/Q154367][Friedrich Gottlieb Klopstock]]: [[http://d-nb.info/760043051][Ausgewählte Werke]] (1969)      |
+|  1378 | [[https://www.wikidata.org/wiki/Q154367][Friedrich Gottlieb Klopstock]]: [[http://d-nb.info/452457831][Ausgewählte Werke]] (1962)      |
+|  1301 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/451584104][Briefe]] (1958)                   |
+|  1284 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/994009232][Anna Karenina]] (2009)                           |
+|  1257 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/942644875][Italienische Reise]] (1994)       |
+|  1257 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/941144356][Italienische Reise]] (1994)       |
+|  1232 | [[https://www.wikidata.org/wiki/Q1717556][Jürgen Plate]]: [[http://d-nb.info/991815750][Der Perl-Programmierer]] (2010)                 |
+|  1228 | [[https://www.wikidata.org/wiki/Q99728][Navid Kermani]]: [[http://d-nb.info/1011238136][Dein Name]] (2011)                             |
+|  1228 | [[https://www.wikidata.org/wiki/Q1398332][John Cowper Powys]]: [[http://d-nb.info/945564635][Glastonbury romance]] (1995)               |
+
+**** Heyne
+
+| pages | author: title (year)                                    |
+|-------+---------------------------------------------------------|
+|  2006 | [[https://www.wikidata.org/wiki/Q594156][Robert M. Parker, Jr.]]: [[http://d-nb.info/959189831][Parker's Wein-Guide]] (2000)       |
+|  1997 | [[https://www.wikidata.org/wiki/Q379762][Vikram Seth]]: [[http://d-nb.info/957834195][Eine gute Partie]] (1999)                    |
+|  1711 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/1062645235][The stand]] (2016)                          |
+|  1549 | [[https://www.wikidata.org/wiki/Q460303][Anne Bishop]]: [[http://d-nb.info/1009135821][Die schwarzen Juwelen]] (2011)               |
+|  1533 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/1006149368][Es]] (2011)                                 |
+|  1530 | [[https://www.wikidata.org/wiki/Q52224][Sergey Lukyanenko]]: [[http://d-nb.info/986883530][Die Wächter-Trilogie]] (2008)          |
+|  1424 | [[https://www.wikidata.org/wiki/Q598485][Stan Nicholls]]: [[http://d-nb.info/1021813613][Die Orks - die Rückkehr]] (2012)           |
+|  1408 | [[https://www.wikidata.org/wiki/Q720317][Dan Abnett]]: [[http://d-nb.info/993894496][Ravenor]] (2010)                              |
+|  1407 | [[https://www.wikidata.org/wiki/Q12054][Bernard Werber]]: [[http://d-nb.info/998411752][Die Invasion]] (2010)                     |
+|  1405 | [[https://www.wikidata.org/wiki/Q297538][Dan Simmons]]: [[http://d-nb.info/1034165151][Endymion]] (2013)                            |
+|  1405 | [[https://www.wikidata.org/wiki/Q297538][Dan Simmons]]: [[http://d-nb.info/1021128031][Die Hyperion-Gesänge]] (2013)                |
+|  1349 | [[https://www.wikidata.org/wiki/Q720317][Dan Abnett]]: [[http://d-nb.info/1021128260][Eisenhorn]] (2012)                            |
+|  1324 | [[https://www.wikidata.org/wiki/Q219124][Guillermo del Toro]]: [[http://d-nb.info/1070335916][Die Saat]] (2016)                     |
+|  1307 | [[https://www.wikidata.org/wiki/Q69784][Hans Joachim Alpers]]: [[http://d-nb.info/967111463][Deutschland in den Schatten]] (2003) |
+|  1307 | [[https://www.wikidata.org/wiki/Q231356][Nora Roberts]]: [[http://d-nb.info/986883565][Die Garten-Eden-Trilogie]] (2008)           |
+|  1291 | [[https://www.wikidata.org/wiki/Q106465][John Grisham]]: [[http://d-nb.info/96363710X][Die Jury]] (2001)                           |
+|  1280 | [[https://www.wikidata.org/wiki/Q270070][Licia Troisi]]: [[http://d-nb.info/1011315920][Die Drachenkämpferin]] (2012)               |
+|  1279 | [[https://www.wikidata.org/wiki/Q717204][Kim Newman]]: [[http://d-nb.info/988646285][Die Vampire]] (2009)                          |
+|  1279 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/996088210][Die Arena]] (2009)                          |
+|  1279 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/1009135112][Die Arena]] (2011)                          |
+
+**** Hoffmann und Campe
+
+| pages | author: title (year)                                |
+|-------+-----------------------------------------------------|
+|  2880 | [[https://www.wikidata.org/wiki/Q77473][Doris Gercke]]: [[http://d-nb.info/930989244][Kein fremder Land]] (1993)              |
+|  1535 | [[https://www.wikidata.org/wiki/Q76412][Siegfried Lenz]]: [[http://d-nb.info/977944492][Die Erzählungen]] (2006)              |
+|  1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/944353843][Die Festung]] (1995)         |
+|  1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/94346272X][Die Festung]] (1995)         |
+|  1421 | [[https://www.wikidata.org/wiki/Q379762][Vikram Seth]]: [[http://d-nb.info/946052824][Eine gute Partie]] (1995)                |
+|  1421 | [[https://www.wikidata.org/wiki/Q379762][Vikram Seth]]: [[http://d-nb.info/944249450][Eine gute Partie]] (1995)                |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/943741858][Opernführer]] (1995) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/940242907][Opernführer]] (1994) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/930350421][Opernführer]] (1993) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/891008454][Opernführer]] (1989) |
+|  1151 | [[https://www.wikidata.org/wiki/Q392][Bob Dylan]]: [[http://d-nb.info/972283781][Lyrics]] (2004)                            |
+|  1085 | [[https://www.wikidata.org/wiki/Q36661][Henrik Ibsen]]: [[http://d-nb.info/770428967][Schauspiele]] (1977)                    |
+|  1085 | [[https://www.wikidata.org/wiki/Q36661][Henrik Ibsen]]: [[http://d-nb.info/730311317][Schauspiele]] (1973)                    |
+|  1085 | [[https://www.wikidata.org/wiki/Q36661][Henrik Ibsen]]: [[http://d-nb.info/457049553][Schauspiele]] (1968)                    |
+|  1021 | [[https://www.wikidata.org/wiki/Q158436][Ernst Krenek]]: [[http://d-nb.info/953698610][Im Atem der Zeit]] (1998)               |
+|   955 | [[https://www.wikidata.org/wiki/Q105167][Tom Clancy]]: [[http://d-nb.info/94917405X][Befehl von oben]] (1997)                  |
+|   941 | [[https://www.wikidata.org/wiki/Q57239][Ludwig Tieck]]: [[http://d-nb.info/458343234][Werke in einem Band]] (1967)            |
+|   926 | [[https://www.wikidata.org/wiki/Q49072][Herman Wouk]]: [[http://d-nb.info/720215196][Der Feuersturm]] (1972)                  |
+|   926 | [[https://www.wikidata.org/wiki/Q49072][Herman Wouk]]: [[http://d-nb.info/1029336946][Der Feuersturm]] (1972)                  |
+|   901 | [[https://www.wikidata.org/wiki/Q1511][Richard Wagner]]: [[http://d-nb.info/458563374][Die Musikdramen]] (1971)              |
+
+**** Insel
+
+| pages | author: title (year)                                                    |
+|-------+-------------------------------------------------------------------------|
+|  1646 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/986533173][Die Gedichte]] (2008)                                     |
+|  1395 | [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]: [[http://d-nb.info/973544112][Der grüne Heinrich]] (2005)                             |
+|  1388 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/967955874][Die Gedichte]] (2003)                                     |
+|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452049210][Sämtliche Werke]] (1965)                             |
+|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452049156][Sämtliche Werke]] (1961)                             |
+|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452048834][Sämtliche Werke]] (1965)                             |
+|  1267 | [[https://www.wikidata.org/wiki/Q168569][Martin Andersen Nexø]]: [[http://d-nb.info/572740735][Pelle, der Eroberer]] (1926)                        |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/944772307][Goethes Gedichte in zeitlicher Folge]] (1995) |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/930888472][Goethes Gedichte in zeitlicher Folge]] (1992) |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/910939330][Goethes Gedichte in zeitlicher Folge]] (1990) |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/820744298][Goethes Gedichte in zeitlicher Folge]] (1982) |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/207230854][Goethes Gedichte in zeitlicher Folge]] (1988) |
+|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/95610438X][Gedichte]] (1998)                             |
+|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/943972930][Gedichte]] (1995)                             |
+|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/921497660][Gedichte]] (1992)                             |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/946607354][David Copperfield]] (1996)                               |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/930795318][David Copperfield]] (1993)                               |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/910625247][David Copperfield]] (1991)                               |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/900230193][David Copperfield]] (1989)                               |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/871368862][David Copperfield]] (1987)                               |
+
+**** Kiepenheuer & Witsch
+
+| pages | author: title (year)                                                |
+|-------+---------------------------------------------------------------------|
+|  1547 | [[https://www.wikidata.org/wiki/Q313246][David Foster Wallace]]: [[http://d-nb.info/994243626][Unendlicher Spaß]] (2009)                       |
+|  1320 | [[https://www.wikidata.org/wiki/Q61220][Frank Schätzing]]: [[http://d-nb.info/99424374X][Limit]] (2009)                                       |
+|  1196 | [[https://www.wikidata.org/wiki/Q79056, Q1583025, Q1793777][Hans-Peter Martin, Hans Weiss, Kurt Langbein]]: [[http://d-nb.info/880947357][Bittere Pillen]] (1988) |
+|  1187 | [[https://www.wikidata.org/wiki/Q1583025][Hans Weiss]]: [[http://d-nb.info/965719502][3 x täglich]] (2003)                                      |
+|  1174 | [[https://www.wikidata.org/wiki/Q327287][William L. Shirer]]: [[http://d-nb.info/454682492][Aufstieg und Fall des Dritten Reiches]] (1961)     |
+|  1163 | [[https://www.wikidata.org/wiki/Q79056, Q1583025, Q1793777][Hans-Peter Martin, Hans Weiss, Kurt Langbein]]: [[http://d-nb.info/860134814][Bittere Pillen]] (1985) |
+|  1087 | [[https://www.wikidata.org/wiki/Q151936][James George Frazer]]: [[http://d-nb.info/456655492][Der goldene Zweig]] (1968)                       |
+|  1055 | [[https://www.wikidata.org/wiki/Q446415][Emine Sevgi Özdamar]]: [[http://d-nb.info/979904986][Sonne auf halbem Weg]] (2006)                    |
+|  1035 | [[https://www.wikidata.org/wiki/Q78706][Manès Sperber]]: [[http://d-nb.info/454777248][Wie eine Träne im Ozean]] (1965)                       |
+|  1035 | [[https://www.wikidata.org/wiki/Q78706][Manès Sperber]]: [[http://d-nb.info/454777213][Wie eine Träne im Ozean]] (1961)                       |
+|  1033 | [[https://www.wikidata.org/wiki/Q67991][Erwin Strittmatter]]: [[http://d-nb.info/890634610][Der Laden]] (1989)                                |
+|  1024 | [[https://www.wikidata.org/wiki/Q1592834][Veit Valentin]]: [[http://d-nb.info/455203067][Weltgeschichte]] (1952)                                |
+|  1012 | [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]: [[http://d-nb.info/942357000][Erzählungen]] (1994)                                   |
+|  1001 | [[https://www.wikidata.org/wiki/Q69322][René Schickele]]: [[http://d-nb.info/454339917][Das Erbe am Rhein]] (1965)                            |
+|   997 | [[https://www.wikidata.org/wiki/Q61220][Frank Schätzing]]: [[http://d-nb.info/969509294][Der Schwarm]] (2004)                                 |
+|   992 | [[https://www.wikidata.org/wiki/Q8007709][William Deakin]]: [[http://d-nb.info/450880788][Die brutale Freundschaft]] (1964)                     |
+|   969 | [[https://www.wikidata.org/wiki/Q79056, Q1583025, Q1793777][Hans-Peter Martin, Hans Weiss, Kurt Langbein]]: [[http://d-nb.info/920393888][Bittere Pillen]] (1990) |
+|   965 | [[https://www.wikidata.org/wiki/Q310048][Don DeLillo]]: [[http://d-nb.info/954780833][Unterwelt]] (1998)                                       |
+|   964 | [[https://www.wikidata.org/wiki/Q61220][Frank Schätzing]]: [[http://d-nb.info/103547364X][Breaking News]] (2014)                               |
+|   892 | [[https://www.wikidata.org/wiki/Q86514][Maxim Biller]]: [[http://d-nb.info/1079014888][Biografie]] (2016)                                      |
+
+**** Luchterhand Literaturverlag
+
+| pages | author: title (year)                                                                                                                      |
+|-------+-------------------------------------------------------------------------------------------------------------------------------------------|
+|  7969 | [[https://www.wikidata.org/wiki/Q333849][António Lobo Antunes]]: [[http://d-nb.info/964186179][Fado Alexandrino]] (2002)                                                                                             |
+|  1157 | [[https://www.wikidata.org/wiki/Q6538][Günter Grass]]: [[http://d-nb.info/800353633][Danziger Trilogie]] (1980)                                                                                                    |
+|  1155 | [[https://www.wikidata.org/wiki/Q107546, Q993747][Franz Klein, Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/750281529][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1975)                                 |
+|  1155 | [[https://www.wikidata.org/wiki/Q107546, Q993747][Franz Klein, Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/740069683][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1973)                                 |
+|  1055 | [[https://www.wikidata.org/wiki/Q1817726][Leni Yahil]]: [[http://d-nb.info/952581175][Die Shoah]] (1998)                                                                                                              |
+|  1012 | [[https://www.wikidata.org/wiki/Q1732530][Karl Otten]]: [[http://d-nb.info/453671004][Schrei und Bekenntnis]] (1962)                                                                                                  |
+|  1012 | [[https://www.wikidata.org/wiki/Q1732530][Karl Otten]]: [[http://d-nb.info/453670997][Schrei und Bekenntnis]] (1959)                                                                                                  |
+|   995 | [[https://www.wikidata.org/wiki/Q107546, Q993747][Franz Klein, Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/458856843][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1970)                                 |
+|   956 | [[https://www.wikidata.org/wiki/Q57382][Christa Wolf]]: [[http://d-nb.info/871290421][Die Dimension des Autors]] (1987)                                                                                             |
+|   956 | [[https://www.wikidata.org/wiki/Q57382][Christa Wolf]]: [[http://d-nb.info/870702009][Die Dimension des Autors]] (1987)                                                                                             |
+|   925 | [[https://www.wikidata.org/wiki/Q1063915][Charles Chadwick]]: [[http://d-nb.info/984245340][Ein unauffälliger Mann]] (2007)                                                                                           |
+|   921 | [[https://www.wikidata.org/wiki/Q1510475][Gerd Eidam]]: [[http://d-nb.info/987599704][Unternehmen und Strafe]] (2008)                                                                                                 |
+|   884 | [[https://www.wikidata.org/wiki/Q104757][Hans-Peter Schwarz]]: [[http://d-nb.info/458912026][Vom Reich zur Bundesrepublik]] (1966)                                                                                   |
+|   878 | [[https://www.wikidata.org/wiki/Q1401][Petrarch]]: [[http://d-nb.info/453749089][Das lyrische Werk]] (1958)                                                                                                        |
+|   873 | [[https://www.wikidata.org/wiki/Q16321178][Wolfgang Kleiber]]: [[http://d-nb.info/946503184][Schätzung und Ermittlung von Grundstückswerten]] (1996)                                                                   |
+|   859 | [[https://www.wikidata.org/wiki/Q665144][Russell Banks]]: [[http://d-nb.info/958885214][John Brown, mein Vater]] (2000)                                                                                              |
+|   854 | [[https://www.wikidata.org/wiki/Q34189][Pablo Neruda]]: [[http://d-nb.info/770425313][Dichtungen {1919 - {1965 [neunzehnhundertneunzehn bis neunzehnhundertfünfundsechzig]]] (1977) |
+|   841 | [[https://www.wikidata.org/wiki/Q3430510][Richard Bausch]]: [[http://d-nb.info/971245096][Die Kannibalen]] (2004)                                                                                                     |
+|   837 | [[https://www.wikidata.org/wiki/Q527024][Yvan Goll]]: [[http://d-nb.info/456782788][Dichtungen]] (1968)                                                                                                              |
+|   837 | [[https://www.wikidata.org/wiki/Q527024][Yvan Goll]]: [[http://d-nb.info/451611837][Dichtungen]] (1960)                                                                                                              |
+
+**** Manesse
+
+| pages | author: title (year)                                           |
+|-------+----------------------------------------------------------------|
+|  1347 | [[https://www.wikidata.org/wiki/Q535][Victor Hugo]]: [[http://d-nb.info/943928648][Die Elenden]] (1995)                                |
+|  1347 | [[https://www.wikidata.org/wiki/Q535][Victor Hugo]]: [[http://d-nb.info/930553926][Die Elenden]] (1993)                                |
+|  1347 | [[https://www.wikidata.org/wiki/Q535][Victor Hugo]]: [[http://d-nb.info/901549118][Die Elenden]] (1991)                                |
+|  1347 | [[https://www.wikidata.org/wiki/Q535][Victor Hugo]]: [[http://d-nb.info/860763153][Die Elenden]] (1986)                                |
+|  1347 | [[https://www.wikidata.org/wiki/Q535][Victor Hugo]]: [[http://d-nb.info/850183324][Die Elenden]] (1985)                                |
+|  1347 | [[https://www.wikidata.org/wiki/Q535][Victor Hugo]]: [[http://d-nb.info/457039094][Die Elenden]] (1968)                                |
+|  1282 | [[https://www.wikidata.org/wiki/Q189869][Benito Pérez Galdós]]: [[http://d-nb.info/453733824][Fortunata und Jacinta]] (1961)              |
+|  1257 | [[https://www.wikidata.org/wiki/Q189665][Ivan Goncharov]]: [[http://d-nb.info/451615751][Die Schlucht]] (1959)                            |
+|  1236 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/450988244][Die Brüder Karamasow]] (1964)                |
+|  1230 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/931618371][Die Brüder Karamasow]] (1994)                |
+|  1230 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/870908944][Die Brüder Karamasow]] (1987)                |
+|  1197 | [[https://www.wikidata.org/wiki/Q1067][Dante Alighieri]]: [[http://d-nb.info/450870774][Die Göttliche Komödie]] (1963)                  |
+|  1196 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/931625564][David Copperfield]] (1994)                      |
+|  1196 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/450925633][David Copperfield]] (1961)                      |
+|  1195 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/870908413][David Copperfield]] (1987)                      |
+|  1193 | [[https://www.wikidata.org/wiki/Q314256][Thomas Wolfe]]: [[http://d-nb.info/105049038X][Von Zeit und Fluss]] (2014)                        |
+|  1193 | [[https://www.wikidata.org/wiki/Q1067][Dante Alighieri]]: [[http://d-nb.info/943928109][Die göttliche Komödie]] (1995)                  |
+|  1193 | [[https://www.wikidata.org/wiki/Q1067][Dante Alighieri]]: [[http://d-nb.info/900642416][Die göttliche Komödie]] (1990)                  |
+|  1192 | [[https://www.wikidata.org/wiki/Q1067][Dante Alighieri]]: [[http://d-nb.info/969747152][Die göttliche Komödie]] (2004)                  |
+|  1166 | [[https://www.wikidata.org/wiki/Q126366][Gottfried Heinrich Handelmann]]: [[http://d-nb.info/871418797][Geschichte von Brasilien]] (1987) |
+
+**** Merve
+
+| pages | author: title (year)                                  |
+|-------+-------------------------------------------------------|
+|   524 | [[https://www.wikidata.org/wiki/Q1782493][Konradin Leiner]]: [[http://d-nb.info/959507523][Drachensaat]] (2000)                   |
+|   432 | [[https://www.wikidata.org/wiki/Q2425297][Thomas Kapielski]]: [[http://d-nb.info/961896884][Sozialmanierismus]] (2001)            |
+|   384 | [[https://www.wikidata.org/wiki/Q553887][Michel de Certeau]]: [[http://d-nb.info/881393738][Kunst des Handelns]] (1988)          |
+|   383 | [[https://www.wikidata.org/wiki/Q2546290][Walter Seitter]]: [[http://d-nb.info/931244099][Distante Siegfried-Paraphrasen]] (1993) |
+|   331 | [[https://www.wikidata.org/wiki/Q69187][Friedrich Kittler]]: [[http://d-nb.info/965563383][Optische Medien]] (2002)             |
+|   317 | [[https://www.wikidata.org/wiki/Q180727][John Cage]]: [[http://d-nb.info/850099242][Für die Vögel]] (1984)                       |
+|   312 | [[https://www.wikidata.org/wiki/Q7060][Michel Onfray]]: [[http://d-nb.info/960682465][Theorie des verliebten Körpers]] (2001)  |
+|   300 | [[https://www.wikidata.org/wiki/Q364456, Q355237][Michel Serres, Bruno Latour]]: [[http://d-nb.info/986858862][Aufklärungen]] (2008)      |
+|   294 | [[https://www.wikidata.org/wiki/Q69187][Friedrich Kittler]]: [[http://d-nb.info/1022759396][Philosophien der Literatur]] (2013)  |
+|   279 | [[https://www.wikidata.org/wiki/Q23978392][Armen Avanessian]]: [[http://d-nb.info/104547147X][Metanoia]] (2014)                     |
+|   270 | [[https://www.wikidata.org/wiki/Q929177][François Jullien]]: [[http://d-nb.info/957250916][Über die Wirksamkeit]] (1999)         |
+|   270 | [[https://www.wikidata.org/wiki/Q1283126][Henning Schmidgen]]: [[http://d-nb.info/999221264][Die Helmholtz-Kurven]] (2009)        |
+|   257 | [[https://www.wikidata.org/wiki/Q364456][Michel Serres]]: [[http://d-nb.info/968904556][Atlas]] (2005)                           |
+|   255 | [[https://www.wikidata.org/wiki/Q115816][Harald Szeemann]]: [[http://d-nb.info/851001009][Individuelle Mythologien]] (1985)      |
+|   253 | [[https://www.wikidata.org/wiki/Q23978392][Armen Avanessian]]: [[http://d-nb.info/1060120283][Überschrift]] (2015)                  |
+|   239 | [[https://www.wikidata.org/wiki/Q115816][Harald Szeemann]]: [[http://d-nb.info/810781034][Museum der Obsessionen]] (1981)        |
+|   232 | [[https://www.wikidata.org/wiki/Q44272][Michel Foucault]]: [[http://d-nb.info/780255887][Dispositive der Macht]] (1978)         |
+|   231 | [[https://www.wikidata.org/wiki/Q929177][François Jullien]]: [[http://d-nb.info/965978451][Dialog über die Moral]] (2003)        |
+|   230 | [[https://www.wikidata.org/wiki/Q76509][Karl Jaspers]]: [[http://d-nb.info/953286665][Strindberg und van Gogh]] (1998)          |
+|   223 | [[https://www.wikidata.org/wiki/Q122650][Felix Philipp Ingold]]: [[http://d-nb.info/881411736][Das Buch im Buch]] (1988)         |
+
+**** Nagel & Kimche
+
+| pages | author: title (year)                                      |
+|-------+-----------------------------------------------------------|
+|   772 | [[https://www.wikidata.org/wiki/Q667518][Charles Lewinsky]]: [[http://d-nb.info/977042626][Melnitz]] (2006)                          |
+|   647 | [[https://www.wikidata.org/wiki/Q20743984][Wilfried Meichtry]]: [[http://d-nb.info/1017525323][Verliebte Feinde]] (2012)                |
+|   555 | [[https://www.wikidata.org/wiki/Q124926][Jakob Schaffner]]: [[http://d-nb.info/972791442][Johannes]] (2005)                          |
+|   539 | [[https://www.wikidata.org/wiki/Q667518][Charles Lewinsky]]: [[http://d-nb.info/1011241560][Gerron]] (2011)                           |
+|   536 | [[https://www.wikidata.org/wiki/Q515945][Anne-Laure Bondoux]]: [[http://d-nb.info/983857474][Malva]] (2007)                          |
+|   459 | [[https://www.wikidata.org/wiki/Q2427599][Francine Prose]]: [[http://d-nb.info/969317603][Das Leben der Musen]] (2004)                |
+|   457 | [[https://www.wikidata.org/wiki/Q372313][Enrique Vila-Matas]]: [[http://d-nb.info/983857547][Doktor Pasavento]] (2007)               |
+|   455 | [[https://www.wikidata.org/wiki/Q1734693][Milena Moser]]: [[http://d-nb.info/998365521][Möchtegern]] (2010)                           |
+|   443 | [[https://www.wikidata.org/wiki/Q577234][John Fusco]]: [[http://d-nb.info/966515919][Das Gesetz der Familie]] (2003)                 |
+|   442 | [[https://www.wikidata.org/wiki/Q2287885][Simon Werle]]: [[http://d-nb.info/966575466][Der Schnee der Jahre]] (2003)                  |
+|   429 | [[https://www.wikidata.org/wiki/Q268524][Marianne Curley]]: [[http://d-nb.info/97704260X][Die Prophezeiung der Auserwählten]] (2006) |
+|   425 | [[https://www.wikidata.org/wiki/Q739973][Gabriel Chevallier]]: [[http://d-nb.info/998365491][Heldenangst]] (2010)                    |
+|   415 | [[https://www.wikidata.org/wiki/Q2427599][Francine Prose]]: [[http://d-nb.info/960953264][Durchtrieben]] (2001)                       |
+|   411 | [[https://www.wikidata.org/wiki/Q72541][Eduardo Mendoza Garriga]]: [[http://d-nb.info/1022507680][Katzenkrieg]] (2012)               |
+|   409 | [[https://www.wikidata.org/wiki/Q124372][Hermann Burger]]: [[http://d-nb.info/991629582][Schilten]] (2009)                           |
+|   408 | [[https://www.wikidata.org/wiki/Q118392][Pinkas Braun]]: [[http://d-nb.info/986480762][Vorspiel]] (2008)                             |
+|   399 | [[https://www.wikidata.org/wiki/Q1165624][Dara Horn]]: [[http://d-nb.info/965816648][Ausgelöscht sei der Tag]] (2002)                 |
+|   397 | [[https://www.wikidata.org/wiki/Q667518][Charles Lewinsky]]: [[http://d-nb.info/1050995244][Kastelau]] (2014)                         |
+|   396 | [[https://www.wikidata.org/wiki/Q7045396][Noah Hawley]]: [[http://d-nb.info/1045636800][Der Vater des Attentäters]] (2014)             |
+|   396 | [[https://www.wikidata.org/wiki/Q667518][Charles Lewinsky]]: [[http://d-nb.info/1079484167][Andersen]] (2016)                         |
+
+**** Piper
+
+| pages | author: title (year)                                      |
+|-------+-----------------------------------------------------------|
+|  1956 | [[https://www.wikidata.org/wiki/Q123010][Hans Küng]]: [[http://d-nb.info/957781091][Das Christentum]] (1999)                         |
+|  1865 | [[https://www.wikidata.org/wiki/Q46248][Terry Pratchett]]: [[http://d-nb.info/1078862451][Die Wissenschaft der Scheibenwelt]] (2016) |
+|  1614 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/810386941][Dostojewski für alle]] (1981)           |
+|  1612 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/579313425][Die Brüder Karamasoff]] (1914)          |
+|  1591 | [[https://www.wikidata.org/wiki/Q74781][Michael Peinkofer]]: [[http://d-nb.info/1011680009][Orks]] (2011)                            |
+|  1533 | [[https://www.wikidata.org/wiki/Q796798][Alexei Jurjewitsch Pechow]]: [[http://d-nb.info/1044650869][Schatten]] (2014)                |
+|  1471 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/450987965][Die Brüder Karamasoff]] (1949)          |
+|  1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/974463159][Die Festung]] (2005)               |
+|  1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/974444898][Die Festung]] (2005)               |
+|  1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/973561610][Die Festung]] (2005)               |
+|  1404 | [[https://www.wikidata.org/wiki/Q5931173][Hugh Howey]]: [[http://d-nb.info/1097281329][Silo]] (2016)                                   |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/990532607][Die Brüder Karamasoff]] (2008)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/988814455][Die Brüder Karamasoff]] (2008)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/972571248][Die Brüder Karamasoff]] (2004)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/958315493][Die Brüder Karamasoff]] (1999)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/949168998][Die Brüder Karamasoff]] (1996)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/941554597][Die Brüder Karamasoff]] (1994)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/94155452X][Die Brüder Karamasoff]] (1994)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/910217939][Die Brüder Karamasoff]] (1990)          |
+|  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/880137827][Die Brüder Karamasoff]] (1987)          |
+
+**** Rogner & Bernhard
+
+| pages | author: title (year)                                                                                                      |
+|-------+---------------------------------------------------------------------------------------------------------------------------|
+|  1196 | [[https://www.wikidata.org/wiki/Q436801][Tom Sharpe]]: [[http://d-nb.info/958125236][Neue Sharpe-Sachen]] (1999)                                                                                     |
+|  1030 | [[https://www.wikidata.org/wiki/Q436801][Tom Sharpe]]: [[http://d-nb.info/880368624][Sharpe-Sachen]] (1987)                                                                                          |
+|   929 | [[https://www.wikidata.org/wiki/Q42][Douglas Adams]]: [[http://d-nb.info/986073326][Per Anhalter durch die Galaxis]] (2007)                                                                      |
+|   929 | [[https://www.wikidata.org/wiki/Q42][Douglas Adams]]: [[http://d-nb.info/977891429][Per Anhalter durch die Galaxis]] (2006)                                                                      |
+|   912 | [[https://www.wikidata.org/wiki/Q639538][William Kotzwinkle]]: [[http://d-nb.info/940386828][Der William-Kotzwinkle-Omnibus]] (1993)                                                                 |
+|   784 | [[https://www.wikidata.org/wiki/Q729121][Alasdair Gray]]: [[http://d-nb.info/930799747][Lanark]] (1992)                                                                                              |
+|   671 | [[https://www.wikidata.org/wiki/Q607325][Gay Talese]]: [[http://d-nb.info/984570608][Du sollst begehren]] (2007)                                                                                     |
+|   671 | [[https://www.wikidata.org/wiki/Q123928][Richard Tarnas]]: [[http://d-nb.info/952630052][Idee und Leidenschaft]] (1997)                                                                              |
+|   654 | [[https://www.wikidata.org/wiki/Q454099][Count Franz Pocci]]: [[http://d-nb.info/740334581][Die gesamte Druckgraphik]] (1974)                                                                        |
+|   647 | [[https://www.wikidata.org/wiki/Q694441][Arno Orzessek]]: [[http://d-nb.info/972792171][Schattauers Tochter]] (2005)                                                                                 |
+|   598 | [[https://www.wikidata.org/wiki/Q95255, Q87371][Karlheinz Steinmüller, Angela Steinmüller]]: [[http://d-nb.info/958088152][Visionen 1900, 2000, 2100]] (1999)                                               |
+|   594 | [[https://www.wikidata.org/wiki/Q321153][Greil Marcus]]: [[http://d-nb.info/943793807][Im faschistischen Badezimmer]] (1994)                                                                         |
+|   560 | [[https://www.wikidata.org/wiki/Q786526][T. Coraghessan Boyle]]: [[http://d-nb.info/880273127][Wassermusik]] (1987)                                                                                  |
+|   559 | [[https://www.wikidata.org/wiki/Q786526][T. Coraghessan Boyle]]: [[http://d-nb.info/1007149582][Wassermusik]] (2010)                                                                                  |
+|   556 | [[https://www.wikidata.org/wiki/Q326542][John Peel]]: [[http://d-nb.info/979765625][Memoiren des einflussreichsten DJs der Welt]] (2006)                                                             |
+|   556 | [[https://www.wikidata.org/wiki/Q326542][John Peel]]: [[http://d-nb.info/1016513488][Memoiren des einflussreichsten DJs der Welt]] (2011)                                                             |
+|   554 | [[https://www.wikidata.org/wiki/Q551896][Adrian Ludwig Richter]]: [[http://d-nb.info/760200149][Das Ludwig-Richter-Hausbuch]] (1976)                                                                 |
+|   544 | [[https://www.wikidata.org/wiki/Q1151][Hector Berlioz]]: [[http://d-nb.info/790257114][Memoiren]] (1979)                                                                                           |
+|   535 | [[https://www.wikidata.org/wiki/Q607325][Gay Talese]]: [[http://d-nb.info/986663867][Ehre deinen Vater]] (2008)                                                                                      |
+|   533 | [[https://www.wikidata.org/wiki/Q5577][Salvador Dalí]]: [[http://d-nb.info/750225912][Unabhängigkeitserklärung der Phantasie und Erklärung der Rechte des Menschen auf seine Verrücktheit]] (1975) |
+
+**** Rowohlt
+
+| pages | author: title (year)                                        |
+|-------+-------------------------------------------------------------|
+|  2253 | [[https://www.wikidata.org/wiki/Q1745176][Klaus Harpprecht]]: [[http://d-nb.info/945394659][Thomas Mann]] (1995)                        |
+|  2253 | [[https://www.wikidata.org/wiki/Q1745176][Klaus Harpprecht]]: [[http://d-nb.info/944325807][Thomas Mann]] (1995)                        |
+|  2026 | [[https://www.wikidata.org/wiki/Q1664204][Karl Corino]]: [[http://d-nb.info/967713358][Robert Musil]] (2003)                            |
+|  1723 | [[https://www.wikidata.org/wiki/Q336698][Péter Nádas]]: [[http://d-nb.info/1028105657][Parallelgeschichten]] (2013)                     |
+|  1723 | [[https://www.wikidata.org/wiki/Q336698][Péter Nádas]]: [[http://d-nb.info/101781905X][Parallelgeschichten]] (2012)                     |
+|  1719 | [[https://www.wikidata.org/wiki/Q60820][Rolf Hochhuth]]: [[http://d-nb.info/1008548022][Essayistische Prosa und Gedichte]] (2011)      |
+|  1671 | [[https://www.wikidata.org/wiki/Q78487][Robert Musil]]: [[http://d-nb.info/575594950][Der Mann ohne Eigenschaften]] (1952)            |
+|  1642 | [[https://www.wikidata.org/wiki/Q60820][Rolf Hochhuth]]: [[http://d-nb.info/961281588][Alle Erzählungen, Gedichte und Romane]] (2001) |
+|  1632 | [[https://www.wikidata.org/wiki/Q78487][Robert Musil]]: [[http://d-nb.info/740499734][Der Mann ohne Eigenschaften]] (1974)            |
+|  1632 | [[https://www.wikidata.org/wiki/Q78487][Robert Musil]]: [[http://d-nb.info/575594977][Der Mann ohne Eigenschaften]] (1967)            |
+|  1632 | [[https://www.wikidata.org/wiki/Q78487][Robert Musil]]: [[http://d-nb.info/575594969][Der Mann ohne Eigenschaften]] (1960)            |
+|  1632 | [[https://www.wikidata.org/wiki/Q78487][Robert Musil]]: [[http://d-nb.info/457661054][Der Mann ohne Eigenschaften]] (1970)            |
+|  1595 | [[https://www.wikidata.org/wiki/Q35155][Thomas Pynchon]]: [[http://d-nb.info/998452734][Gegen den Tag]] (2010)                        |
+|  1595 | [[https://www.wikidata.org/wiki/Q35155][Thomas Pynchon]]: [[http://d-nb.info/986805394][Gegen den Tag]] (2008)                        |
+|  1568 | [[https://www.wikidata.org/wiki/Q1381996][Everett Helm]]: [[http://d-nb.info/930261615][Béla Bartók]] (1992)                            |
+|  1547 | [[https://www.wikidata.org/wiki/Q313246][David Foster Wallace]]: [[http://d-nb.info/1002535158][Unendlicher Spass]] (2011)              |
+|  1342 | [[https://www.wikidata.org/wiki/Q560733][Harold Brodkey]]: [[http://d-nb.info/949645486][Die flüchtige Seele]] (1997)                  |
+|  1342 | [[https://www.wikidata.org/wiki/Q560733][Harold Brodkey]]: [[http://d-nb.info/945419112][Die flüchtige Seele]] (1995)                  |
+|  1303 | [[https://www.wikidata.org/wiki/Q336698][Péter Nádas]]: [[http://d-nb.info/920786014][Buch der Erinnerung]] (1992)                     |
+|  1274 | [[https://www.wikidata.org/wiki/Q60820][Rolf Hochhuth]]: [[http://d-nb.info/975618466][Neue Dramen, Gedichte, Prosa]] (2006)          |
+
+**** Schöffling & Co.
+
+| pages | author: title (year)                                        |
+|-------+-------------------------------------------------------------|
+|  1001 | [[https://www.wikidata.org/wiki/Q1555039][Guntram Vesper]]: [[http://d-nb.info/1079614893][Frohburg]] (2016)                             |
+|   808 | [[https://www.wikidata.org/wiki/Q88073][Helga M. Novak]]: [[http://d-nb.info/957776292][Solange noch Liebesbriefe eintreffen]] (1999) |
+|   786 | [[https://www.wikidata.org/wiki/Q893296][Bora Ćosić]]: [[http://d-nb.info/1070568392][Die Tutoren]] (2015)                              |
+|   758 | [[https://www.wikidata.org/wiki/Q1600800][Heinz Rein]]: [[http://d-nb.info/1062993926][Finale Berlin]] (2015)                            |
+|   699 | [[https://www.wikidata.org/wiki/Q215764][Ulrich Becher]]: [[http://d-nb.info/994357044][Murmeljagd]] (2009)                            |
+|   668 | [[https://www.wikidata.org/wiki/Q102799][Paul Kornfeld]]: [[http://d-nb.info/954282167][Blanche oder das Atelier im Garten]] (1998)    |
+|   653 | [[https://www.wikidata.org/wiki/Q1435680][Silvia Tennenbaum]]: [[http://d-nb.info/1017558744][Straßen von gestern]] (2012)               |
+|   621 | [[https://www.wikidata.org/wiki/Q91496][Rudolf Lorenzen]]: [[http://d-nb.info/963621106][Alles andere als ein Held]] (2002)           |
+|   612 | [[https://www.wikidata.org/wiki/Q715932][Miljenko Jergović]]: [[http://d-nb.info/986700622][Das Walnusshaus]] (2008)                   |
+|   603 | [[https://www.wikidata.org/wiki/Q443055][Sebastian Faulks]]: [[http://d-nb.info/951130935][Gesang vom großen Feuer]] (1997)            |
+|   565 | [[https://www.wikidata.org/wiki/Q76324][Juli Zeh]]: [[http://d-nb.info/971226806][Spieltrieb]] (2004)                                 |
+|   564 | [[https://www.wikidata.org/wiki/Q4889044][Benjamin Moser]]: [[http://d-nb.info/1034318632][Clarice Lispector]] (2013)                    |
+|   559 | [[https://www.wikidata.org/wiki/Q126875][Martin Kessel]]: [[http://d-nb.info/96123301X][Herrn Brechers Fiasko]] (2001)                 |
+|   550 | [[https://www.wikidata.org/wiki/Q2287857][Simon Urban]]: [[http://d-nb.info/1011557134][Plan D]] (2011)                                  |
+|   547 | [[https://www.wikidata.org/wiki/Q1581802][Hans Pleschinski]]: [[http://d-nb.info/945463154][Brabant]] (1995)                            |
+|   541 | [[https://www.wikidata.org/wiki/Q665144][Russell Banks]]: [[http://d-nb.info/106299387X][Verstoßen]] (2015)                             |
+|   539 | [[https://www.wikidata.org/wiki/Q126875][Martin Kessel]]: [[http://d-nb.info/962175749][Lydia Faude]] (2001)                           |
+|   537 | [[https://www.wikidata.org/wiki/Q264283][Jennifer Egan]]: [[http://d-nb.info/957071426][Die Farbe der Erinnerung]] (1999)              |
+|   535 | [[https://www.wikidata.org/wiki/Q264283][Jennifer Egan]]: [[http://d-nb.info/965206416][Look at me]] (2002)                            |
+|   524 | [[https://www.wikidata.org/wiki/Q1793679][Markus Orths]]: [[http://d-nb.info/1050669061][Alpha & Omega]] (2014)                          |
+
+**** Suhrkamp
+
+| pages | author: title (year)                               |
+|-------+----------------------------------------------------|
+|  2569 | [[https://www.wikidata.org/wiki/Q151872][Amos Oz]]: [[http://d-nb.info/991420225][Die Romane]] (2009)                         |
+|  2085 | [[https://www.wikidata.org/wiki/Q193405][Emil Cioran]]: [[http://d-nb.info/988814668][Werke]] (2008)                          |
+|  1909 | [[https://www.wikidata.org/wiki/Q153248][Marguerite Duras]]: [[http://d-nb.info/986493635][Die Romane]] (2008)                |
+|  1840 | [[https://www.wikidata.org/wiki/Q44336][Thomas Bernhard]]: [[http://d-nb.info/986531766][Die Romane]] (2008)                 |
+|  1838 | [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]: [[http://d-nb.info/991398939][Die Erzählungen und Märchen]] (2009)  |
+|  1782 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/998413925][Prosa]] (2013)                       |
+|  1782 | [[https://www.wikidata.org/wiki/Q115483][Max Frisch]]: [[http://d-nb.info/988840758][Romane, Erzählungen, Tagebücher]] (2008) |
+|  1735 | [[https://www.wikidata.org/wiki/Q216466][Alejo Carpentier]]: [[http://d-nb.info/1008349852][Die Romane]] (2011)                |
+|  1686 | [[https://www.wikidata.org/wiki/Q44272][Michel Foucault]]: [[http://d-nb.info/988810271][Die Hauptwerke]] (2008)             |
+|  1676 | [[https://www.wikidata.org/wiki/Q6882][James Joyce]]: [[http://d-nb.info/998413267][Prosa]] (2010)                          |
+|  1646 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/984291091][Die Gedichte]] (2007)                |
+|  1514 | [[https://www.wikidata.org/wiki/Q84455][Ödön von Horváth]]: [[http://d-nb.info/988840588][Prosa und Stücke]] (2008)          |
+|  1513 | [[https://www.wikidata.org/wiki/Q77325][Arno Schmidt]]: [[http://d-nb.info/1002310857][Zettel's Traum]] (2010)                |
+|  1488 | [[https://www.wikidata.org/wiki/Q123499][Paul Nizon]]: [[http://d-nb.info/994321007][Romane, Erzählungen, Journale]] (2009)   |
+|  1487 | [[https://www.wikidata.org/wiki/Q242130][Bohumil Hrabal]]: [[http://d-nb.info/986529508][Die Romane]] (2008)                  |
+|  1463 | [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]: [[http://d-nb.info/986529494][Sämtliche Werke]] (2008)                |
+|  1407 | [[https://www.wikidata.org/wiki/Q184750][Slavoj Žižek]]: [[http://d-nb.info/1079017275][Weniger als nichts]] (2016)            |
+|  1407 | [[https://www.wikidata.org/wiki/Q184750][Slavoj Žižek]]: [[http://d-nb.info/1034785508][Weniger als nichts]] (2014)            |
+|  1388 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/946609284][Die Gedichte]] (1995)                |
+|  1388 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/940738228][Die Gedichte]] (1993)                |
+
+**** Ullstein
+
+| pages | author: title (year)                             |
+|-------+--------------------------------------------------|
+|  1492 | [[https://www.wikidata.org/wiki/Q1124][Bill Clinton]]: [[http://d-nb.info/974883506][Mein Leben]] (2005)                  |
+|  1408 | [[https://www.wikidata.org/wiki/Q103254][Ludwig Wolff]]: [[http://d-nb.info/368798046][Gesammelte Romane]] (1924)           |
+|  1280 | [[https://www.wikidata.org/wiki/Q72584][Klaus Hildebrand]]: [[http://d-nb.info/955572711][Das vergangene Reich]] (1999)    |
+|  1270 | [[https://www.wikidata.org/wiki/Q983431][Matthew Reilly]]: [[http://d-nb.info/974883476][Ice Station]] (2005)               |
+|  1228 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/978334590][Hitler]] (2005)                      |
+|  1228 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/951515977][Hitler]] (1998)                      |
+|  1221 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/966161440][Hitler]] (2003)                      |
+|  1214 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/994179391][Es]] (2009)                          |
+|  1214 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/97304800X][Es]] (2005)                          |
+|  1214 | [[https://www.wikidata.org/wiki/Q39829][Stephen King]]: [[http://d-nb.info/967407923][Es]] (2003)                          |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/946395918][Hitler]] (1996)                      |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/943881935][Hitler]] (1995)                      |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/931676657][Hitler]] (1993)                      |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/920452515][Hitler]] (1992)                      |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/901548340][Hitler]] (1991)                      |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/890113963][Hitler]] (1989)                      |
+|  1190 | [[https://www.wikidata.org/wiki/Q57372][Joachim Fest]]: [[http://d-nb.info/870472127][Hitler]] (1987)                      |
+|  1181 | [[https://www.wikidata.org/wiki/Q28494][Heinrich von Kleist]]: [[http://d-nb.info/951056077][Sämtliche Werke]] (1997)      |
+|  1152 | [[https://www.wikidata.org/wiki/Q110430][Johannes Fried]]: [[http://d-nb.info/950913286][Der Weg in die Geschichte]] (1998) |
+|  1149 | [[https://www.wikidata.org/wiki/Q108749][Leonie Ossowski]]: [[http://d-nb.info/959550429][Weichselkirschen]] (2000)         |
+
+**** Urs Engeler Editor
+
+| pages | author: title (year)                                                                       |
+|-------+--------------------------------------------------------------------------------------------|
+|  1095 | [[https://www.wikidata.org/wiki/Q1484439][Ulrich Schlotmann]]: [[http://d-nb.info/99427520X][Die Freuden der Jagd]] (2009)                                             |
+|   712 | [[https://www.wikidata.org/wiki/Q122650][Felix Philipp Ingold]]: [[http://d-nb.info/992410959][Gegengabe]] (2009)                                                     |
+|   539 | [[https://www.wikidata.org/wiki/Q122650][Felix Philipp Ingold]]: [[http://d-nb.info/975174924][Wortnahme]] (2005)                                                     |
+|   415 | [[https://www.wikidata.org/wiki/Q1333153][Philippe Lacoue-Labarthe]]: [[http://d-nb.info/992410932][Dichtung als Erfahrung]] (2009)                                    |
+|   405 | [[https://www.wikidata.org/wiki/Q2589913][Wolfgang Held]]: [[http://d-nb.info/984521992][Traum vom Hungerturm]] (2007)                                                 |
+|   371 | [[https://www.wikidata.org/wiki/Q213806][Walter Abish]]: [[http://d-nb.info/965383652][Alphabetical Africa]] (2002)                                                   |
+|   363 | [[https://www.wikidata.org/wiki/Q470557][Jean Paulhan]]: [[http://d-nb.info/992410940][Die Blumen von Tarbes und weitere Schriften zur Theorie der Literatur]] (2009) |
+|   359 | [[https://www.wikidata.org/wiki/Q236469][H.D.]]: [[http://d-nb.info/988598434][Tribut an Freud]] (2008)                                                               |
+|   333 | [[https://www.wikidata.org/wiki/Q25120][Pier Paolo Pasolini]]: [[http://d-nb.info/994275110][Dunckler Enthusiasmo]] (2009)                                           |
+|   323 | [[https://www.wikidata.org/wiki/Q551749][Francis Ponge]]: [[http://d-nb.info/977101479][L' opinion changée quant aux fleurs]] (2005)                                  |
+|   319 | [[https://www.wikidata.org/wiki/Q993831][Bruno Steiger]]: [[http://d-nb.info/994275242][Zwischen Unorten]] (2009)                                                     |
+|   314 | [[https://www.wikidata.org/wiki/Q108014][Elke Erb]]: [[http://d-nb.info/987006665][Sonanz]] (2008)                                                                    |
+|   295 | [[https://www.wikidata.org/wiki/Q1927300][Michael Donhauser]]: [[http://d-nb.info/971015430][Livia oder die Reise]] (2004)                                             |
+|   282 | [[https://www.wikidata.org/wiki/Q2915679][Harry Mathews]]: [[http://d-nb.info/980605474][Mein Leben als CIA]] (2006)                                                   |
+|   282 | [[https://www.wikidata.org/wiki/Q2474877][Ulf Stolterfoht]]: [[http://d-nb.info/1044879378][Die 1000 Tage des Brueterich]] (2013)                                       |
+|   247 | [[https://www.wikidata.org/wiki/Q353869][Donald Barthelme]]: [[http://d-nb.info/984526781][Der tote Vater]] (2007)                                                    |
+|   230 | [[https://www.wikidata.org/wiki/Q80440][Anna Akhmatova]]: [[http://d-nb.info/972835172][Enuma elisch]] (2005)                                                        |
+|   225 | [[https://www.wikidata.org/wiki/Q62134][Edna St. Vincent Millay]]: [[http://d-nb.info/98859840X][Love is not all]] (2008)                                            |
+|   222 | [[https://www.wikidata.org/wiki/Q236469][H.D.]]: [[http://d-nb.info/987003089][Madrigal]] (2008)                                                                      |
+|   215 | [[https://www.wikidata.org/wiki/Q3171526][Jean Daive]]: [[http://d-nb.info/992411009][Unter der Kuppel]] (2009)                                                        |
+
+**** Verbrecher Verlag
+
+| pages | author: title (year)                                    |
+|-------+---------------------------------------------------------|
+|  1071 | [[https://www.wikidata.org/wiki/Q1676349][J. J. Voskuil]]: [[http://d-nb.info/1051270766][Das A.P. Beerta-Institut]] (2015)          |
+|  1035 | [[https://www.wikidata.org/wiki/Q98782][Dietmar Dath]]: [[http://d-nb.info/987001744][Für immer in Honig]] (2008)                 |
+|   990 | [[https://www.wikidata.org/wiki/Q1676349][J. J. Voskuil]]: [[http://d-nb.info/1051270790][Und auch Wehmütigkeit]] (2016)             |
+|   846 | [[https://www.wikidata.org/wiki/Q1676349][J. J. Voskuil]]: [[http://d-nb.info/1051270731][Direktor Beerta]] (2016)                   |
+|   815 | [[https://www.wikidata.org/wiki/Q1058985][Chaim Noll]]: [[http://d-nb.info/990132307][Der Kitharaspieler]] (2008)                   |
+|   796 | [[https://www.wikidata.org/wiki/Q105940][Giwi Margwelaschwili]]: [[http://d-nb.info/991758862][Der Kantakt]] (2009)                |
+|   771 | [[https://www.wikidata.org/wiki/Q1045544][Carsten Gansel]]: [[http://d-nb.info/1070836931][Literatur im Dialog]] (2015)              |
+|   701 | [[https://www.wikidata.org/wiki/Q91496][Rudolf Lorenzen]]: [[http://d-nb.info/1034517929][Alles andere als ein Held]] (2014)       |
+|   686 | [[https://www.wikidata.org/wiki/Q91496][Rudolf Lorenzen]]: [[http://d-nb.info/984718710][Alles andere als ein Held]] (2007)       |
+|   679 | [[https://www.wikidata.org/wiki/Q1395793][Karsten Krampitz]]: [[http://d-nb.info/1079739483][Der Fall Brüsewitz]] (2016)             |
+|   594 | [[https://www.wikidata.org/wiki/Q2693686][Detlev van Heest]]: [[http://d-nb.info/1079737960][Junglaub]] (2016)                       |
+|   583 | [[https://www.wikidata.org/wiki/Q1557335][Peter O. Chotjewitz]]: [[http://d-nb.info/1034518054][Mein Freund Klaus]] (2014)           |
+|   576 | [[https://www.wikidata.org/wiki/Q1557335][Peter O. Chotjewitz]]: [[http://d-nb.info/984718702][Mein Freund Klaus]] (2007)           |
+|   543 | [[https://www.wikidata.org/wiki/Q106613][Christian Geissler]]: [[http://d-nb.info/1100707468][Das Brot mit der Feile]] (2016)       |
+|   482 | [[https://www.wikidata.org/wiki/Q1058985][Chaim Noll]]: [[http://d-nb.info/1062989813][Der Schmuggel über die Zeitgrenze]] (2015)    |
+|   475 | [[https://www.wikidata.org/wiki/Q101010][Christian Broecking]]: [[http://d-nb.info/1002677661][Respekt!]] (2011)                    |
+|   447 | [[https://www.wikidata.org/wiki/Q1058985][Chaim Noll]]: [[http://d-nb.info/1045299782][Die Synagoge]] (2014)                         |
+|   445 | [[https://www.wikidata.org/wiki/Q91496][Rudolf Lorenzen]]: [[http://d-nb.info/994281048][Rhythmen, die die Welt bewegten]] (2010) |
+|   414 | [[https://www.wikidata.org/wiki/Q91496][Rudolf Lorenzen]]: [[http://d-nb.info/984718737][Die Beutelschneider]] (2007)             |
+|   394 | [[https://www.wikidata.org/wiki/Q1082403][Christian Y. Schmidt]]: [[http://d-nb.info/1033094749][Wir sind die Wahnsinnigen]] (2013)  |
+
+**** Voland & Quist
+
+| pages | author: title (year)                                    |
+|-------+---------------------------------------------------------|
+|   553 | [[https://www.wikidata.org/wiki/Q107969][Matthias Frings]]: [[http://d-nb.info/1027642160][L' ultimo comunista]] (2012)             |
+|   539 | [[https://www.wikidata.org/wiki/Q95231][Brigitte Reimann]]: [[http://d-nb.info/997930497][Franziska Linkerhand]] (2005)           |
+|   399 | [[https://www.wikidata.org/wiki/Q14917034][Viktar Martsinovich]]: [[http://d-nb.info/1051099579][Paranoia]] (2014)                    |
+|   394 | [[https://www.wikidata.org/wiki/Q14917034][Viktar Martsinovich]]: [[http://d-nb.info/1099970318][Mova]] (2016)                        |
+|   325 | [[https://www.wikidata.org/wiki/Q114623][Barbara Frischmuth]]: [[http://d-nb.info/992603641][La scrittura dell'amico]] (2009)      |
+|   317 | [[https://www.wikidata.org/wiki/Q2458885][Tobias Herre]]: [[http://d-nb.info/1018058052][Das Fehlerchen]] (2012)                     |
+|   281 | [[https://www.wikidata.org/wiki/Q2531342][Volker Surmann]]: [[http://d-nb.info/1051099838][Extremely cold water]] (2014)             |
+|   273 | [[https://www.wikidata.org/wiki/Q1287359][Edo Popović]]: [[http://d-nb.info/991880382][Die Spieler]] (2009)                         |
+|   265 | [[https://www.wikidata.org/wiki/Q854883][Kriszta Bódis]]: [[http://d-nb.info/994328621][Artista]] (2009)                           |
+|   263 | [[https://www.wikidata.org/wiki/Q2589360][Wolfgang Büscher]]: [[http://d-nb.info/995045801][Germania, un viaggio]] (2009)           |
+|   255 | [[https://www.wikidata.org/wiki/Q122622][Ralph Dutli]]: [[http://d-nb.info/1121533507][L' ultimo viaggio di Soutine]] (2016)        |
+|   254 | [[https://www.wikidata.org/wiki/Q1743634, Q99031][Kirsten Fuchs, Volker Strübing]]: [[http://d-nb.info/991879791][Nicht der Süden]] (2009)  |
+|   221 | [[https://www.wikidata.org/wiki/Q2020927][Olja Savičević]]: [[http://d-nb.info/1009031074][Lebt wohl, Cowboys]] (2011)               |
+|   215 | [[https://www.wikidata.org/wiki/Q2589360][Wolfgang Büscher]]: [[http://d-nb.info/987769162][Berlino - Mosca]] (2008)                |
+|   205 | [[https://www.wikidata.org/wiki/Q104844][Clemens Meyer]]: [[http://d-nb.info/1079611185][Zwei Himmelhunde]] (2016)                  |
+|   203 | [[https://www.wikidata.org/wiki/Q99031][Volker Strübing]]: [[http://d-nb.info/102933031X][Das Paradies am Rande der Stadt]] (2013) |
+|   173 | [[https://www.wikidata.org/wiki/Q1287359][Edo Popović]]: [[http://d-nb.info/1002469112][Mitternachtsboogie]] (2010)                  |
+|   172 | [[https://www.wikidata.org/wiki/Q23829164][Sarah Bosetti]]: [[http://d-nb.info/1071426346][Mein schönstes Ferienbegräbnis]] (2015)    |
+|   172 | [[https://www.wikidata.org/wiki/Q1743634][Kirsten Fuchs]]: [[http://d-nb.info/1076404278][Eine Frau spürt so was nicht]] (2015)      |
+|   171 | [[https://www.wikidata.org/wiki/Q2164753][Roman Simić]]: [[http://d-nb.info/103438919X][Von all den unglaublichen Dingen]] (2013)    |
+
+**** Wallstein
+
+| pages | author: title (year)                                                         |
+|-------+------------------------------------------------------------------------------|
+|   926 | [[https://www.wikidata.org/wiki/Q85554][H. G. Adler]]: [[http://d-nb.info/967461189][Theresienstadt]] (2005)                                           |
+|   871 | [[https://www.wikidata.org/wiki/Q60785][Ricarda Huch]]: [[http://d-nb.info/949378402][Du, mein Dämon, meine Schlange ...]] (1998)                      |
+|   856 | [[https://www.wikidata.org/wiki/Q118589][Andreas Gotzmann]]: [[http://d-nb.info/986555894][Jüdische Autonomie in der frühen Neuzeit]] (2008)            |
+|   840 | [[https://www.wikidata.org/wiki/Q1201363][Detlef Siegfried]]: [[http://d-nb.info/979866847][Time is on my side]] (2006)                                  |
+|   799 | [[https://www.wikidata.org/wiki/Q87975][Christine Lavant]]: [[http://d-nb.info/1071148699][Zu Lebzeiten veröffentlichte Erzählungen]] (2015)            |
+|   776 | [[https://www.wikidata.org/wiki/Q103094][Martin Avenarius]]: [[http://d-nb.info/1050617525][Fremde Traditionen des römischen Rechts]] (2014)             |
+|   768 | [[https://www.wikidata.org/wiki/Q64364][Johann Wilhelm Ludwig Gleim]]: [[http://d-nb.info/965694844][Ausgewählte Werke]] (2003)                        |
+|   765 | [[https://www.wikidata.org/wiki/Q870477][Franz Baermann Steiner]]: [[http://d-nb.info/964362465][Zivilisation und Gefahr]] (2008)                       |
+|   763 | [[https://www.wikidata.org/wiki/Q2128279][Rainer Malkowski]]: [[http://d-nb.info/994167296][Die Gedichte]] (2009)                                        |
+|   761 | [[https://www.wikidata.org/wiki/Q117839][Matthias Zschokke]]: [[http://d-nb.info/1008652768][Lieber Niels]] (2011)                                       |
+|   760 | [[https://www.wikidata.org/wiki/Q1512257][Gerhard Paul]]: [[http://d-nb.info/107961480X][Das visuelle Zeitalter]] (2016)                                  |
+|   728 | [[https://www.wikidata.org/wiki/Q17122148, Q76820][Albrecht Joseph, Carl Zuckmayer]]: [[http://d-nb.info/982101546][Briefwechsel]] (2007)                         |
+|   720 | [[https://www.wikidata.org/wiki/Q1122038][Thomas Lackmann]]: [[http://d-nb.info/982101686][Der Sohn meines Vaters]] (2008)                               |
+|   710 | [[https://www.wikidata.org/wiki/Q1519827][Rüdiger Hachtmann]]: [[http://d-nb.info/1017310777][Das Wirtschaftsimperium der Deutschen Arbeitsfront]] (2012) |
+|   688 | [[https://www.wikidata.org/wiki/Q20243352][Jens-Christian Wagner]]: [[http://d-nb.info/960196862][Produktion des Todes]] (2001)                           |
+|   679 | [[https://www.wikidata.org/wiki/Q17418299][Sebastian Ullrich]]: [[http://d-nb.info/991677137][Der Weimar-Komplex]] (2009)                                 |
+|   677 | [[https://www.wikidata.org/wiki/Q15837427][Olaf Blaschke]]: [[http://d-nb.info/1002058880][Verleger machen Geschichte]] (2010)                             |
+|   676 | [[https://www.wikidata.org/wiki/Q1512257][Gerhard Paul]]: [[http://d-nb.info/1028142870][BilderMACHT]] (2013)                                             |
+|   662 | [[https://www.wikidata.org/wiki/Q20243352][Jens-Christian Wagner]]: [[http://d-nb.info/106633563X][Produktion des Todes]] (2015)                           |
+|   658 | [[https://www.wikidata.org/wiki/Q85618][Nicolas Born]]: [[http://d-nb.info/971040753][Gedichte]] (2004)                                                |
+
+**** Wiesenburg
+
+| pages | author: title (year)                                                       |
+|-------+----------------------------------------------------------------------------|
+|   515 | [[https://www.wikidata.org/wiki/Q18020005][Erik Lorenz]]: [[http://d-nb.info/1019857102][Streifzug durch Laos]] (2012)                                   |
+|   384 | [[https://www.wikidata.org/wiki/Q1944585][Monika Böss]]: [[http://d-nb.info/973156694][Marvins Bräute]] (2005)                                         |
+|   379 | [[https://www.wikidata.org/wiki/Q1609530][Norbert Schmid]]: [[http://d-nb.info/987336711][Norm_372n]] (2008)                                           |
+|   377 | [[https://www.wikidata.org/wiki/Q1306866][Wolfgang Dahms]]: [[http://d-nb.info/984523936][Das richtige Wort]] (2007)                                   |
+|   372 | [[https://www.wikidata.org/wiki/Q18020005][Erik Lorenz]]: [[http://d-nb.info/1046238256][Durch das Herz Englands]] (2014)                                |
+|   315 | [[https://www.wikidata.org/wiki/Q1609530][Norbert Schmid]]: [[http://d-nb.info/966371135][Marlies]] (2003)                                             |
+|   310 | [[https://www.wikidata.org/wiki/Q15401493][Hartmut Löffel]]: [[http://d-nb.info/101666446X][Schmerzpunkte oder die Kunst, zu überleben]] (2011)          |
+|   309 | [[https://www.wikidata.org/wiki/Q1905210][Martin Wein]]: [[http://d-nb.info/1006539883][Süd-Pazifik]] (2010)                                            |
+|   309 | [[https://www.wikidata.org/wiki/Q15428978][Armin Strohmeyr]]: [[http://d-nb.info/1075928257][Dame mit rotem Kater]] (2015)                               |
+|   304 | [[https://www.wikidata.org/wiki/Q1557982][Gyde Callesen]]: [[http://d-nb.info/1036748723][Angst hat die Quersumme 5]] (2013)                            |
+|   303 | [[https://www.wikidata.org/wiki/Q15451068][Karl-Heinz Schreiber]]: [[http://d-nb.info/973271949][Der Meerschwimmer oder Heimat für Blumberg]] (2005)    |
+|   281 | [[https://www.wikidata.org/wiki/Q1533725][Godehard Schramm]]: [[http://d-nb.info/993922449][Zweite Heimat Gardasee]] (2009)                            |
+|   260 | [[https://www.wikidata.org/wiki/Q1905210][Martin Wein]]: [[http://d-nb.info/1011464845][Abenteuer im Eis]] (2011)                                       |
+|   259 | [[https://www.wikidata.org/wiki/Q1533725][Godehard Schramm]]: [[http://d-nb.info/986529354][Einladungen nach Polen]] (2008)                            |
+|   241 | [[https://www.wikidata.org/wiki/Q2286181][Silke Heimes]]: [[http://d-nb.info/988056135][Der Fremde]] (2008)                                            |
+|   241 | [[https://www.wikidata.org/wiki/Q1609530][Norbert Schmid]]: [[http://d-nb.info/956330878][Der Tote im Park]] (1999)                                    |
+|   237 | [[https://www.wikidata.org/wiki/Q881422][Blanche Willis Howard]]: [[http://d-nb.info/988420813][Ein Jahr unterwegs]] (2008)                           |
+|   235 | [[https://www.wikidata.org/wiki/Q983334][Khamsing Srinawk]]: [[http://d-nb.info/1065001703][Der Politiker und andere Geschichten aus Thailand]] (2015) |
+|   235 | [[https://www.wikidata.org/wiki/Q35610][Arthur Conan Doyle]]: [[http://d-nb.info/986559156][Tatort Ägypten]] (2008)                                  |
+|   233 | [[https://www.wikidata.org/wiki/Q2422270][Thomas Bauer]]: [[http://d-nb.info/103313581X][Mush!]] (2013)                                                 |
 
 ** DONE temporal distribution
 Let's plot the median number of pages per year and per decade:

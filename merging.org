@@ -1932,13 +1932,14 @@ These rankings only comprise the normalised publishers!
 
 **** by item count
 #+BEGIN_SRC sh
-  cut -f3 publisher_data.tsv | sort -S1G | uniq -c | sort -nr | head -n20
+  cut -f3 publisher_data.tsv | sort -S1G | uniq -c | sort -nr
 #+END_SRC
 
 | publisher                   | items |
 |-----------------------------+-------|
 | Rowohlt                     | 30680 |
 | Heyne                       | 23728 |
+| Reclam                      | 18786 |
 | Suhrkamp                    | 15383 |
 | Goldmann                    | 14508 |
 | Ullstein                    | 11685 |
@@ -1957,12 +1958,18 @@ These rankings only comprise the normalised publishers!
 | Nagel & Kimche              |   475 |
 | Schöffling & Co.            |   345 |
 | Rogner & Bernhard           |   222 |
+| Merve                       |   185 |
+| Wiesenburg                  |   147 |
+| Verbrecher Verlag           |   144 |
+| Urs Engeler Editor          |   105 |
+| Blumenbar                   |    51 |
+| Voland & Quist              |    39 |
 
 **** by page count
 
 #+BEGIN_SRC sh
   awk -F'\t' '{sum[$3]+=$2; count[$3]+=1} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}'  publisher_data.tsv \
-      | sort -S1G -nr | head -n20
+      | sort -S1G -nr
 #+END_SRC
 
 | publisher                   | page sum | items | mean pages |
@@ -1972,6 +1979,7 @@ These rankings only comprise the normalised publishers!
 | Goldmann                    |  4802506 | 14508 |        331 |
 | Suhrkamp                    |  3818326 | 15383 |        248 |
 | Ullstein                    |  3379183 | 11685 |        289 |
+| Reclam                      |  3220678 | 18786 |        171 |
 | Piper                       |  2875086 |  9388 |        306 |
 | Aufbau                      |  2828951 |  8302 |        340 |
 | Insel                       |  2348033 |  9697 |        242 |
@@ -1987,12 +1995,18 @@ These rankings only comprise the normalised publishers!
 | Nagel & Kimche              |    94430 |   475 |        198 |
 | Schöffling & Co.            |    88486 |   345 |        256 |
 | Rogner & Bernhard           |    69481 |   222 |        312 |
+| Verbrecher Verlag           |    37384 |   144 |        259 |
+| Merve                       |    26190 |   185 |        141 |
+| Wiesenburg                  |    21043 |   147 |        143 |
+| Urs Engeler Editor          |    17212 |   105 |        163 |
+| Blumenbar                   |    11718 |    51 |        229 |
+| Voland & Quist              |     8146 |    39 |        208 |
 
 **** by mean page count
 
 #+BEGIN_SRC sh
   awk -F'\t' '{sum[$3]+=$2; count[$3]+=1} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}'  publisher_data.tsv \
-      | sort -S1G -nrk3 | head -n20
+      | sort -S1G -nrk3
 #+END_SRC
 
 | publisher                   | page sum | items | mean pages |
@@ -2017,6 +2031,13 @@ These rankings only comprise the normalised publishers!
 | Rowohlt                     |  7513069 | 30680 |        244 |
 | Insel                       |  2348033 |  9697 |        242 |
 | Luchterhand Literaturverlag |   675844 |  2816 |        240 |
+| Blumenbar                   |    11718 |    51 |        229 |
+| Voland & Quist              |     8146 |    39 |        208 |
+| Nagel & Kimche              |    94430 |   475 |        198 |
+| Reclam                      |  3220678 | 18786 |        171 |
+| Urs Engeler Editor          |    17212 |   105 |        163 |
+| Wiesenburg                  |    21043 |   147 |        143 |
+| Merve                       |    26190 |   185 |        141 |
 
 *** DONE ranking per publisher
 
@@ -2778,7 +2799,7 @@ replot
 
 *** 1955
 
-Why is there such a pronounced peak in 1955? 
+Why is there such a pronounced peak in 1955?
 
 Let's first look at the distribution of the number of pages in that year:
 #+BEGIN_SRC gnuplot :results silent
@@ -2808,7 +2829,7 @@ replot
 
 [[issued_pages_1955.png]]
 
-We see peaking page numbers between 250 and 260. 
+We see peaking page numbers between 250 and 260.
 
 Let's extract all items from 1955 and analyse them further:
 #+BEGIN_SRC sh
@@ -2909,7 +2930,7 @@ Those author-publisher pairs do no longer appear, which is quite
 strange for the year 1956, since presumably those novels did not just
 disappear. Maybe the DNB stopped collecting them?
 
-**** temporal distribution for publisher 
+**** temporal distribution for publisher
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
@@ -2974,8 +2995,8 @@ than 1000 pages vs. between 100 and 400 pages.
   for file in 1001-books/counts.tsv pages_freq.tsv; do
       awk -F'\t' '
           {
-            SUM += $2; 
-            if ($1 > 1000) SUMBIG += $2; 
+            SUM += $2;
+            if ($1 > 1000) SUMBIG += $2;
             if ($1 >= 100 && $1 <= 400) SUMSMALL += $2
           } END {
             printf("%s\t%s (%2.1f%%)\t%s (%2.1f%%)\t%2.4f\n", FILENAME, SUMBIG, SUMBIG/SUM*100, SUMSMALL, SUMSMALL/SUM*100, SUMBIG/SUMSMALL)

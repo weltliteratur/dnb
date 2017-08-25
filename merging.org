@@ -2926,7 +2926,7 @@ than 1000 pages vs. between 100 and 400 pages.
             if ($1 > 1000) SUMBIG += $2; 
             if ($1 >= 100 && $1 <= 400) SUMSMALL += $2
           } END {
-            printf("%s\t%s (%2.1f%%)\t%s (%2.1f%%)\t%2.3f\n", FILENAME, SUMBIG, SUMBIG/SUM*100, SUMSMALL, SUMSMALL/SUM*100, SUMBIG/SUMSMALL)
+            printf("%s\t%s (%2.1f%%)\t%s (%2.1f%%)\t%2.4f\n", FILENAME, SUMBIG, SUMBIG/SUM*100, SUMSMALL, SUMSMALL/SUM*100, SUMBIG/SUMSMALL)
           }' $file
   done
 
@@ -2934,5 +2934,5 @@ than 1000 pages vs. between 100 and 400 pages.
 
 | dataset    | >1000 pages | 100-400 pages  | ratio |
 |------------+-------------+----------------+-------|
-| 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.034 |
-| DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.006 |
+| 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.0337 |
+| DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.0062 |

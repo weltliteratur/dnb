@@ -1899,6 +1899,56 @@ needs to be fixed.
 
 *** TODO ranking per publisher
 
+Create big intermediate file:
+#+BEGIN_SRC sh
+  ./json2json.py -m publisher_map.tsv -f -p "issued_norm,pages_norm,publisher_norm,title,_id,creator_wd.*.name,creator_wd.*.id,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print $0}' \
+  > publisher_data.tsv
+#+END_SRC
+
+Iterate over publishers:
+#+BEGIN_SRC sh
+  for publisher in $(awk -F'\t' '{print $2}' publisher_map.tsv | sort -u | sed "s/ /###/g"); do
+    # get publisher name
+    publisher=$(echo $publisher | sed "s/###/ /g")
+    # extract all works
+    echo "**** $publisher"
+    echo
+    echo "| pages | author: title (year) |"
+    awk -F'\t' -v p="$publisher" '{if ($3 == p) print $2"\t hier dann Titel, Autor, Jahr"}' publisher_data.tsv
+  done
+#+END_SRC
+
+#+RESULTS:
+|   493 | Ammann                      |
+|  8302 | Aufbau                      |
+|   636 | Berlin Verlag               |
+|    51 | Blumenbar                   |
+|  1604 | Eichborn                    |
+| 14508 | Goldmann                    |
+|  4025 | Hanser                      |
+| 23728 | Heyne                       |
+|  2999 | Hoffmann und Campe          |
+|  9697 | Insel                       |
+|  4734 | Kiepenheuer & Witsch        |
+|  2816 | Luchterhand Literaturverlag |
+|  1205 | Manesse                     |
+|   185 | Merve                       |
+|   475 | Nagel & Kimche              |
+|  9388 | Piper                       |
+|   222 | Rogner & Bernhard           |
+| 30680 | Rowohlt                     |
+|   345 | Schöffling & Co.            |
+| 15383 | Suhrkamp                    |
+| 11685 | Ullstein                    |
+|   105 | Urs Engeler Editor          |
+|   144 | Verbrecher Verlag           |
+|    39 | Voland & Quist              |
+|   562 | Wallstein                   |
+|   147 | Wiesenburg                  |
+
+
 **** Aufbau-Verlag
 #+BEGIN_SRC sh
   ./json2json.py -f -m publisher_map.tsv -p "issued_norm,pages_norm,title,_id,publisher_norm,creator_wd.*.occupation_writer" \
@@ -1986,3 +2036,138 @@ replot
 [[issued_pages_decade.png]]
 
 [[issued_pages_1912.png]]
+
+*** 1955
+
+Why is there such a pronounced peak in 1955? 
+
+Let's first look at the distribution of the number of pages in that year:
+#+BEGIN_SRC gnuplot
+reset
+set encoding utf8
+set term png enhanced size 800,600
+set out 'issued_pages_1955.png'
+
+set grid
+set xlabel 'number of pages'
+set ylabel 'items with that number of pages'
+set logscale
+set xrange [10:1000]
+
+set label "250" right at 250,500 tc rgb 'red'
+set label "260" left at 260,500 tc rgb 'red' offset .3,0
+set arrow from 250,1 to 250,1000 nohead lc rgb 'red'
+set arrow from 260,1 to 260,1000 nohead lc rgb 'red'
+set xtics 10,10
+
+plot '< grep ^1955 issued_pages.tsv | cut -f2 | sort | uniq -c' using 2:1 title '' with points pt 7
+
+set term svg enhanced size 800,600
+set out 'issued_pages_1955.svg'
+replot
+#+END_SRC
+
+#+RESULTS:
+
+[[issued_pages_1955.png]]
+
+We see peaking page numbers between 250 and 260. 
+
+Let's extract all items from 1955 and analyse them further:
+#+BEGIN_SRC sh
+  ./json2json.py -f -p \
+		 "issued_norm,pages_norm,publisher,title,_id,creator_wd.*.name,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | grep ^1955 > 1955.tsv
+#+END_SRC
+
+**** top publisher
+
+#+BEGIN_SRC sh
+  awk -F'\t' '{print $3}' 1955.tsv | sort | uniq -c | sort -nr | head
+#+END_SRC
+
+| publisher             | items |
+|-----------------------+-------|
+| Mülbüsch              |   407 |
+| Feldmann              |   246 |
+| Aufbau-Verl.          |   142 |
+| Insel-Verl.           |   104 |
+| Reclam                |    85 |
+| Herder                |    84 |
+| Dietz                 |    79 |
+| Büchergilde Gutenberg |    76 |
+| Bertelsmann           |    71 |
+| Dt. Buch-Gemeinschaft |    64 |
+
+Let us compare this with the year before and after 1955:
+
+#+BEGIN_SRC sh
+  awk -F'\t' '{print $3}' 1954.tsv | sort | uniq -c | sort -nr | head
+  awk -F'\t' '{print $3}' 1956.tsv | sort | uniq -c | sort -nr | head
+#+END_SRC
+
+| top publisher 1954    | items | top publisher 1956    | items |
+|-----------------------+-------+-----------------------+-------|
+| Aufbau-Verl.          |   142 | Aufbau-Verl.          |   108 |
+| Reclam                |   105 | Insel-Verl.           |    96 |
+| Insel-Verl.           |   103 | Reclam                |    95 |
+| Herder                |    94 | Herder                |    81 |
+| Bertelsmann           |    71 | Rowohlt               |    71 |
+| Dt. Buch-Gemeinschaft |    64 | Büchergilde Gutenberg |    70 |
+| Büchergilde Gutenberg |    61 | Desch                 |    65 |
+| Rowohlt               |    59 | Goldmann              |    59 |
+| Schöningh             |    56 | Kinderbuchverl.       |    54 |
+| Goldmann              |    53 | Verl. Neues Leben     |    53 |
+
+In 1955 two publishers clearly have an above-average number of items:
+Mülbüsch and Feldmann. Strangely, those two publishers do not even
+have a (German) Wikipedia page and do not appear among the top
+publishers in 1954 or 1956.
+
+**** top publisher-author pairs
+
+#+BEGIN_SRC sh
+  awk -F'\t' '{print $3,$6}' 1955.tsv | sort | uniq -c | sort -nr | head
+#+END_SRC
+
+| publisher               | author                 | items | author description from Wikipedia                              |
+|-------------------------+------------------------+-------+----------------------------------------------------------------|
+| Mülbüsch                | [[https://www.wikidata.org/wiki/Q1515191][Gert Fritz Unger]]       |   194 | [[https://de.wikipedia.org/wiki/Gert_Fritz_Unger][Schriftsteller und Autor von Wildwestromanen]]                   |
+| Mülbüsch                | [[https://www.wikidata.org/wiki/Q2638260][Axel Berger]]            |   176 | [[https://de.wikipedia.org/wiki/Albert_Karl_Burmester][schrieb unter anderem Westernromane]]                            |
+| Feldmann                | [[https://www.wikidata.org/wiki/Q1580558][Hans-Joachim Koblinski]] |   141 | [[https://de.wikipedia.org/wiki/Hans_Joachim_von_Koblinski][schrieb {...} Romane, die vorrangig als Leihbuch und Heftroman]] |
+| Borgsmüller             | [[https://www.wikidata.org/wiki/Q103481][Freder van Holk]]        |    45 | [[https://de.wikipedia.org/wiki/Paul_Alfred_M%25C3%25BCller][bekannt vor allem durch seine Heftromanreihen]]                  |
+| Feldmann                | [[https://www.wikidata.org/wiki/Q1566053][Joe Juhnke]]             |    39 | [[https://de.wikipedia.org/wiki/Joe_Juhnke][Schriftsteller vor allem von Westernromanen]]                    |
+| Mülbüsch                | [[https://www.wikidata.org/wiki/Q1599917][Robert Ullman]]          |    36 | [[https://de.wikipedia.org/wiki/Heinz-Josef_Stammel][schrieb {...} zwischen 1956 und 1966 etwa 120 Westernromane]]    |
+| Feldmann                | [[https://www.wikidata.org/wiki/Q1599917][Robert Ullman]]          |    36 | [[https://de.wikipedia.org/wiki/Heinz-Josef_Stammel][schrieb {...} zwischen 1956 und 1966 etwa 120 Westernromane]]    |
+| Bewin-Verl. Winterbach  | [[https://www.wikidata.org/wiki/Q74059][Kurt Brand]]             |    33 | [[https://de.wikipedia.org/wiki/Kurt_Brand][900 bis 1000 Romane {...} im Bereich des Heftromans]]            |
+| Feldmann                | [[https://www.wikidata.org/wiki/Q1664293][Uwe Hans Wilken]]        |    23 | [[https://de.wikipedia.org/wiki/Uwe_Hans_Wilken][Autor vor allem von Westernromanen]]                             |
+| Bewin-Verlag Winterbach | [[https://www.wikidata.org/wiki/Q74059][Kurt Brand]]             |    19 | [[https://de.wikipedia.org/wiki/Kurt_Brand][900 bis 1000 Romane {...} im Bereich des Heftromans]]            |
+
+Analysing the pairs of authors and publishers brings us closer to the
+explanation for the peak: Most of the works of those publishers are
+only from a few authors, and most of them are authors of [[https://de.wikipedia.org/wiki/Wildwestroman][wild west
+novels]], published as [[ https://de.wikipedia.org/wiki/Heftroman][cheap, high volume books]].
+
+
+Again, a comparison with the year before and after:
+#+BEGIN_SRC sh
+  awk -F'\t' '{print $3,$6}' 1955.tsv | sort | uniq -c | sort -nr | head
+#+END_SRC
+
+| publisher 1954                      | author 1954          | items | publisher 1956                             | author 1956        | items |
+|-------------------------------------+----------------------+-------+--------------------------------------------+--------------------+-------|
+| Goldmann                            | Edgar Wallace        |    19 | Badstöber                                  | Toni Falkner       |    17 |
+| Moewig                              | Otto Mielke          |    13 | Goldmann                                   | Edgar Wallace      |    14 |
+| Hönne-Verl.                         | Toni Falkner         |    11 | Widukind-Verl.                             | Toni Falkner       |    10 |
+| Oekumenische Marienschwesternschaft | Basilea Schlink      |    10 | Herder                                     | Herbert Kranz      |    10 |
+| Aufbau-Verl.                        | Theodore Dreiser     |    10 | Verl. d. Rudolf Steiner-Nachlassverwaltung | Rudolf Steiner     |     9 |
+| Schnell &                           | Steiner Hugo Schnell |     9 | Moewig                                     | Otto Mielke        |     9 |
+| Novalis-Verl.                       | Rudolf Steiner       |     9 | Bach                                       | Edeltraut Herder   |     9 |
+| Liebel                              | Josef Carl Grund     |     8 | Pfriem                                     | K. H. Scheer       |     8 |
+| Klopp                               | Enid Blyton          |     8 | Gloria-Verl.                               | Anna Hottner-Grefe |     8 |
+| Gute Schriften                      | Johanna Spyri        |     8 | Dietz                                      | Vladimir Lenin     |     8 |
+
+Those author-publisher pairs do no longer appear, which is quite
+strange for the year 1956, since presumably those novels did not just
+disappear. Maybe the DNB stopped collecting them?

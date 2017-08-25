@@ -2056,7 +2056,7 @@ set out 'publisher_pages_decades.png'
 set grid
 set datafile separator "\t"
 set xlabel 'year'
-set ylabel 'mean number of pages'
+set ylabel 'median number of pages'
 set key top left horizontal maxcols 4
 
 plot \

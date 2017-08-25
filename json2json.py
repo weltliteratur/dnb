@@ -11,6 +11,8 @@
 # Author: rja
 #
 # Changes:
+# 2017-08-25 (rja)
+# - added support to split items (e.g., co-authors) (--cut)
 # 2017-08-24 (rja)
 # - added support for normalising publisher names (--map-publisher)
 # 2017-08-23 (rja)
@@ -199,14 +201,66 @@ def dump(items, key=None):
         print(json.dumps(item))
 
 # select the provided paths as columns
-def gen_cols(items, pathspecs):
+def gen_cols(items, pathspecs, listsep, itemsep):
     for item in items:
-        yield [to_str(get_value(item, pathspec.split("."))) for pathspec in pathspecs]
+        yield [to_str(get_value(item, pathspec.split("."), listsep, itemsep), listsep) for pathspec in pathspecs]
 
 def gen_filter(items):
     for item in items:
         if all([val != "" for val in item]):
             yield item
+
+# Separates values in cells which contain several items (joined by
+# sep) by creating new rows which contain copies of the values in the
+# other cells.
+#
+# The columns to be split are specified by cutcols in the same format
+# as in pathspecs.
+#
+# If more than one column is given, all specified columns must contain
+# the same number of items which are then spread over new rows.
+#
+# example input:
+# colA     colB     colC
+# a, b     1, 2     one
+# c        3        two
+# d, e, f  4, 5, 6  three
+#
+# parameters:
+# - pathspec="colA,colB,colC"
+# - cutcols="colA, colB"
+# - sep=", "
+#
+# example output:
+# colA     colB     colC
+# a        1        one
+# b        2        one
+# c        3        two
+# d        4        three
+# e        5        three
+# f        6        three
+def gen_cut(items, pathspecs, cutpathspecs, itemsep):
+    # get ids of columns which shall be cut
+    cols = [pathspecs.index(spec) for spec in cutpathspecs]
+    for item in items:
+        # split the relevant columns
+        splits = [item[col].split(itemsep) for col in cols]
+        # get the smallest number of splits we need (if a column has
+        # more splits, items are ignored) no split required
+        rowcount = min([len(sp) for sp in splits])
+        # generally, we do not expect to split
+        if rowcount == 1:
+            yield item
+        else:
+            # output rowcount copies of item
+            for row in range(rowcount):
+                result = []
+                for col, val in enumerate(item):
+                    if col in cols:
+                        result.append(splits[cols.index(col)][row])
+                    else:
+                        result.append(val)
+                yield result
 
 # print columns as specified by cols (comma-separated list)
 def dump_cols(items, sep):
@@ -214,15 +268,15 @@ def dump_cols(items, sep):
         print(sep.join(item))
 
 # string conversion supporting lists
-def to_str(val):
+def to_str(val, listsep):
     if isinstance(val, str):
         return val
     if isinstance(val, list):
-        return ", ".join(val)
+        return listsep.join(val)
     return str(val)
 
 # retrieves values for nested paths using "." as delimiter and "*" as wildcard
-def get_value(item, pathspec):
+def get_value(item, pathspec, itemsep, listsep):
     # recursive graph traversal
     # destination reached (path empty) -> return current node
     if len(pathspec) == 0:
@@ -231,10 +285,10 @@ def get_value(item, pathspec):
     p = pathspec.pop(0)
     # descend
     if p in item:
-        return get_value(item[p], pathspec)
+        return get_value(item[p], pathspec, itemsep, listsep)
     elif p == "*":
         # handle wildcard: descend into all child nodes
-        return ", ".join([to_str(get_value(item[pp], list(pathspec))) for pp in item])
+        return itemsep.join([to_str(get_value(item[pp], list(pathspec), itemsep, listsep), listsep) for pp in item])
     else:
         # not found
         return ""
@@ -243,14 +297,17 @@ def get_value(item, pathspec):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Normalise JSON.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('input', type=str, help='(gzipped) input RDF file')
-    parser.add_argument('-n', '--normalise', action="store_true", help="normalise")
+    parser.add_argument('-c', '--cut', type=str, metavar="C,D,E,...", help="cut columns")
     parser.add_argument('-e', '--elastic', action="store_true", help="add JSON for Elastic")
     parser.add_argument('-f', '--filter', action="store_true", help="filter rows with empty columns")
-    parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns for given paths instead of JSON")
     parser.add_argument('-m', '--map-publisher', type=str, metavar="FILE", help="map publisher names")
+    parser.add_argument('-n', '--normalise', action="store_true", help="normalise")
+    parser.add_argument('-p', '--print', type=str, metavar="C,D,E,...", help="print columns for given paths instead of JSON")
     parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator for --print", default='\t')
-    parser.add_argument('-w', '--wikidata', type=str, metavar="F", help="enrich with Wikidata")
+    parser.add_argument('-i', '--item-sep', type=str, metavar="S", help="item separator within columns", default="; ")
+    parser.add_argument('-l', '--list-sep', type=str, metavar="S", help="list separator", default=", ")
     parser.add_argument('-v', '--version', action="version", version="%(prog)s " + version)
+    parser.add_argument('-w', '--wikidata', type=str, metavar="F", help="enrich with Wikidata")
 
     args = parser.parse_args()
 
@@ -263,9 +320,11 @@ if __name__ == '__main__':
     if args.map_publisher:
         items = map_publisher(items, args.map_publisher)
     if args.print:
-        items = gen_cols(items, args.print.split(","))
+        items = gen_cols(items, args.print.split(","), args.item_sep, args.list_sep)
         if args.filter:
             items = gen_filter(items)
+        if args.cut:
+            items = gen_cut(items, args.print.split(","), args.cut.split(","), args.item_sep)
         dump_cols(items, args.sep)
     else:
         if args.elastic:

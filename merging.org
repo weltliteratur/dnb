@@ -704,6 +704,37 @@ would score higher if the works they co-authored were split up:
 | *sum*                                                           | 251846 |  1947 |        129 |
 #+TBLFM: @8$2=vsum(@I..@II)::@8$3=vsum(@I..@II)::@8$4=$-2/$-1;%2.0f
 
+Let us split co-authors and count again:
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" -c "creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id"\
+y		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) print "[[https://www.wikidata.org/wiki/"$5"]["$4"]]"}' \
+      | sort -S1G | uniq -c | sort -nr | head -n20
+#+END_SRC
+
+| author                     | frequency |
+|----------------------------+-----------|
+| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |      5169 |
+| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |      3992 |
+| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |      3364 |
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |      3190 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |      2609 |
+| [[https://www.wikidata.org/wiki/Q9061][Karl Marx]]                  |      2578 |
+| [[https://www.wikidata.org/wiki/Q34787][Friedrich Engels]]           |      2569 |
+| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |      2533 |
+| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2056 |
+| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]]                |      2025 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2020 |
+| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1968 |
+| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1948 |
+| [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]]              |      1947 |
+| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1873 |
+| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |      1796 |
+| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1788 |
+| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |      1703 |
+| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |      1693 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |      1678 |
+
 *** by page count
 
 #+BEGIN_SRC sh

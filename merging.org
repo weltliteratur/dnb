@@ -2042,6 +2042,42 @@ the error with [[http://d-nb.info/920918131][Tim]].
 | Wiesenburg                  |    21043 |   147 |        143 |
 | Merve                       |    26190 |   185 |        141 |
 
+Average page count per year per publisher:
+#+BEGIN_SRC sh :results silent
+  awk -F'\t' '{print int($1/10)"\t"$3"\t"$2}' publisher_data.tsv | sort | datamash -g1,2 mean 3 median 3 | sed "s/,/./g" | sort -n > publisher_pages_decades.tsv
+#+END_SRC
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'publisher_pages_decades.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'year'
+set ylabel 'mean number of pages'
+set key top left horizontal maxcols 4
+
+plot \
+  '< grep Rowohlt  publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Rowohlt',\
+  '< grep Heyne    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Heyne',\
+  '< grep Reclam   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Reclam',\
+  '< grep Suhrkamp publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Suhrkamp',\
+  '< grep Goldmann publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Goldmann',\
+  '< grep Ullstein publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Ullstein',\
+  '< grep Insel    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Insel',\
+  '< grep Piper    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Piper',\
+  '< grep Aufbau   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Aufbau',\
+  '< grep Hanser   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Hanser'
+
+set term svg enhanced size 800,600
+set out 'publisher_pages_decades.svg'
+replot
+#+END_SRC
+
+[[publisher_pages_decades.png]]
+
 *** DONE ranking per publisher
 
 Iterate over publishers:
@@ -2761,7 +2797,7 @@ set grid
 set datafile separator "\t"
 set xrange [1500:2020]
 set xlabel 'year'
-set ylabel number of pages per decade'
+set ylabel 'number of pages per decade'
 
 plot \
   'issued_pages_decade_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\

@@ -2913,9 +2913,9 @@ replot
 
 [[cumulative_page_distrib.png]]
 
-There page distribution for the 1001 book list shows a skew towards
-books with longer pages. Let's compare two specific ranges of pages:
-more than 1000 pages vs. between 100 dnd 400 pages.
+The page distribution for the 1001 book list is skewed towards books
+with longer pages. Let's compare two specific ranges of pages: more
+than 1000 pages vs. between 100 and 400 pages.
 
 #+BEGIN_SRC sh
   echo "dataset\t>1000 pages\t100-400 pages\tratio"

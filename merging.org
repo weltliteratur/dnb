@@ -2187,7 +2187,7 @@ same work?
 |   318 | [[https://www.wikidata.org/wiki/Q343886][Imran Ayata]]: [[http://d-nb.info/1011922673][Mein Name ist Revolution]] (2011)                               |
 |   318 | [[https://www.wikidata.org/wiki/Q1276][Leonard Cohen]]: [[http://d-nb.info/994461356][Das Lieblingsspiel]] (2009)                                   |
 |   317 | [[https://www.wikidata.org/wiki/Q106611][Raul Zelik]]: [[http://d-nb.info/97489527X][Berliner Verhältnisse]] (2005)                                   |
-|   315 | [[https://www.wikidata.org/wiki/Q1752806, Q96128][Alexander Wall, Ingo Niermann]]: [[http://d-nb.info/1001835581][Deutscher Sohn]] (2010)                       |
+|   315 | [[https://www.wikidata.org/wiki/Q1752806][Alexander Wall]], [[https://www.wikidata.org/wiki/Q96128][Ingo Niermann]]: [[http://d-nb.info/1001835581][Deutscher Sohn]] (2010)                   |
 |   310 | [[https://www.wikidata.org/wiki/Q1449654][Franz Xaver Karl]]: [[http://d-nb.info/969722486][Starschnitt]] (2004)                                       |
 |   286 | [[https://www.wikidata.org/wiki/Q106611][Raul Zelik]]: [[http://d-nb.info/982504268][Der bewaffnete Freund]] (2007)                                   |
 |   283 | [[https://www.wikidata.org/wiki/Q219780][Hunter S. Thompson]]: [[http://d-nb.info/971244995][The rum diary]] (2004)                                   |
@@ -2226,7 +2226,7 @@ same work?
 |  pages | author: title (year)                                            |
 |--------+-----------------------------------------------------------------|
 | 348333 | [[https://www.wikidata.org/wiki/Q228801][Colleen McCullough]]: [[http://d-nb.info/920918131][Tim]] (1992)                                  |
-|   1512 | [[https://www.wikidata.org/wiki/Q2337224, Q1430052][Stefan Niggemeier, Michael Reufsteck]]: [[http://d-nb.info/974162469][Das Fernsehlexikon]] (2005) |
+|   1512 | [[https://www.wikidata.org/wiki/Q2337224][Stefan Niggemeier]], [[https://www.wikidata.org/wiki/Q1430052][Michael Reufsteck]]: [[http://d-nb.info/974162469][Das Fernsehlexikon]] (2005)   |
 |   1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/951583093][Die Festung]] (1997)                     |
 |   1355 | [[https://www.wikidata.org/wiki/Q335167][Alan Bullock]]: [[http://d-nb.info/955704324][Hitler und Stalin]] (1999)                          |
 |   1340 | [[https://www.wikidata.org/wiki/Q335167][Alan Bullock]]: [[http://d-nb.info/95305750X][Hitler und Stalin]] (1998)                          |
@@ -2306,10 +2306,10 @@ same work?
 |  1469 | [[https://www.wikidata.org/wiki/Q706662][Lothar-Günther Buchheim]]: [[http://d-nb.info/94346272X][Die Festung]] (1995)         |
 |  1421 | [[https://www.wikidata.org/wiki/Q379762][Vikram Seth]]: [[http://d-nb.info/946052824][Eine gute Partie]] (1995)                |
 |  1421 | [[https://www.wikidata.org/wiki/Q379762][Vikram Seth]]: [[http://d-nb.info/944249450][Eine gute Partie]] (1995)                |
-|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/943741858][Opernführer]] (1995) |
-|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/940242907][Opernführer]] (1994) |
-|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/930350421][Opernführer]] (1993) |
-|  1399 | [[https://www.wikidata.org/wiki/Q758076, Q1223420][Attila Csampai, Dietmar Holland]]: [[http://d-nb.info/891008454][Opernführer]] (1989) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076][Attila Csampai]], [[https://www.wikidata.org/wiki/Q1223420][Dietmar Holland]]: [[http://d-nb.info/943741858][Opernführer]] (1995) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076][Attila Csampai]], [[https://www.wikidata.org/wiki/Q1223420][Dietmar Holland]]: [[http://d-nb.info/940242907][Opernführer]] (1994) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076][Attila Csampai]], [[https://www.wikidata.org/wiki/Q1223420][Dietmar Holland]]: [[http://d-nb.info/930350421][Opernführer]] (1993) |
+|  1399 | [[https://www.wikidata.org/wiki/Q758076][Attila Csampai]], [[https://www.wikidata.org/wiki/Q1223420][Dietmar Holland]]: [[http://d-nb.info/891008454][Opernführer]] (1989) |
 |  1151 | [[https://www.wikidata.org/wiki/Q392][Bob Dylan]]: [[http://d-nb.info/972283781][Lyrics]] (2004)                            |
 |  1085 | [[https://www.wikidata.org/wiki/Q36661][Henrik Ibsen]]: [[http://d-nb.info/770428967][Schauspiele]] (1977)                    |
 |  1085 | [[https://www.wikidata.org/wiki/Q36661][Henrik Ibsen]]: [[http://d-nb.info/730311317][Schauspiele]] (1973)                    |
@@ -2323,28 +2323,48 @@ same work?
 
 **** Insel
 
-| pages | author: title (year)                                                    |
-|-------+-------------------------------------------------------------------------|
-|  1646 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/986533173][Die Gedichte]] (2008)                                     |
-|  1395 | [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]: [[http://d-nb.info/973544112][Der grüne Heinrich]] (2005)                             |
-|  1388 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/967955874][Die Gedichte]] (2003)                                     |
-|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452049210][Sämtliche Werke]] (1965)                             |
-|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452049156][Sämtliche Werke]] (1961)                             |
-|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452048834][Sämtliche Werke]] (1965)                             |
-|  1267 | [[https://www.wikidata.org/wiki/Q168569][Martin Andersen Nexø]]: [[http://d-nb.info/572740735][Pelle, der Eroberer]] (1926)                        |
-|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/944772307][Goethes Gedichte in zeitlicher Folge]] (1995) |
-|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/930888472][Goethes Gedichte in zeitlicher Folge]] (1992) |
-|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/910939330][Goethes Gedichte in zeitlicher Folge]] (1990) |
-|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/820744298][Goethes Gedichte in zeitlicher Folge]] (1982) |
-|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/207230854][Goethes Gedichte in zeitlicher Folge]] (1988) |
-|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/95610438X][Gedichte]] (1998)                             |
-|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/943972930][Gedichte]] (1995)                             |
-|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/921497660][Gedichte]] (1992)                             |
-|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/946607354][David Copperfield]] (1996)                               |
-|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/930795318][David Copperfield]] (1993)                               |
-|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/910625247][David Copperfield]] (1991)                               |
-|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/900230193][David Copperfield]] (1989)                               |
-|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/871368862][David Copperfield]] (1987)                               |
+| pages | author: title (year)                                                                                 |
+|-------+------------------------------------------------------------------------------------------------------|
+|  1646 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/986533173][Die Gedichte]] (2008)                                                                  |
+|  1395 | [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]: [[http://d-nb.info/973544112][Der grüne Heinrich]] (2005)                                                          |
+|  1388 | [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]: [[http://d-nb.info/967955874][Die Gedichte]] (2003)                                                                  |
+|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452049210][Sämtliche Werke]] (1965)                                                          |
+|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452049156][Sämtliche Werke]] (1961)                                                          |
+|  1343 | [[https://www.wikidata.org/wiki/Q75889][Friedrich Hölderlin]]: [[http://d-nb.info/452048834][Sämtliche Werke]] (1965)                                                          |
+|  1267 | [[https://www.wikidata.org/wiki/Q168569][Martin Andersen Nexø]]: [[http://d-nb.info/572740735][Pelle, der Eroberer]] (1926)                                                     |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/944772307][Goethes Gedichte in zeitlicher Folge]] (1995)                              |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/930888472][Goethes Gedichte in zeitlicher Folge]] (1992)                              |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/910939330][Goethes Gedichte in zeitlicher Folge]] (1990)                              |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/820744298][Goethes Gedichte in zeitlicher Folge]] (1982)                              |
+|  1256 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/207230854][Goethes Gedichte in zeitlicher Folge]] (1988)                              |
+|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/95610438X][Gedichte]] (1998)                                                          |
+|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/943972930][Gedichte]] (1995)                                                          |
+|  1249 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/921497660][Gedichte]] (1992)                                                          |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/946607354][David Copperfield]] (1996)                                                            |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/930795318][David Copperfield]] (1993)                                                            |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/910625247][David Copperfield]] (1991)                                                            |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/900230193][David Copperfield]] (1989)                                                            |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/871368862][David Copperfield]] (1987)                                                            |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/860244784][David Copperfield]] (1983)                                                            |
+|  1231 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/850865670][David Copperfield]] (1985)                                                            |
+|  1228 | [[https://www.wikidata.org/wiki/Q34190][Henry Fielding]]: [[http://d-nb.info/979837510][Tom Jones]] (2007)                                                                     |
+|  1204 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/994321627][Anna Karenina]] (2010)                                                                    |
+|  1204 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/979839858][Anna Karenina]] (2006)                                                                    |
+|  1204 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/966487796][Anna Karenina]] (2003)                                                                    |
+|  1204 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/458351598][Anna Karenina]] (1966)                                                                    |
+|  1204 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/1017664404][Anna Karenina]] (2012)                                                                    |
+|  1200 | [[https://www.wikidata.org/wiki/Q38337][Alexandre Dumas]]: [[http://d-nb.info/998414662][Der Graf von Monte Christo]] (2010)                                                   |
+|  1200 | [[https://www.wikidata.org/wiki/Q38337][Alexandre Dumas]]: [[http://d-nb.info/969945280][Der Graf von Monte Christo]] (2004)                                                   |
+|  1200 | [[https://www.wikidata.org/wiki/Q38337][Alexandre Dumas]]: [[http://d-nb.info/955621739][Der Graf von Monte Christo]] (1998)                                                   |
+|  1188 | [[https://www.wikidata.org/wiki/Q28494][Heinrich von Kleist]]: [[http://d-nb.info/574344438][Sämtliche Werke]] (1942)                                                          |
+|  1187 | [[https://www.wikidata.org/wiki/Q7200][Alexander Pushkin]]: [[http://d-nb.info/957148674][Die Gedichte]] (1999)                                                               |
+|  1187 | [[https://www.wikidata.org/wiki/Q28494][Heinrich von Kleist]]: [[http://d-nb.info/574344411][Sämtliche Werke]] (1927)                                                          |
+|  1185 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]], [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]: [[http://d-nb.info/97354578X][Der Briefwechsel zwischen Schiller und Goethe]] (2005) |
+|  1185 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]], [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]: [[http://d-nb.info/971742502][Der Briefwechsel zwischen Schiller und Goethe]] (2005)   |
+|  1141 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/982346549][Sämtliche Gedichte]] (2007)                                                |
+|  1132 | [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]: [[http://d-nb.info/955421004][Die Gedichte]] (1998)                                                              |
+|  1132 | [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]: [[http://d-nb.info/944772382][Die Gedichte]] (1995)                                                              |
+|  1132 | [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]: [[http://d-nb.info/94034534X][Die Gedichte]] (1993)                                                              |
 
 **** Kiepenheuer & Witsch
 
@@ -2352,10 +2372,10 @@ same work?
 |-------+---------------------------------------------------------------------|
 |  1547 | [[https://www.wikidata.org/wiki/Q313246][David Foster Wallace]]: [[http://d-nb.info/994243626][Unendlicher Spaß]] (2009)                       |
 |  1320 | [[https://www.wikidata.org/wiki/Q61220][Frank Schätzing]]: [[http://d-nb.info/99424374X][Limit]] (2009)                                       |
-|  1196 | [[https://www.wikidata.org/wiki/Q79056, Q1583025, Q1793777][Hans-Peter Martin, Hans Weiss, Kurt Langbein]]: [[http://d-nb.info/880947357][Bittere Pillen]] (1988) |
+|  1196 | [[https://www.wikidata.org/wiki/Q79056][Hans-Peter Martin]], [[https://www.wikidata.org/wiki/Q1583025][Hans Weiss]], [[https://www.wikidata.org/wiki/Q1793777][Kurt Langbein]]: [[http://d-nb.info/880947357][Bittere Pillen]] (1988) |
 |  1187 | [[https://www.wikidata.org/wiki/Q1583025][Hans Weiss]]: [[http://d-nb.info/965719502][3 x täglich]] (2003)                                      |
 |  1174 | [[https://www.wikidata.org/wiki/Q327287][William L. Shirer]]: [[http://d-nb.info/454682492][Aufstieg und Fall des Dritten Reiches]] (1961)     |
-|  1163 | [[https://www.wikidata.org/wiki/Q79056, Q1583025, Q1793777][Hans-Peter Martin, Hans Weiss, Kurt Langbein]]: [[http://d-nb.info/860134814][Bittere Pillen]] (1985) |
+|  1163 | [[https://www.wikidata.org/wiki/Q79056][Hans-Peter Martin]], [[https://www.wikidata.org/wiki/Q1583025][Hans Weiss]], [[https://www.wikidata.org/wiki/Q1793777][Kurt Langbein]]: [[http://d-nb.info/860134814][Bittere Pillen]] (1985) |
 |  1087 | [[https://www.wikidata.org/wiki/Q151936][James George Frazer]]: [[http://d-nb.info/456655492][Der goldene Zweig]] (1968)                       |
 |  1055 | [[https://www.wikidata.org/wiki/Q446415][Emine Sevgi Özdamar]]: [[http://d-nb.info/979904986][Sonne auf halbem Weg]] (2006)                    |
 |  1035 | [[https://www.wikidata.org/wiki/Q78706][Manès Sperber]]: [[http://d-nb.info/454777248][Wie eine Träne im Ozean]] (1965)                       |
@@ -2366,7 +2386,7 @@ same work?
 |  1001 | [[https://www.wikidata.org/wiki/Q69322][René Schickele]]: [[http://d-nb.info/454339917][Das Erbe am Rhein]] (1965)                            |
 |   997 | [[https://www.wikidata.org/wiki/Q61220][Frank Schätzing]]: [[http://d-nb.info/969509294][Der Schwarm]] (2004)                                 |
 |   992 | [[https://www.wikidata.org/wiki/Q8007709][William Deakin]]: [[http://d-nb.info/450880788][Die brutale Freundschaft]] (1964)                     |
-|   969 | [[https://www.wikidata.org/wiki/Q79056, Q1583025, Q1793777][Hans-Peter Martin, Hans Weiss, Kurt Langbein]]: [[http://d-nb.info/920393888][Bittere Pillen]] (1990) |
+|   969 | [[https://www.wikidata.org/wiki/Q79056][Hans-Peter Martin]], [[https://www.wikidata.org/wiki/Q1583025][Hans Weiss]], [[https://www.wikidata.org/wiki/Q1793777][Kurt Langbein]]: [[http://d-nb.info/920393888][Bittere Pillen]] (1990) |
 |   965 | [[https://www.wikidata.org/wiki/Q310048][Don DeLillo]]: [[http://d-nb.info/954780833][Unterwelt]] (1998)                                       |
 |   964 | [[https://www.wikidata.org/wiki/Q61220][Frank Schätzing]]: [[http://d-nb.info/103547364X][Breaking News]] (2014)                               |
 |   892 | [[https://www.wikidata.org/wiki/Q86514][Maxim Biller]]: [[http://d-nb.info/1079014888][Biografie]] (2016)                                      |
@@ -2377,12 +2397,12 @@ same work?
 |-------+-------------------------------------------------------------------------------------------------------------------------------------------|
 |  7969 | [[https://www.wikidata.org/wiki/Q333849][António Lobo Antunes]]: [[http://d-nb.info/964186179][Fado Alexandrino]] (2002)                                                                                             |
 |  1157 | [[https://www.wikidata.org/wiki/Q6538][Günter Grass]]: [[http://d-nb.info/800353633][Danziger Trilogie]] (1980)                                                                                                    |
-|  1155 | [[https://www.wikidata.org/wiki/Q107546, Q993747][Franz Klein, Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/750281529][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1975)                                 |
-|  1155 | [[https://www.wikidata.org/wiki/Q107546, Q993747][Franz Klein, Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/740069683][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1973)                                 |
+|  1155 | [[https://www.wikidata.org/wiki/Q107546][Franz Klein]], [[https://www.wikidata.org/wiki/Q993747][Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/750281529][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1975)                             |
+|  1155 | [[https://www.wikidata.org/wiki/Q107546][Franz Klein]], [[https://www.wikidata.org/wiki/Q993747][Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/740069683][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1973)                                 |
 |  1055 | [[https://www.wikidata.org/wiki/Q1817726][Leni Yahil]]: [[http://d-nb.info/952581175][Die Shoah]] (1998)                                                                                                              |
 |  1012 | [[https://www.wikidata.org/wiki/Q1732530][Karl Otten]]: [[http://d-nb.info/453671004][Schrei und Bekenntnis]] (1962)                                                                                                  |
 |  1012 | [[https://www.wikidata.org/wiki/Q1732530][Karl Otten]]: [[http://d-nb.info/453670997][Schrei und Bekenntnis]] (1959)                                                                                                  |
-|   995 | [[https://www.wikidata.org/wiki/Q107546, Q993747][Franz Klein, Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/458856843][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1970)                                 |
+|   995 | [[https://www.wikidata.org/wiki/Q107546][Franz Klein]], [[https://www.wikidata.org/wiki/Q993747][Bruno Schmidt-Bleibtreu]]: [[http://d-nb.info/458856843][Kommentar zum Grundgesetz für die Bundesrepublik Deutschland]] (1970)                                 |
 |   956 | [[https://www.wikidata.org/wiki/Q57382][Christa Wolf]]: [[http://d-nb.info/871290421][Die Dimension des Autors]] (1987)                                                                                             |
 |   956 | [[https://www.wikidata.org/wiki/Q57382][Christa Wolf]]: [[http://d-nb.info/870702009][Die Dimension des Autors]] (1987)                                                                                             |
 |   925 | [[https://www.wikidata.org/wiki/Q1063915][Charles Chadwick]]: [[http://d-nb.info/984245340][Ein unauffälliger Mann]] (2007)                                                                                           |
@@ -2432,7 +2452,7 @@ same work?
 |   331 | [[https://www.wikidata.org/wiki/Q69187][Friedrich Kittler]]: [[http://d-nb.info/965563383][Optische Medien]] (2002)             |
 |   317 | [[https://www.wikidata.org/wiki/Q180727][John Cage]]: [[http://d-nb.info/850099242][Für die Vögel]] (1984)                       |
 |   312 | [[https://www.wikidata.org/wiki/Q7060][Michel Onfray]]: [[http://d-nb.info/960682465][Theorie des verliebten Körpers]] (2001)  |
-|   300 | [[https://www.wikidata.org/wiki/Q364456, Q355237][Michel Serres, Bruno Latour]]: [[http://d-nb.info/986858862][Aufklärungen]] (2008)      |
+|   300 | [[https://www.wikidata.org/wiki/Q364456][Michel Serres]], [[https://www.wikidata.org/wiki/Q355237][Bruno Latour]]: [[http://d-nb.info/986858862][Aufklärungen]] (2008)   |
 |   294 | [[https://www.wikidata.org/wiki/Q69187][Friedrich Kittler]]: [[http://d-nb.info/1022759396][Philosophien der Literatur]] (2013)  |
 |   279 | [[https://www.wikidata.org/wiki/Q23978392][Armen Avanessian]]: [[http://d-nb.info/104547147X][Metanoia]] (2014)                     |
 |   270 | [[https://www.wikidata.org/wiki/Q929177][François Jullien]]: [[http://d-nb.info/957250916][Über die Wirksamkeit]] (1999)         |
@@ -2535,7 +2555,7 @@ same work?
 |   671 | [[https://www.wikidata.org/wiki/Q123928][Richard Tarnas]]: [[http://d-nb.info/952630052][Idee und Leidenschaft]] (1997)                                                                              |
 |   654 | [[https://www.wikidata.org/wiki/Q454099][Count Franz Pocci]]: [[http://d-nb.info/740334581][Die gesamte Druckgraphik]] (1974)                                                                        |
 |   647 | [[https://www.wikidata.org/wiki/Q694441][Arno Orzessek]]: [[http://d-nb.info/972792171][Schattauers Tochter]] (2005)                                                                                 |
-|   598 | [[https://www.wikidata.org/wiki/Q95255, Q87371][Karlheinz Steinmüller, Angela Steinmüller]]: [[http://d-nb.info/958088152][Visionen 1900, 2000, 2100]] (1999)                                               |
+|   598 | [[https://www.wikidata.org/wiki/Q95255][Karlheinz Steinmüller]], [[https://www.wikidata.org/wiki/Q87371][Angela Steinmüller]]: [[http://d-nb.info/958088152][Visionen 1900, 2000, 2100]] (1999)                                           |
 |   594 | [[https://www.wikidata.org/wiki/Q321153][Greil Marcus]]: [[http://d-nb.info/943793807][Im faschistischen Badezimmer]] (1994)                                                                         |
 |   560 | [[https://www.wikidata.org/wiki/Q786526][T. Coraghessan Boyle]]: [[http://d-nb.info/880273127][Wassermusik]] (1987)                                                                                  |
 |   559 | [[https://www.wikidata.org/wiki/Q786526][T. Coraghessan Boyle]]: [[http://d-nb.info/1007149582][Wassermusik]] (2010)                                                                                  |
@@ -2711,7 +2731,7 @@ same work?
 |   265 | [[https://www.wikidata.org/wiki/Q854883][Kriszta Bódis]]: [[http://d-nb.info/994328621][Artista]] (2009)                           |
 |   263 | [[https://www.wikidata.org/wiki/Q2589360][Wolfgang Büscher]]: [[http://d-nb.info/995045801][Germania, un viaggio]] (2009)           |
 |   255 | [[https://www.wikidata.org/wiki/Q122622][Ralph Dutli]]: [[http://d-nb.info/1121533507][L' ultimo viaggio di Soutine]] (2016)        |
-|   254 | [[https://www.wikidata.org/wiki/Q1743634, Q99031][Kirsten Fuchs, Volker Strübing]]: [[http://d-nb.info/991879791][Nicht der Süden]] (2009)  |
+|   254 | [[https://www.wikidata.org/wiki/Q1743634][Kirsten Fuchs]], [[https://www.wikidata.org/wiki/Q1743634Q99031][Volker Strübing]]: [[http://d-nb.info/991879791][Nicht der Süden]] (2009)   |
 |   221 | [[https://www.wikidata.org/wiki/Q2020927][Olja Savičević]]: [[http://d-nb.info/1009031074][Lebt wohl, Cowboys]] (2011)               |
 |   215 | [[https://www.wikidata.org/wiki/Q2589360][Wolfgang Büscher]]: [[http://d-nb.info/987769162][Berlino - Mosca]] (2008)                |
 |   205 | [[https://www.wikidata.org/wiki/Q104844][Clemens Meyer]]: [[http://d-nb.info/1079611185][Zwei Himmelhunde]] (2016)                  |
@@ -2736,7 +2756,7 @@ same work?
 |   763 | [[https://www.wikidata.org/wiki/Q2128279][Rainer Malkowski]]: [[http://d-nb.info/994167296][Die Gedichte]] (2009)                                        |
 |   761 | [[https://www.wikidata.org/wiki/Q117839][Matthias Zschokke]]: [[http://d-nb.info/1008652768][Lieber Niels]] (2011)                                       |
 |   760 | [[https://www.wikidata.org/wiki/Q1512257][Gerhard Paul]]: [[http://d-nb.info/107961480X][Das visuelle Zeitalter]] (2016)                                  |
-|   728 | [[https://www.wikidata.org/wiki/Q17122148, Q76820][Albrecht Joseph, Carl Zuckmayer]]: [[http://d-nb.info/982101546][Briefwechsel]] (2007)                         |
+|   728 | [[https://www.wikidata.org/wiki/Q17122148][Albrecht Joseph]], [[https://www.wikidata.org/wiki/Q76820][Carl Zuckmayer]]: [[http://d-nb.info/982101546][Briefwechsel]] (2007)                   |
 |   720 | [[https://www.wikidata.org/wiki/Q1122038][Thomas Lackmann]]: [[http://d-nb.info/982101686][Der Sohn meines Vaters]] (2008)                               |
 |   710 | [[https://www.wikidata.org/wiki/Q1519827][Rüdiger Hachtmann]]: [[http://d-nb.info/1017310777][Das Wirtschaftsimperium der Deutschen Arbeitsfront]] (2012) |
 |   688 | [[https://www.wikidata.org/wiki/Q20243352][Jens-Christian Wagner]]: [[http://d-nb.info/960196862][Produktion des Todes]] (2001)                           |

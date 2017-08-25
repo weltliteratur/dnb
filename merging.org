@@ -2897,7 +2897,7 @@ set out 'cumulative_page_distrib.png'
 set grid
 set datafile separator "\t"
 set xlabel 'number of pages'
-set ylabel 'P[x >= number of pages]'
+set ylabel 'P[x < number of pages]'
 set logscale x
 
 # divide the y-value by the number of books in the dataset

@@ -289,7 +289,7 @@
 	<path stroke='black'  d='M71.9,16.7 L71.9,542.4 L775.0,542.4 L775.0,16.7 L71.9,16.7 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(17.0,279.6) rotate(270)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >P[x >= number of pages]</tspan></text>
+		<text><tspan font-family="Arial" >P[x &lt; number of pages]</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

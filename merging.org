@@ -1669,6 +1669,33 @@ be regarded the same publisher.
 | +Piper & The Grüne Kraft+                   |     1 |     117 |        117 |
 | Verl. d. Marées-Gesellschaft Piper          |     1 |     102 |        102 |
 
+**** Reclam
+
+| publisher                               | items |   pages | mean pages |
+|-----------------------------------------+-------+---------+------------|
+| Reclam                                  | 17808 | 3078664 |        172 |
+| Ph. Reclam jun.                         |   750 |  113159 |        150 |
+| Reclam jun.                             |    72 |   10903 |        151 |
+| Ph. Reclam                              |    69 |    3970 |         57 |
+| Reclam-Verl.                            |    21 |    3097 |        147 |
+| Philipp Reclam jun.                     |    18 |    2343 |        130 |
+| Reclam Leipzig                          |    13 |    3391 |        260 |
+| Phil. Reclam jun.                       |     8 |    1718 |        214 |
+| Verlag von Philipp Reclam jun.          |     7 |     604 |         86 |
+| [Reclam]                                |     5 |      72 |         14 |
+| Reclam Verl.                            |     2 |     423 |        211 |
+| [Ph. Reclam]                            |     2 |      27 |         13 |
+| Reclam-Verlag                           |     2 |     132 |         66 |
+| Ph. Reclam jr.                          |     1 |      64 |         64 |
+| Th. Reclam                              |     1 |     640 |        640 |
+| Philipp Reclam                          |     1 |     360 |        360 |
+| Reclam u. Verl. "Das neue Deutschland"  |     1 |     344 |        344 |
+| Philipp Reclam Jun.                     |     1 |     327 |        327 |
+| Druck u. Verlag von Philipp Reclam jun. |     1 |      29 |         29 |
+| [Ph Reclam jun.]                        |     1 |     151 |        151 |
+| Reclam (in Trenhandverwaltung)          |     1 |     132 |        132 |
+| Philip Reclam junior                    |     1 |     128 |        128 |
+
 **** Rogner
 
 | publisher                                | items | pages | mean pages |
@@ -2417,6 +2444,31 @@ same work?
 |  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/910217939][Die Brüder Karamasoff]] (1990)          |
 |  1325 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/880137827][Die Brüder Karamasoff]] (1987)          |
 
+**** Reclam
+
+| pages | author: title (year)                                                |
+|-------+---------------------------------------------------------------------|
+|  1360 | [[https://www.wikidata.org/wiki/Q168542][Adalbert Stifter]]: [[http://d-nb.info/982229496][Studien]] (2007)                                    |
+|  1319 | [[https://www.wikidata.org/wiki/Q228889][Wu Cheng'en]]: [[http://d-nb.info/1099726573][Die Reise in den Westen]] (2016)                         |
+|  1261 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/1021400629][Dichtung und Wahrheit]] (2012)            |
+|  1261 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/1018010920][Dichtung und Wahrheit]] (2012)            |
+|  1260 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/954664469][Dichtung und Wahrheit]] (1998)            |
+|  1175 | [[https://www.wikidata.org/wiki/Q131333][George Eliot]]: [[http://d-nb.info/860213129][Middlemarch]] (1985)                                    |
+|  1175 | [[https://www.wikidata.org/wiki/Q131333][George Eliot]]: [[http://d-nb.info/850958318][Middlemarch]] (1985)                                    |
+|  1166 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/988816857][Gedichte]] (2008)                         |
+|  1166 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/962815853][Gedichte]] (2001)                         |
+|  1150 | [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]: [[http://d-nb.info/1044919442][Dramen]] (2014)                                  |
+|  1117 | [[https://www.wikidata.org/wiki/Q44403][Heinrich Heine]]: [[http://d-nb.info/980161894][Sämtliche Gedichte]] (2006)                           |
+|  1117 | [[https://www.wikidata.org/wiki/Q44403][Heinrich Heine]]: [[http://d-nb.info/951495194][Sämtliche Gedichte]] (1997)                           |
+|  1117 | [[https://www.wikidata.org/wiki/Q44403][Heinrich Heine]]: [[http://d-nb.info/1064835376][Sämtliche Gedichte]] (2014)                           |
+|  1114 | [[https://www.wikidata.org/wiki/Q7198][Ovid]]: [[http://d-nb.info/998415308][Metamorphosen]] (2010)                                          |
+|  1102 | [[https://www.wikidata.org/wiki/Q77428][Gustav Schwab]]: [[http://d-nb.info/1079816879][Die schönsten Sagen des klassischen Altertums]] (2016) |
+|  1094 | [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]]: [[http://d-nb.info/998415685][Faust-Dichtungen]] (2010)                 |
+|  1087 | [[https://www.wikidata.org/wiki/Q1571442][Volker Meid]]: [[http://d-nb.info/979315069][Reclams Lexikon der deutschsprachigen Autoren]] (2006)   |
+|  1077 | [[https://www.wikidata.org/wiki/Q37621][Thomas Hobbes]]: [[http://d-nb.info/1028889542][Leviathan]] (2013)                                     |
+|  1072 | [[https://www.wikidata.org/wiki/Q1495016][Hans Renner]]: [[http://d-nb.info/760295905][Reclams Konzertführer]] (1976)                           |
+|  1071 | [[https://www.wikidata.org/wiki/Q1495016][Hans Renner]]: [[http://d-nb.info/942702255][Reclams Konzertführer]] (1994)                           |
+
 **** Rogner & Bernhard
 
 | pages | author: title (year)                                                                                                      |
@@ -2885,7 +2937,7 @@ replot
 #+END_SRC
 
 [[issued_1955.png]]
-** comparison to [[1001-books]] top list
+** DONE comparison to [[1001-books]] top list
 
 Plot cumulative frequency distribution of the number of pages:
 #+BEGIN_SRC gnuplot :results silent

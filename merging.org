@@ -628,88 +628,19 @@ replot
 - TODO: plot distribution of the number of authors per work
 
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" -c "creator_wd.*.name,creator_wd.*.occupation_writer"\
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
 	    > author_pages_stats.tsv
 #+END_SRC
 
 *** by item count
-#+BEGIN_SRC sh
-  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1912) print "[[https://www.wikidata.org/wiki/"$5"]["$4"]]"}' \
-      | sort -S1G | uniq -c | sort -nr | head -n20
-#+END_SRC
 
-| author                     | items |
-|----------------------------+-------|
-| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |  5079 |
-| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |  3963 |
-| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |  3327 |
-| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |  3184 |
-| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |  2504 |
-| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |  2481 |
-| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |  2012 |
-| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |  2002 |
-| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |  1947 |
-| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]], [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]] |  1922 |
-| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |  1904 |
-| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |  1858 |
-| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |  1774 |
-| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |  1769 |
-| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |  1699 |
-| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |  1676 |
-| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |  1655 |
-| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |  1652 |
-| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |  1597 |
-| [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |  1552 |
-
-One restriction here is that we do not count works with more than one
-author for the individual authors. For instance, Jacob Grimm and
-Wilhelm Grimm appear only as a pair, although, individually, they
-would score higher if the works they co-authored were split up:
-
-#+BEGIN_SRC sh
-  grep "Jacob Grimm" author_pages_stats.tsv
-#+END_SRC
-
-| author                                                          |  pages | items | mean pages |
-|-----------------------------------------------------------------+--------+-------+------------|
-| *Jacob Grimm*, Wilhelm Grimm                                    | 247233 |  1922 |        128 |
-| *Jacob Grimm*                                                   |  14650 |    89 |        164 |
-| Ludwig Bechstein, *Jacob Grimm*, Wilhelm Grimm                  |   1043 |     9 |        115 |
-| Bettina von Arnim, *Jacob Grimm*, Wilhelm Grimm                 |    418 |     1 |        418 |
-| Walt Disney, *Jacob Grimm*                                      |     29 |     1 |         29 |
-| Jernej Kopitar, *Jacob Grimm*                                   |    217 |     1 |        217 |
-| Karl Hartwig Gregor von Meusebach, *Jacob Grimm*, Wilhelm Grimm |    426 |     1 |        426 |
-| Johann Andreas Christian Löhr, *Jacob Grimm*, Wilhelm Grimm     |    128 |     1 |        128 |
-|-----------------------------------------------------------------+--------+-------+------------|
-| *sum*                                                           | 264144 |  2025 |        130 |
-#+TBLFM: @10$2=vsum(@I..@II)::@10$3=vsum(@I..@II)::@10$4=$-2/$-1;%2.0f
-
-#+BEGIN_SRC sh
-  grep "Wilhelm Grimm" author_pages_stats.tsv
-#+END_SRC
-
-| author                                                          |  pages | items | mean pages |
-|-----------------------------------------------------------------+--------+-------+------------|
-| Jacob Grimm, *Wilhelm Grimm*                                    | 247233 |  1922 |        128 |
-| *Wilhelm Grimm*                                                 |   2598 |    13 |        199 |
-| Bettina von Arnim, Jacob Grimm, *Wilhelm Grimm*                 |    418 |     1 |        418 |
-| Ludwig Bechstein, Jacob Grimm, *Wilhelm Grimm*                  |   1043 |     9 |        115 |
-| Karl Hartwig Gregor von Meusebach, Jacob Grimm, *Wilhelm Grimm* |    426 |     1 |        426 |
-| Johann Andreas Christian Löhr, Jacob Grimm, *Wilhelm Grimm*     |    128 |     1 |        128 |
-|-----------------------------------------------------------------+--------+-------+------------|
-| *sum*                                                           | 251846 |  1947 |        129 |
-#+TBLFM: @8$2=vsum(@I..@II)::@8$3=vsum(@I..@II)::@8$4=$-2/$-1;%2.0f
-
-Let us split co-authors and count again:
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" -c "creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id"\
-y		 DNBTitel_normalised_enriched.json.gz \
+		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print "[[https://www.wikidata.org/wiki/"$5"]["$4"]]"}' \
-      | sort -S1G | uniq -c | sort -nr | head -n20
+      | sort -S1G | uniq -c | sort -nr | head -n50
 #+END_SRC
 
 | author                     | items |
@@ -734,6 +665,36 @@ y		 DNBTitel_normalised_enriched.json.gz \
 | [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |  1703 |
 | [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |  1693 |
 | [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |  1678 |
+| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |  1669 |
+| [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |  1605 |
+| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |  1600 |
+| [[https://www.wikidata.org/wiki/Q9215][Sigmund Freud]]              |  1568 |
+| [[https://www.wikidata.org/wiki/Q76632][Theodor Fontane]]            |  1552 |
+| [[https://www.wikidata.org/wiki/Q150471][E. T. A. Hoffmann]]          |  1535 |
+| [[https://www.wikidata.org/wiki/Q35064][Agatha Christie]]            |  1531 |
+| [[https://www.wikidata.org/wiki/Q22714][Karl May]]                   |  1503 |
+| [[https://www.wikidata.org/wiki/Q44403][Heinrich Heine]]             |  1392 |
+| [[https://www.wikidata.org/wiki/Q93652][Christine Nöstlinger]]       |  1344 |
+| [[https://www.wikidata.org/wiki/Q65078][Hedwig Courths-Mahler]]      |  1302 |
+| [[https://www.wikidata.org/wiki/Q57966][Wilhelm Hauff]]              |  1296 |
+| [[https://www.wikidata.org/wiki/Q9312][Immanuel Kant]]              |  1280 |
+| [[https://www.wikidata.org/wiki/Q1515191][Gert Fritz Unger]]           |  1264 |
+| [[https://www.wikidata.org/wiki/Q28494][Heinrich von Kleist]]        |  1255 |
+| [[https://www.wikidata.org/wiki/Q77206][Janosch]]                    |  1210 |
+| [[https://www.wikidata.org/wiki/Q192069][Enid Blyton]]                |  1210 |
+| [[https://www.wikidata.org/wiki/Q109540][Wilhelm Busch]]              |  1191 |
+| [[https://www.wikidata.org/wiki/Q168542][Adalbert Stifter]]           |  1185 |
+| [[https://www.wikidata.org/wiki/Q47293][Erich Maria Remarque]]       |  1181 |
+| [[https://www.wikidata.org/wiki/Q1394][Vladimir Lenin]]             |  1118 |
+| [[https://www.wikidata.org/wiki/Q123053][Johanna Spyri]]              |  1111 |
+| [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]         |  1088 |
+| [[https://www.wikidata.org/wiki/Q9711][Honoré de Balzac]]           |  1087 |
+| [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]                |  1087 |
+| [[https://www.wikidata.org/wiki/Q115483][Max Frisch]]                 |  1079 |
+| [[https://www.wikidata.org/wiki/Q45765][Jack London]]                |  1075 |
+| [[https://www.wikidata.org/wiki/Q77024][Lion Feuchtwanger]]          |  1048 |
+| [[https://www.wikidata.org/wiki/Q271824][Edgar Wallace]]              |  1041 |
+| [[https://www.wikidata.org/wiki/Q41532][Carl Jung]]                  |   997 |
 
 *** by page count
 
@@ -743,26 +704,26 @@ y		 DNBTitel_normalised_enriched.json.gz \
 
 | author                     |   pages | items | mean pages |
 |----------------------------+---------+-------+------------|
-| Johann Wolfgang von Goethe | 1175521 |  5079 |        231 |
-| Heinz G. Konsalik          |  981279 |  3184 |        308 |
-| Thomas Mann                |  928709 |  2504 |        370 |
-| Hermann Hesse              |  736674 |  3327 |        221 |
-| Rudolf Steiner             |  692756 |  3963 |        174 |
-| Stefan Zweig               |  670705 |  2481 |        270 |
-| Franz Kafka                |  536735 |  2012 |        266 |
-| Fyodor Dostoyevsky         |  529792 |  1086 |        487 |
-| Karl May                   |  507154 |  1502 |        337 |
-| Friedrich Nietzsche        |  471276 |  1774 |        265 |
-| Lion Feuchtwanger          |  459611 |  1021 |        450 |
-| Theodor Fontane            |  450654 |  1547 |        291 |
-| Marie Louise Fischer       |  435630 |  1676 |        259 |
+| Johann Wolfgang von Goethe | 1217404 |  5169 |        235 |
+| Heinz G. Konsalik          |  984514 |  3190 |        308 |
+| Thomas Mann                |  963054 |  2614 |        368 |
+| Hermann Hesse              |  744143 |  3364 |        221 |
+| Rudolf Steiner             |  698028 |  3992 |        174 |
+| Stefan Zweig               |  689861 |  2533 |        272 |
+| Karl Marx                  |  550352 |  2579 |        213 |
+| Franz Kafka                |  538979 |  2020 |        266 |
+| Fyodor Dostoyevsky         |  530695 |  1088 |        487 |
+| Friedrich Engels           |  527765 |  2569 |        205 |
+| Karl May                   |  507174 |  1503 |        337 |
+| Friedrich Nietzsche        |  475373 |  1788 |        265 |
+| Lion Feuchtwanger          |  468620 |  1048 |        447 |
+| Theodor Fontane            |  452435 |  1552 |        291 |
+| Marie Louise Fischer       |  436068 |  1678 |        259 |
 | Colleen McCullough         |  424189 |   143 |       2966 |
-| Erich Maria Remarque       |  414153 |  1179 |        351 |
-| Leo Tolstoy                |  395747 |  1076 |        367 |
-| Heinrich Böll              |  388619 |  1769 |        219 |
-| Friedrich Schiller         |  383483 |  2002 |        191 |
-| Stephen King               |  380219 |   799 |        475 |
-| Sigmund Freud              |  377159 |  1493 |        252 |
+| Erich Maria Remarque       |  415720 |  1181 |        352 |
+| Friedrich Schiller         |  404948 |  2056 |        196 |
+| Sigmund Freud              |  402582 |  1568 |        256 |
+| Leo Tolstoy                |  397879 |  1087 |        366 |
 
 *** by mean page count
 
@@ -770,28 +731,28 @@ y		 DNBTitel_normalised_enriched.json.gz \
   sort -S1G -nrk3 author_pages_stats.tsv | head -n20
 #+END_SRC
 
-| author                              |  pages | items | mean pages | work                                                    |
-|-------------------------------------+--------+-------+------------+---------------------------------------------------------|
-| Reinhard Baumgart                   | 340491 |    32 |      10640 |                                                         |
-| Samael Aun Weor                     | 141110 |    27 |       5226 |                                                         |
-| Günther Bentele                     | 103739 |    27 |       3842 |                                                         |
-| Jean Quatremer                      |   3376 |     1 |       3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]                          |
-| Pierre Alexis Ponson du Terrail     |   3200 |     1 |       3200 | [[http://d-nb.info/573875650][Rocambol, der Fürst der Katakomben]]                      |
-| Colleen McCullough                  | 424189 |   143 |       2966 |                                                         |
-| Dieter Hildebrandt                  | 266207 |   100 |       2662 |                                                         |
-| André Vauchez                       |   2536 |     1 |       2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]                                 |
-| Peter Hartmann, Wolfgang Lauterbach |   2319 |     1 |       2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]                                     |
-| Peter Hartmann                      | 101951 |    46 |       2216 |                                                         |
-| Wolfgang Kleiber                    |  10787 |     5 |       2157 |                                                         |
-| Noam Chomsky                        | 197964 |    92 |       2151 |                                                         |
-| Herbert Tröndle, Thomas Fischer     |   2052 |     1 |       2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]]                        |
-| Kari Jormakka                       |  10239 |     5 |       2047 |                                                         |
-| John Bernard Burke                  |   4052 |     2 |       2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]                                    |
-| Hans Georg Ruppe, Markus Achatz     |   1964 |     1 |       1964 | [[http://d-nb.info/1014282373][Umsatzsteuergesetz]]                                      |
-| Arnold F. Holleman, Egon Wiberg     |   5633 |     3 |       1877 | [[http://d-nb.info/841120226][Lehrbuch der anorganischen Chemie]], [[http://d-nb.info/944635105][944635105]], [[http://d-nb.info/981617034][981617034]] |
-| Frank Göttmann                      |   5561 |     3 |       1853 | [[http://d-nb.info/760132070][760132070]], [[http://d-nb.info/770428584][770428584]], [[http://d-nb.info/947104364][947104364]]                         |
-| Lutz Meyer-Goßner                   |  25432 |    14 |       1816 |                                                         |
-| Walter Bayer, Marcus Lutter         |   1779 |     1 |       1779 | [[http://d-nb.info/1014557178][Europäisches Unternehmens- und Kapitalmarktrecht]]        |
+| author                          |  pages | items | mean pages | work                                                    |
+|---------------------------------+--------+-------+------------+---------------------------------------------------------|
+| Reinhard Baumgart               | 340491 |    32 |      10640 |                                                         |
+| Samael Aun Weor                 | 141110 |    27 |       5226 |                                                         |
+| Günther Bentele                 | 103739 |    27 |       3842 |                                                         |
+| Jean Quatremer                  |   3376 |     1 |       3376 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]                          |
+| Pierre Alexis Ponson du Terrail |   3200 |     1 |       3200 | [[http://d-nb.info/573875650][Rocambol, der Fürst der Katakomben]]                      |
+| Colleen McCullough              | 424189 |   143 |       2966 |                                                         |
+| Dieter Hildebrandt              | 266883 |   104 |       2566 |                                                         |
+| André Vauchez                   |   2536 |     1 |       2536 | [[http://d-nb.info/931339286][Gottes vergessenes Volk]]                                 |
+| Wolfgang Lauterbach             |   2319 |     1 |       2319 | [[http://d-nb.info/730214605][Zivilprozessordnung]]                                     |
+| Peter Hartmann                  | 104270 |    47 |       2218 |                                                         |
+| Wolfgang Kleiber                |  10787 |     5 |       2157 |                                                         |
+| Herbert Tröndle                 |   2052 |     1 |       2052 | [[http://d-nb.info/955718287][Strafgesetzbuch und Nebengesetze]]                        |
+| Noam Chomsky                    | 198589 |    97 |       2047 |                                                         |
+| John Bernard Burke              |   4052 |     2 |       2026 | [[http://d-nb.info/450713768][450713768]], [[http://d-nb.info/982125054][982125054]]                                    |
+| Egon Wiberg                     |   5633 |     3 |       1877 |                                                         |
+| Arnold F. Holleman              |   5633 |     3 |       1877 | [[http://d-nb.info/841120226][Lehrbuch der anorganischen Chemie]], [[http://d-nb.info/944635105][944635105]], [[http://d-nb.info/981617034][981617034]] |
+| Frank Göttmann                  |   5561 |     3 |       1853 | [[http://d-nb.info/760132070][760132070]], [[http://d-nb.info/770428584][770428584]], [[http://d-nb.info/947104364][947104364]]                         |
+| Walter Bayer                    |   1779 |     1 |       1779 | [[http://d-nb.info/1014557178][Europäisches Unternehmens- und Kapitalmarktrecht]]        |
+| Marthe Vogt                     |   1770 |     1 |       1770 | [[http://d-nb.info/1073944913][British medical journal]]                                 |
+| Gustavo Adolfo Bécquer          |  24105 |    14 |       1721 |                                                         |
 
 There are probably some errors among those ...
 
@@ -815,7 +776,7 @@ set label "Reinhard Baumgart" left at 32, 10640 offset .5, .3
 set label "Colleen McCullough" left at 143, 2966 offset .5, .3
 set label "Samael Aun Weor" left at 27, 5226 offset .5, .3
 set label "Guenther Bentele" left at 27, 3842 offset .5, .3
-set label "Johann\nWolfgang\nvon\nGoethe" left at 5221, 230 offset -1.8, 3.6
+set label "Johann\nWolfgang\nvon\nGoethe" left at 5169, 235 offset -1.8, 3.6
 
 plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
 

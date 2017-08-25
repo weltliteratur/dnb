@@ -43,24 +43,24 @@ We analyse the distribution of some metadata fields.
 #+END_SRC
 
 #+BEGIN_SRC sh :results raw
-  echo "pages_norm\textent\tfrequency"
+  echo "pages_norm\textent\titems"
   zcat pages_extent.tsv.gz | sort -S1G | uniq -c | head -n20
 #+END_SRC
 
 (after some manual tweaking:)
 
-| pages_norm | extent | frequency |
-|------------+--------+-----------|
-|            |        |   5631051 |
-|        000 |        |   4332641 |
-|         00 |        |   2895689 |
-|            | 00 S.  |   1020134 |
-|          0 |        |    172825 |
-|       0000 |        |     33250 |
-|            | 000 S. |     16541 |
-|            | 0 S.   |        95 |
-|      00000 |        |        52 |
-|     000000 |        |        31 |
+| pages_norm | extent |   items |
+|------------+--------+---------|
+|            |        | 5631051 |
+|        000 |        | 4332641 |
+|         00 |        | 2895689 |
+|            | 00 S.  | 1020134 |
+|          0 |        |  172825 |
+|       0000 |        |   33250 |
+|            | 000 S. |   16541 |
+|            | 0 S.   |      95 |
+|      00000 |        |      52 |
+|     000000 |        |      31 |
 
 So ~extent~ is only given when no (normalised) ~pages~ are given
 -> set ~pages_norm~ to pages extracted from ~extent~ in those cases.
@@ -73,35 +73,35 @@ Extract and normalise the patterns for the "issued" field:
 
 Let's have a look at the most frequent patterns:
 #+BEGIN_SRC sh
-  echo "type\tissued pattern\tfrequency"
+  echo "type\tissued pattern\titems"
   sort -S1G issued.tsv | uniq -c | sed -r 's/([0-9]) /\1\t/' | awk -F'\t' '{print $2"\t"$3"\t"$1}' | sort -t$'\t' -nrk3 | head -n20
   echo "*distinct pairs\t\t*" $(sort -S1G -u issued.tsv| wc -l)
 #+END_SRC
 
-| type             | issued pattern | frequency |
-|------------------+----------------+-----------|
-| Document         |           0000 |  10559276 |
-| Issue            |           0000 |   1470687 |
-| Article          |           0000 |    981040 |
-| Collection       |                |    381824 |
-| Periodical       |      0000-0000 |    304933 |
-| Periodical       |          0000- |    155810 |
-| Series           |          0000- |     62002 |
-| Series           |              - |     42707 |
-| Document         |                |     41579 |
-| Periodical       |              - |     25939 |
-| Document         |           00XX |     24172 |
-| Series           |      0000-0000 |     18156 |
-|                  |           0000 |     11070 |
-| Collection       |           0000 |      9181 |
-| Document         |      0000-0000 |      7250 |
-| Periodical       |                |      2849 |
-| Collection       |      0000-0000 |      2379 |
-| Periodical       |           0000 |       443 |
-| Article          |        0000/00 |       331 |
-| Article          |          /0000 |       138 |
-|------------------+----------------+-----------|
-| *distinct pairs* |                |       105 |
+| type             | issued pattern |    items |
+|------------------+----------------+----------|
+| Document         |           0000 | 10559276 |
+| Issue            |           0000 |  1470687 |
+| Article          |           0000 |   981040 |
+| Collection       |                |   381824 |
+| Periodical       |      0000-0000 |   304933 |
+| Periodical       |          0000- |   155810 |
+| Series           |          0000- |    62002 |
+| Series           |              - |    42707 |
+| Document         |                |    41579 |
+| Periodical       |              - |    25939 |
+| Document         |           00XX |    24172 |
+| Series           |      0000-0000 |    18156 |
+|                  |           0000 |    11070 |
+| Collection       |           0000 |     9181 |
+| Document         |      0000-0000 |     7250 |
+| Periodical       |                |     2849 |
+| Collection       |      0000-0000 |     2379 |
+| Periodical       |           0000 |      443 |
+| Article          |        0000/00 |      331 |
+| Article          |          /0000 |      138 |
+|------------------+----------------+----------|
+| *distinct pairs* |                |      105 |
 
 
 Get the valid years for the "Document" type:
@@ -642,28 +642,28 @@ replot
       | sort -S1G | uniq -c | sort -nr | head -n20
 #+END_SRC
 
-| author                     | frequency |
-|----------------------------+-----------|
-| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |      5079 |
-| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |      3963 |
-| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |      3327 |
-| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |      3184 |
-| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |      2504 |
-| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |      2481 |
-| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2012 |
-| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2002 |
-| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1947 |
-| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]], [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]] |      1922 |
-| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1904 |
-| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1858 |
-| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1774 |
-| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |      1769 |
-| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |      1699 |
-| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |      1676 |
-| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |      1655 |
-| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |      1652 |
-| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |      1597 |
-| [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |      1552 |
+| author                     | items |
+|----------------------------+-------|
+| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |  5079 |
+| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |  3963 |
+| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |  3327 |
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |  3184 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |  2504 |
+| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |  2481 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |  2012 |
+| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |  2002 |
+| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |  1947 |
+| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]], [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]] |  1922 |
+| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |  1904 |
+| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |  1858 |
+| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |  1774 |
+| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |  1769 |
+| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |  1699 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |  1676 |
+| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |  1655 |
+| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |  1652 |
+| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |  1597 |
+| [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |  1552 |
 
 One restriction here is that we do not count works with more than one
 author for the individual authors. For instance, Jacob Grimm and
@@ -712,28 +712,28 @@ y		 DNBTitel_normalised_enriched.json.gz \
       | sort -S1G | uniq -c | sort -nr | head -n20
 #+END_SRC
 
-| author                     | frequency |
-|----------------------------+-----------|
-| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |      5169 |
-| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |      3992 |
-| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |      3364 |
-| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |      3190 |
-| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |      2609 |
-| [[https://www.wikidata.org/wiki/Q9061][Karl Marx]]                  |      2578 |
-| [[https://www.wikidata.org/wiki/Q34787][Friedrich Engels]]           |      2569 |
-| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |      2533 |
-| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |      2056 |
-| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]]                |      2025 |
-| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |      2020 |
-| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |      1968 |
-| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |      1948 |
-| [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]]              |      1947 |
-| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |      1873 |
-| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |      1796 |
-| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |      1788 |
-| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |      1703 |
-| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |      1693 |
-| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |      1678 |
+| author                     | items |
+|----------------------------+-------|
+| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |  5169 |
+| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |  3992 |
+| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |  3364 |
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |  3190 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |  2609 |
+| [[https://www.wikidata.org/wiki/Q9061][Karl Marx]]                  |  2578 |
+| [[https://www.wikidata.org/wiki/Q34787][Friedrich Engels]]           |  2569 |
+| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |  2533 |
+| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |  2056 |
+| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]]                |  2025 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |  2020 |
+| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |  1968 |
+| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |  1948 |
+| [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]]              |  1947 |
+| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |  1873 |
+| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |  1796 |
+| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |  1788 |
+| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |  1703 |
+| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |  1693 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |  1678 |
 
 *** by page count
 

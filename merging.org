@@ -767,7 +767,7 @@ There are probably some errors among those ...
 #+BEGIN_SRC gnuplot :results silent
 reset
 set encoding utf8
-set term pngcairo enhanced size 800,600
+set term pngcairo enhanced size 800,600 font "Verdana,10"
 set out 'author_pages.png'
 
 set grid
@@ -974,7 +974,7 @@ pages per publisher?
 
 #+BEGIN_SRC gnuplot :results silent
 reset
-set term png enhanced size 800,600
+set term pngcairo enhanced size 800,600
 set out 'publisher_pages.png'
 
 set grid
@@ -1912,6 +1912,7 @@ Iterate over publishers:
   for publisher in $(awk -F'\t' '{print $2}' publisher_map.tsv | sort -u | sed "s/ /###/g"); do
     # get publisher name
     publisher=$(echo $publisher | sed "s/###/ /g")
+    #echo "$publisher\t" $(awk -F'\t' -v p="$publisher" '{if ($3 == p) print $2"\t hier dann Titel, Autor, Jahr"}' publisher_data.tsv | wc -l)
     # extract all works
     echo "**** $publisher"
     echo
@@ -1920,7 +1921,6 @@ Iterate over publishers:
   done
 #+END_SRC
 
-#+RESULTS:
 |   493 | Ammann                      |
 |  8302 | Aufbau                      |
 |   636 | Berlin Verlag               |
@@ -1931,7 +1931,7 @@ Iterate over publishers:
 | 23728 | Heyne                       |
 |  2999 | Hoffmann und Campe          |
 |  9697 | Insel                       |
-|  4734 | Kiepenheuer & Witsch        |
+|  3056 | Kiepenheuer & Witsch        |
 |  2816 | Luchterhand Literaturverlag |
 |  1205 | Manesse                     |
 |   185 | Merve                       |
@@ -1999,7 +1999,7 @@ Let's plot the median number of pages per year and per decade:
 #+BEGIN_SRC gnuplot :results silent
 reset
 set encoding utf8
-set term png enhanced size 800,600
+set term pngcairo enhanced size 800,600
 set out 'issued_pages_decade.png'
 
 set grid
@@ -2021,7 +2021,7 @@ replot
 set xrange [1912:2020]
 set xtics 10,10
 
-set term png enhanced size 800,600
+set term pngcairo enhanced size 800,600
 set out 'issued_pages_1912.png'
 
 plot \
@@ -2042,10 +2042,10 @@ replot
 Why is there such a pronounced peak in 1955? 
 
 Let's first look at the distribution of the number of pages in that year:
-#+BEGIN_SRC gnuplot
+#+BEGIN_SRC gnuplot :results silent
 reset
 set encoding utf8
-set term png enhanced size 800,600
+set term pngcairo enhanced size 800,600
 set out 'issued_pages_1955.png'
 
 set grid
@@ -2179,7 +2179,7 @@ disappear. Maybe the DNB stopped collecting them?
   > publisher_raw_data.tsv
 #+END_SRC
 
-#+BEGIN_SRC gnuplot
+#+BEGIN_SRC gnuplot :results silent
 reset
 set encoding utf8
 set term pngcairo enhanced size 800,600

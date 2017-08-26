@@ -554,6 +554,26 @@ Count frequencies:
   sort -n -S1G pages.tsv | uniq -c | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
 #+END_SRC
 
+Sum of the pages:
+#+BEGIN_SRC sh
+  echo "items\tpages"
+  awk -F'\t' '{SUM+=$1; CTR+=1} END {print CTR"\t"SUM}' pages.tsv
+#+END_SRC
+
+|   items |     pages |
+|---------+-----------|
+| 1029609 | 235757219 |
+
+Of the original 14,102,309 items, we can use 1,029,609 items with
+235,757,219 pages. Those items fulfill the following conditions:
+- We can extract the year they have been issued.
+- They have been issued in or after 1912.
+- We can extract their extent (number of pages).
+- At least one of their authors has a GND id in Wikidata and an
+  occupation that is a subclass of writer.
+For this set we did not require that any other values are available
+(e.g., publisher) but some analyses might further restrict that set.
+
 Plot distribution:
 #+BEGIN_SRC gnuplot :results silent
 reset
@@ -786,6 +806,11 @@ replot
 #+END_SRC
 
 [[author_pages.png][author_pages.png]]
+
+*** by occupation
+
+- TODO: top lists for different occupations
+- TODO: item count vs. mean page count colored by occupation
 
 ** DONE top works
 

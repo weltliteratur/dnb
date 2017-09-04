@@ -542,6 +542,19 @@ Combine into a table:
 
 ** DONE number of pages
 
+All valid page counts:
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "pages_norm" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{SUM+=$1; CTR+=1} END {print CTR"\t"SUM}'
+#+END_SRC
+
+All valid page counts of known writers:
+#+BEGIN_SRC sh
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{SUM+=$2; CTR+=1} END {print CTR"\t"SUM}'
+#+END_SRC
+
 Filter data:
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" \
@@ -560,9 +573,11 @@ Sum of the pages:
   awk -F'\t' '{SUM+=$1; CTR+=1} END {print CTR"\t"SUM}' pages.tsv
 #+END_SRC
 
-|   items |     pages |
-|---------+-----------|
-| 1029609 | 235757219 |
+| filter                            |   items |      pages |
+|-----------------------------------+---------+------------|
+| valid pages                       | 8471258 | 1353853314 |
+| + valid issued, occupation writer | 1046870 |  239308277 |
+| + issued >= 1912                  | 1029609 |  235757219 |
 
 Of the original 14,102,309 items, we can use 1,029,609 items with
 235,757,219 pages. Those items fulfill the following conditions:

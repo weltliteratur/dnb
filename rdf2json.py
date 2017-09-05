@@ -9,6 +9,8 @@
 # Author: rja
 #
 # Changes:
+# 2017-09-04 (rja)
+# - added extraction of rdau:P60493 property to "P60493"
 # 2017-06-19 (rja)
 # - initial version
 
@@ -18,7 +20,7 @@ import argparse
 import os.path
 import json
 
-version = "0.0.1"
+version = "0.0.2"
 
 # SAX parser collecting items
 class DNBHandler(xml.sax.ContentHandler):
@@ -48,7 +50,8 @@ class DNBHandler(xml.sax.ContentHandler):
             "isbd:P1053" : "pages",
             "rdau:P60001" : "price",
             "rdau:P60163" : "place",
-            "rdau:P60333" : "place_publisher"
+            "rdau:P60333" : "place_publisher",
+            "rdau:P60493" : "P60493"
             }
         # create lists for those keys
         self.multi = set(["creator", "contributor", "place", "subject", "pages"])

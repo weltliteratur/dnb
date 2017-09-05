@@ -183,6 +183,47 @@ replot
   ./json2json.py -n -p contributor DNBTitel.json.gz | sort -S1G | uniq -c > contributor.tsv
 #+END_SRC
 
+** P60493
+Extract, convert, and normalise data:
+#+BEGIN_SRC sh
+  ./rdf2json.py DNBTitel.rdf.gz | gzip -c > DNBTitel_P60493.json.gz
+  ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel_P60493.json.gz \
+      | gzip -c \
+	     > DNBTitel_P60493_normalised_enriched.json.gz
+#+END_SRC
+
+Get frequency of use:
+#+BEGIN_SRC sh
+  ./json2json.py -f \
+                 -p "issued_norm,pages_norm,P60493,creator_wd.*.occupation_writer" \
+                 DNBTitel_P60493_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912) {print $3}}' \
+      | sort -S1G | uniq -c | sort -nr | head -n20
+#+END_SRC
+
+|  items | P60493                |
+|--------+-----------------------|
+| 120677 | Roman                 |
+|   8631 | Kriminalroman         |
+|   6799 | Gedichte              |
+|   5513 | Erzählungen           |
+|   4931 | Erzählung             |
+|   2880 | Novelle               |
+|   2665 | Thriller              |
+|   2654 | roman                 |
+|   2644 | [Roman]               |
+|   1176 | Erzählg               |
+|    985 | Science-fiction-Roman |
+|    931 | historischer Roman    |
+|    875 | Kriminal-Roman        |
+|    813 | Novellen              |
+|    760 | Western-Roman         |
+|    644 | Geschichten           |
+|    571 | Erinnerungen          |
+|    557 | Erzählgn              |
+|    525 | Essays                |
+|    505 | eine Biographie       |
+
 * DONE enrich with Wikidata
 By using the field ~creator~ (*or should we use ~contributor~?*).
 
@@ -858,6 +899,40 @@ replot
 | [[http://d-nb.info/959702911][Ces hommes qui ont fait l'euro]]               |   3376 |
 | [[http://d-nb.info/576168084][Complete Works]]                               |   3360 |
 | [[http://d-nb.info/944603440][Das grosse Buch der Olympischen Spiele]]       |   3320 |
+
+*** Kafkatest
+
+#+BEGIN_SRC sh
+  ./json2json.py -f \
+                 -p "issued_norm,pages_norm,title,_id,creator_wd.*.name,creator_wd.*.occupation_writer" \
+                 -c "creator_wd.*.name,creator_wd.*.occupation_writer" \
+                 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1912 && $5 == "Franz Kafka") {print $2"\t[[http://d-nb.info/"$4"]["$3"]] ("$1")"}}' \
+      | sort -S1G -nr | head -n20
+#+END_SRC
+
+| pages | title (year)                                                                  |
+|-------+-------------------------------------------------------------------------------|
+|  1688 | [[http://d-nb.info/1035258870][Obras inmortales]] (1976)                                                       |
+|  1518 | [[http://d-nb.info/966308670][Récits, romans, journaux]] (2000)                                               |
+|  1463 | [[http://d-nb.info/986529494][Sämtliche Werke]] (2008)                                                        |
+|  1264 | [[http://d-nb.info/106007382X][Briefe an Felice Bauer und andere Korrespondenz aus der Verlobungszeit]] (2015) |
+|  1232 | [[http://d-nb.info/972101519][Romane & Erzählungen]] (2004)                                                   |
+|  1232 | [[http://d-nb.info/1015050190][Das Werk]] (2011)                                                               |
+|  1232 | [[http://d-nb.info/1010122509][Romane & Erzählungen]] (2010)                                                   |
+|  1222 | [[http://d-nb.info/971082871][Narraciones y otros escritos]] (2003)                                           |
+|  1211 | [[http://d-nb.info/976467062][Briefe]] (2005)                                                                 |
+|  1184 | [[http://d-nb.info/578570017][Confessioni e diari]] (1972)                                                    |
+|  1181 | [[http://d-nb.info/1035245892][Confessioni e diari]] (1981)                                                    |
+|  1088 | [[http://d-nb.info/963516396][Izbrannoe]] (1999)                                                              |
+|  1083 | [[http://d-nb.info/1038853184][Verzameld werk]] (2011)                                                         |
+|  1072 | [[http://d-nb.info/930529243][Verzameld werk]] (1992)                                                         |
+|  1052 | [[http://d-nb.info/982069626][Sämtliche Werke]] (2006)                                                        |
+|  1052 | [[http://d-nb.info/1088585264][Process]] (2014)                                                                |
+|  1045 | [[http://d-nb.info/965139611][Diarios]] (2000)                                                                |
+|  1039 | [[http://d-nb.info/983297266][Romane]] (2007)                                                                 |
+|  1019 | [[http://d-nb.info/961133643][Romane und Erzählungen]] (2000)                                                 |
+|  1019 | [[http://d-nb.info/950062731][Romane und Erzählungen]] (1996)                                                 |
 
 ** DONE top publishers
 

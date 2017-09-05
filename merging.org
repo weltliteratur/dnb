@@ -372,7 +372,7 @@ writer with the ~--wikidata~ option.
 #+END_SRC
 
 ** test enrichment
-
+*** basic JSON example
 #+BEGIN_SRC
   ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel.json.gz | grep "poet lawyer" > poetlawyer_gndwriter.json
 #+END_SRC
@@ -471,6 +471,34 @@ writer with the ~--wikidata~ option.
    ]
 }
 #+END_SRC
+
+*** how many authors can be mapped?
+
+#+BEGIN_SRC sh
+  echo -n "in DNB data\t"
+  ./json2json.py -p "creator,creator_wd.*.name" -c "creator,creator_wd.*.name" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 != "") print $1"\t"$2}' | sort -S1G -u | wc -l
+  echo -n "also in Wikidata\t"
+  ./json2json.py -f -p "creator,creator_wd.*.name" -c "creator,creator_wd.*.name" DNBTitel_normalised_enriched.json.gz \
+      | sort -S1G -u | wc -l
+  echo -n "also in Wikidata, occupation subclass of writer\t"
+  ./json2json.py -f -p "creator,creator_wd.*.name,creator_wd.*.occupation_writer" -c "creator,creator_wd.*.name,creator_wd.*.occupation_writer" DNBTitel_normalised_enriched.json.gz \
+      | sort -S1G -u | wc -l
+  echo -n "also in Wikidata, occupation subclass of writer, P60493~/[Rr[oman/\t"
+  ./json2json.py -f -p "P60493,creator,creator_wd.*.name,creator_wd.*.occupation_writer" -c "creator,creator_wd.*.name,creator_wd.*.occupation_writer" DNBTitel_P60493_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 ~ /[Rr]oman/) print $2"\t"$3}' \
+      | sort -S1G -u | wc -l
+  echo -n "also in Wikidata, occupation subclass of writer, P60493=Roman\t"
+  ./json2json.py -f -p "P60493,creator,creator_wd.*.name,creator_wd.*.occupation_writer" -c "creator,creator_wd.*.name,creator_wd.*.occupation_writer" DNBTitel_P60493_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 == "Roman") print $2"\t"$3}' \
+      | sort -S1G -u | wc -l
+#+END_SRC
+
+| in DNB data                     | 3275497 |
+| + in Wikidata                   |  201300 |
+| + occupation subclass of writer |  110143 |
+| + P60493~/[rR]oman/             |   16005 |
+| + P60493=Roman                  |   12288 |
 
 ** attic
 

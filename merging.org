@@ -184,10 +184,13 @@ replot
 #+END_SRC
 
 ** P60493
+We also use the new file ~gnditems_2017-09-05_14:59.json~ which
+contains information about site links within Wikipedia.
+
 Extract, convert, and normalise data:
 #+BEGIN_SRC sh
   ./rdf2json.py DNBTitel.rdf.gz | gzip -c > DNBTitel_P60493.json.gz
-  ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel_P60493.json.gz \
+  ./json2json.py -n -w gnditems_2017-09-05_14:59.json DNBTitel_P60493.json.gz \
       | gzip -c \
 	     > DNBTitel_P60493_normalised_enriched.json.gz
 #+END_SRC

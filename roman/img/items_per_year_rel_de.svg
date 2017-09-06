@@ -113,7 +113,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.6,104.3 L71.9,104.3 M587.2,104.3 L741.8,104.3  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.6,104.3 L71.9,104.3 M545.7,104.3 L741.8,104.3  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -230,7 +230,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M565.7,542.4 L565.7,115.7 M565.7,25.7 L565.7,16.7  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M565.7,542.4 L565.7,16.7  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -315,10 +315,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>Bücher mit Seitenanzahlangabe</title>
+	<g id="gnuplot_plot_1" ><title>Bücher mit Umfangsangabe</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(130.7,38.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Bücher mit Seitenanzahlangabe</tspan></text>
+		<text><tspan font-family="Arial" >Bücher mit Umfangsangabe</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -337,10 +337,10 @@
 		L676.6,391.2 L683.1,390.2 L689.6,395.8 L696.2,365.3 L702.7,304.3 L709.2,296.5 L715.7,217.8 L722.2,138.4
 		L728.8,62.3 L735.3,457.3 L741.8,507.3  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>Bücher mit Seitenanzahlangabe und Autor*in in Wikipedia</title>
+	<g id="gnuplot_plot_2" ><title>Bücher mit Umfangsangabe und Autor*in in Wikipedia</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(130.7,56.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Bücher mit Seitenanzahlangabe und Autor*in in Wikipedia</tspan></text>
+		<text><tspan font-family="Arial" >Bücher mit Umfangsangabe und Autor*in in Wikipedia</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -381,10 +381,10 @@
 		L676.6,375.1 L683.1,376.6 L689.6,352.9 L696.2,349.4 L702.7,318.2 L709.2,289.5 L715.7,288.9 L722.2,272.5
 		L728.8,283.1 L735.3,282.7 L741.8,524.4  '/></g>
 	</g>
-	<g id="gnuplot_plot_4" ><title>Romane mit Seitenanzahlangabe</title>
+	<g id="gnuplot_plot_4" ><title>Romane mit Umfangsangabe</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(130.7,92.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Romane mit Seitenanzahlangabe</tspan></text>
+		<text><tspan font-family="Arial" >Romane mit Umfangsangabe</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -403,10 +403,10 @@
 		L676.6,366.5 L683.1,369.7 L689.6,377.0 L696.2,381.5 L702.7,369.9 L709.2,367.2 L715.7,369.8 L722.2,376.2
 		L728.8,392.4 L735.3,414.7 L741.8,534.6  '/></g>
 	</g>
-	<g id="gnuplot_plot_5" ><title>Romane mit Seitenanzahlangabe und Autor*in in Wikipedia</title>
+	<g id="gnuplot_plot_5" ><title>Romane mit Umfangsangabe und Autor*in in Wikipedia</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(130.7,110.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Romane mit Seitenanzahlangabe und Autor*in in Wikipedia</tspan></text>
+		<text><tspan font-family="Arial" >Romane mit Umfangsangabe und Autor*in in Wikipedia</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

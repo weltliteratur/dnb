@@ -230,7 +230,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M600.3,542.4 L600.3,115.7 M600.3,25.7 L600.3,16.7  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M600.3,542.4 L600.3,16.7  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -322,10 +322,10 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>Bücher mit Seitenanzahlangabe (rechte y-Achse)</title>
+	<g id="gnuplot_plot_1" ><title>Bücher mit Umfangsangabe (rechte y-Achse)</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(155.6,38.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Bücher mit Seitenanzahlangabe (rechte y-Achse)</tspan></text>
+		<text><tspan font-family="Arial" >Bücher mit Umfangsangabe (rechte y-Achse)</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -344,10 +344,10 @@
 		L641.5,391.0 L647.4,389.9 L653.2,395.6 L659.1,365.0 L665.0,304.0 L670.9,296.1 L676.8,217.3 L682.7,137.8
 		L688.5,61.6 L694.4,457.2 L700.3,507.3  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>Bücher mit Seitenanzahlangabe und Autor*in in Wikipedia</title>
+	<g id="gnuplot_plot_2" ><title>Bücher mit Umfangsangabe und Autor*in in Wikipedia</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(155.6,56.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Bücher mit Seitenanzahlangabe und Autor*in in Wikipedia</tspan></text>
+		<text><tspan font-family="Arial" >Bücher mit Umfangsangabe und Autor*in in Wikipedia</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -388,10 +388,10 @@
 		L641.5,400.5 L647.4,401.7 L653.2,381.7 L659.1,378.6 L665.0,352.2 L670.9,327.9 L676.8,327.3 L682.7,313.4
 		L688.5,322.4 L694.4,322.1 L700.3,527.1  '/></g>
 	</g>
-	<g id="gnuplot_plot_4" ><title>Romane mit Seitenanzahlangabe</title>
+	<g id="gnuplot_plot_4" ><title>Romane mit Umfangsangabe</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(155.6,92.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Romane mit Seitenanzahlangabe</tspan></text>
+		<text><tspan font-family="Arial" >Romane mit Umfangsangabe</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -410,10 +410,10 @@
 		L641.5,408.8 L647.4,411.2 L653.2,416.8 L659.1,420.2 L665.0,411.3 L670.9,409.3 L676.8,411.3 L682.7,416.1
 		L688.5,428.4 L694.4,445.4 L700.3,536.5  '/></g>
 	</g>
-	<g id="gnuplot_plot_5" ><title>Romane mit Seitenanzahlangabe und Autor*in in Wikipedia</title>
+	<g id="gnuplot_plot_5" ><title>Romane mit Umfangsangabe und Autor*in in Wikipedia</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(155.6,110.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Romane mit Seitenanzahlangabe und Autor*in in Wikipedia</tspan></text>
+		<text><tspan font-family="Arial" >Romane mit Umfangsangabe und Autor*in in Wikipedia</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

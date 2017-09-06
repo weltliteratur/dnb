@@ -312,20 +312,20 @@
 	<path stroke='black'  d='M88.5,16.7 L88.5,542.4 L700.3,542.4 L700.3,16.7 L88.5,16.7 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(17.0,279.6) rotate(270)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >Buecher</tspan></text>
+		<text><tspan font-family="Arial" >items</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(394.4,591.3)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
-		<text><tspan font-family="Arial" >Jahr</tspan></text>
+		<text><tspan font-family="Arial" >year</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>Buecher mit Seitenzahlangabe (rechte y-Achse)</title>
+	<g id="gnuplot_plot_1" ><title>B\x252cher mit Seitenzahlangabe (rechte y-Achse)</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(155.6,38.6)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="start">
-		<text><tspan font-family="Arial" >Buecher mit Seitenzahlangabe (rechte y-Achse)</tspan></text>
+		<text><tspan font-family="Arial" >Bx252cher mit Seitenzahlangabe (rechte y-Achse)</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">

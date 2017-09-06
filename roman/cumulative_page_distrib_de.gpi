@@ -1,0 +1,19 @@
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'img/cumulative_page_distrib_de.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'Seitenanzahl'
+set ylabel 'P[x < Seitenanzahl]'
+set logscale x
+
+# divide the y-value by the number of books in the dataset
+plot \
+  '../1001-books/counts.tsv' using 1:($2/1001) smooth cumulative with lines title '1001 Bücher',\
+  'pages_freq.tsv' using 1:($2/180219) smooth cumulative with lines title 'DNB'
+
+set term svg enhanced size 800,600
+set out 'img/cumulative_page_distrib_de.svg'
+replot

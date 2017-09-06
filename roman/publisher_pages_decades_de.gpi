@@ -1,0 +1,26 @@
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'img/publisher_pages_decades_de.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'Jahr'
+set ylabel 'Median der Seitenanzahl'
+set key top left horizontal maxcols 4
+
+plot \
+  '< grep Heyne    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Heyne',\
+  '< grep Rowohlt  publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Rowohlt',\
+  '< grep Goldmann publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Goldmann',\
+  '< grep Ullstein publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Ullstein',\
+  '< grep Suhrkamp publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Suhrkamp',\
+  '< grep Piper    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Piper',\
+  '< grep Aufbau   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Aufbau',\
+  '< grep Kiepenheuer   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Kiepenheuer & Witsch',\
+  '< grep Reclam   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Reclam',\
+  '< grep Insel    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Insel'
+
+set term svg enhanced size 800,600
+set out 'img/publisher_pages_decades_de.svg'
+replot

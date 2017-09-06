@@ -178,13 +178,13 @@ set grid
 set datafile separator "\t"
 set xrange [1913:2017]
 set xtics 10,10
-set xlabel 'Jahr'
-set ylabel 'Buecher'
+set xlabel 'year'
+set ylabel 'items'
 set key left Left reverse
 set y2tics
 
 set term pngcairo enhanced size 800,600
-set out 'items_per_year.png'
+set out 'img/items_per_year.png'
 
 plot \
   '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:2 with lines axes x1y2 title 'Buecher mit Seitenzahlangabe (rechte y-Achse)',\
@@ -194,16 +194,16 @@ plot \
   '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:2 with lines title 'Romane mit Seitenzahlangabe und Autor*in in Wikipedia'
 
 set term svg enhanced size 800,600
-set out 'items_per_year.svg'
+set out 'img/items_per_year.svg'
 replot
 
 
 # relative frequency
-set ylabel 'Anteil Buecher'
+set ylabel 'items' 
 set format y "%2.0f%%"
 
 set term pngcairo enhanced size 800,600
-set out 'items_per_year_rel.png'
+set out 'img/items_per_year_rel.png'
 
 plot \
   '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:(100*($2/8346148)) with lines title 'Buecher mit Seitenzahlangabe',\
@@ -213,16 +213,15 @@ plot \
   '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:(100*($2/180219))  with lines title 'Romane mit Seitenzahlangabe und Autor*in in Wikipedia'
 
 set term svg enhanced size 800,600
-set out 'items_per_year_rel.svg'
+set out 'img/items_per_year_rel.svg'
 replot
-
 #+END_SRC
 
 Absolute numbers:
-[[items_per_year.png]]
+[[img/items_per_year.png]]
 
 Relative numbers:
-[[items_per_year_rel.png]]
+[[img/tems_per_year_rel.png]]
 
 ** DONE pages
 *** counts
@@ -262,7 +261,7 @@ Plot distribution:
 #+BEGIN_SRC gnuplot :results silent
 reset
 set term svg enhanced size 800,600
-set out 'pages.svg'
+set out 'img/pages.svg'
 set grid
 set xrange [0:2000]
 set logscale y
@@ -274,7 +273,7 @@ set ylabel 'frequency'
 plot 'pages_freq.tsv' using 1:2 with lines title ''
 
 set term pngcairo enhanced size 800,600
-set out 'pages.png'
+set out 'img/pages.png'
 replot
 
 # showing bogen boundaries
@@ -285,45 +284,45 @@ set xtics 0,16
 # zoom into range 400 to 600 to see 16-patterns of pages
 set xrange [400:600]
 set term pngcairo enhanced size 800,600
-set out 'pages_400-600.png'
+set out 'img/pages_400-600.png'
 plot 'pages_freq.tsv' using 1:2 with lines title ''
 
 set term svg enhanced size 800,600
-set out 'pages_400-600.svg'
+set out 'img/pages_400-600.svg'
 replot
 
 
 # zoom into range 200 to 400 to see 16-patterns of pages
 set xrange [200:400]
 set term pngcairo enhanced size 800,600
-set out 'pages_200-400.png'
+set out 'img/pages_200-400.png'
 plot 'pages_freq.tsv' using 1:2 with lines title ''
 
 set term svg enhanced size 800,600
-set out 'pages_200-400.svg'
+set out 'img/pages_200-400.svg'
 replot
 
 
 # zoom into range 0 to 200 to see 16-patterns of pages
 set xrange [0:200]
 set term pngcairo enhanced size 800,600
-set out 'pages_000-200.png'
+set out 'img/pages_000-200.png'
 plot 'pages_freq.tsv' using 1:2 with lines title ''
 
 set term svg enhanced size 800,600
-set out 'pages_000-200.svg'
+set out 'img/pages_000-200.svg'
 replot
 #+END_SRC
 
 **** page distribution
-[[pages.png]]
+[[img/pages.png]]
 
 **** page ranges
-[[pages_000-200.png]]
+[[img/pages_000-200.png]]
 
-[[pages_200-400.png]]
+[[img/pages_200-400.png]]
 
-[[pages_400-600.png]]
+[[img/pages_400-600.png]]
 
 *** temporal counts
 Let's plot the median number of pages per year:
@@ -336,17 +335,17 @@ Let's plot the median number of pages per year:
 reset
 set encoding utf8
 set term pngcairo enhanced size 800,600
-set out 'issued_pages_decade.png'
+set out 'img/issued_pages_decade.png'
 
 set grid
 set datafile separator "\t"
 set xlabel 'year'
-set ylabel 'number of pages per decade'
+set ylabel 'number of pages'
 set xrange [1913:2020]
 set xtics 10,10
 
 set term pngcairo enhanced size 800,600
-set out 'issued_pages_1913.png'
+set out 'img/issued_pages_1913.png'
 
 plot \
   'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 2nd quartile',\
@@ -355,11 +354,11 @@ plot \
 #  'issued_pages_stats.tsv' using 1:3 with lines lw 2 lt 3 lc rgb "blue" title 'mean'
 
 set term svg enhanced size 800,600
-set out 'issued_pages_1913.svg'
+set out 'img/issued_pages_1913.svg'
 replot
 #+END_SRC
 
-[[issued_pages_1913.png]]
+[[img/issued_pages_1913.png]]
 
 ** DONE [[../1001-books]]
 
@@ -368,7 +367,7 @@ Plot cumulative frequency distribution of the number of pages:
 reset
 set encoding utf8
 set term pngcairo enhanced size 800,600
-set out 'cumulative_page_distrib.png'
+set out 'img/cumulative_page_distrib.png'
 
 set grid
 set datafile separator "\t"
@@ -382,12 +381,12 @@ plot \
   'pages_freq.tsv' using 1:($2/180219) smooth cumulative with lines title 'DNB'
 
 set term svg enhanced size 800,600
-set out 'cumulative_page_distrib.svg'
+set out 'img/cumulative_page_distrib.svg'
 replot
 
 #+END_SRC
 
-[[cumulative_page_distrib.png]]
+[[img/cumulative_page_distrib.png]]
 
 The page distribution for the 1001 book list is skewed towards books
 with longer pages. Let's compare two specific ranges of pages: more
@@ -605,7 +604,7 @@ There are probably some errors among those ...
 reset
 set encoding utf8
 set term pngcairo enhanced size 800,600
-set out 'author_pages.png'
+set out 'img/author_pages.png'
 
 set grid
 set datafile separator "\t"
@@ -626,11 +625,11 @@ set label "Margaret George" left at 30, 1187 offset .5, .3
 plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
 
 set term svg enhanced size 800,600
-set out 'author_pages.svg'
+set out 'img/author_pages.svg'
 replot
 #+END_SRC
 
-[[author_pages.png][author_pages.png]]
+[[author_pages.png][img/author_pages.png]]
 
 *** by occupation
 
@@ -924,7 +923,7 @@ pages per publisher?
 #+BEGIN_SRC gnuplot :results silent
 reset
 set term pngcairo enhanced size 800,600
-set out 'publisher_pages.png'
+set out 'img/publisher_pages.png'
 
 set grid
 set datafile separator "\t"
@@ -936,11 +935,11 @@ set ylabel 'mean number of pages per item'
 plot 'publisher_page_stats.tsv' using 2:4 with points pt 7 title ''
 
 set term svg enhanced size 800,600
-set out 'publisher_pages.svg'
+set out 'img/publisher_pages.svg'
 replot
 #+END_SRC
 
-[[publisher_pages.png]]
+[[img/publisher_pages.png]]
 
 *** DONE top normalised publishers
 
@@ -1071,7 +1070,7 @@ Average page count per year per publisher:
 reset
 set encoding utf8
 set term pngcairo enhanced size 800,600
-set out 'publisher_pages_decades.png'
+set out 'img/publisher_pages_decades.png'
 
 set grid
 set datafile separator "\t"
@@ -1092,11 +1091,11 @@ plot \
   '< grep Insel    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Insel'
 
 set term svg enhanced size 800,600
-set out 'publisher_pages_decades.svg'
+set out 'img/publisher_pages_decades.svg'
 replot
 #+END_SRC
 
-[[publisher_pages_decades.png]]
+[[img/publisher_pages_decades.png]]
 
 *** DONE ranking per publisher
 

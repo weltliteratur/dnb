@@ -1,0 +1,26 @@
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'img/author_pages_de.png'
+
+set grid
+set datafile separator "\t"
+set xrange [*:10000]
+set logscale
+set format y "10^%T"
+set format x "10^%T"
+
+set xlabel 'Anzahl Bücher'
+set ylabel 'durchschnittliche Seitenanzahl'
+
+set label "Heinz G.\nKonsalik" left at 2232, 310 offset .5, .3
+set label "Colleen McCullough" left at 133, 3157 offset .5, .3
+set label "Margaret George" left at 30, 1187 offset .5, .3
+# set label "Günther Bentele" left at 27, 3842 offset .5, .3
+# set label "Johann\nWolfgang\nvon\nGoethe" left at 5169, 235 offset -1.8, 3.6
+
+plot 'author_pages_stats.tsv' using 2:3 with points pt 7 title ''
+
+set term svg enhanced size 800,600
+set out 'img/author_pages_de.svg'
+replot

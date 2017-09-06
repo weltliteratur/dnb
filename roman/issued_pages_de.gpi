@@ -1,0 +1,24 @@
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'img/issued_pages_decade_de.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'Jahr'
+set ylabel 'Seitenanzahl'
+set xrange [1913:2020]
+set xtics 10,10
+
+set term pngcairo enhanced size 800,600
+set out 'img/issued_pages_1913_de.png'
+
+plot \
+  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1. und 2. Quartil',\
+  'issued_pages_stats.tsv' using 1:2 with lines lw 2 lt 3 lc rgb "green" title 'Median'
+#,\
+#  'issued_pages_stats.tsv' using 1:3 with lines lw 2 lt 3 lc rgb "blue" title 'mean'
+
+set term svg enhanced size 800,600
+set out 'img/issued_pages_1913_de.svg'
+replot

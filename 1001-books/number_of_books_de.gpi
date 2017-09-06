@@ -1,0 +1,43 @@
+reset
+set encoding utf8
+set term svg enhanced size 800,600
+set out 'number_of_books_de.svg'
+set grid
+set xrange [0:1000]
+#set logscale y
+set format y "10^%T"
+set datafile separator "\t"
+
+set xlabel 'Seitenanzahl'
+set ylabel 'Häufigkeit'
+
+plot '<sort -n counts.tsv' using 1:2 with points pt 7 title ''
+
+set term png enhanced size 800,600
+set out 'number_of_books_de.png'
+replot
+
+reset
+set grid y
+set datafile separator ','
+set xlabel 'Seitenanzahlen'
+set ylabel 'Anzahl Bücher'
+set style data histogram
+set style fill solid 1.0 noborder
+set xtics rotate
+
+set term png enhanced size 1000,600 font "Arial,10"
+set out 'number_of_books_16_de.png'
+plot '1001-books_number_of_books_per_16-step_page_range.csv' using 2:xticlabels(1) title ''
+
+set term svg enhanced size 1000,600 font "Arial,10"
+set out 'number_of_books_16_de.svg'
+replot
+
+set term png enhanced size 1600,400 font "Arial,8"
+set out 'number_of_books_25_de.png'
+plot '1001-books_number_of_books_per_25-step_page_range.csv' using 2:xticlabels(1) title ''
+
+set term svg enhanced size 1600,400 font "Arial,8"
+set out 'number_of_books_25_de.svg'
+replot

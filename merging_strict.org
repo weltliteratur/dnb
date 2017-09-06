@@ -237,7 +237,7 @@ replot
                  -c "creator_wd.*.name,creator_wd.*.occupation_writer,creator_wd.*.sitelinks" \
                  DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912 && $7 ~ /de/ && $8 ~ /[rR]oman/ && $5 == "Franz Kafka") {print $2"\t[[http://d-nb.info/"$4"]["$3"]] ("$1")"}}' \
-      | sort -S1G -nr | head -n20
+      | sort -S1G -nr | head -n50
 #+END_SRC
 
 | pages                                 | title (year) |
@@ -1215,6 +1215,33 @@ Iterate over publishers:
 |   140 | [[https://www.wikidata.org/wiki/Q15447339][Eckhard Erxleben]]: [[http://d-nb.info/972139397][Die Haut der Platane]] (2004)                           |
 
 ** DONE temporal distribution
+*** items
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'issued_decade.png'
+
+set grid
+#set datafile separator "\t"
+set xrange [1912:2020]
+set xtics 10,10
+set xlabel 'year'
+set ylabel 'items'
+
+set term pngcairo enhanced size 800,600
+set out 'issued_items_1912.png'
+
+plot \
+  '< cut -f1 issued_pages.tsv | sort | uniq -c' using 2:1 with lines lw 2 lt 3 lc rgb "green" title ''
+
+set term svg enhanced size 800,600
+set out 'issued_items_1912.svg'
+replot
+#+END_SRC
+
+*** pages
 Let's plot the median number of pages per year and per decade:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.sitelinks,P60493" DNBTitel_normalised_enriched.json.gz \

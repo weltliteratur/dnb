@@ -100,51 +100,51 @@ Print the top matches:
 ** DONE items
 Condition for all items:
 - ~issued_norm~ >= 1913
+*** extracting data
+**** all items with a page number
+ #+BEGIN_SRC sh :results silent
+   ./json2json.py -f \
+		  -p "issued_norm,pages_norm" \
+		  DNBTitel_normalised_enriched.json.gz \
+       | awk -F'\t' '{if ($1 >= 1913) print $1"\t"$2}' | sort -n \
+	     > items_per_year-page.tsv
+ #+END_SRC
 
-*** all items with a page number
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f \
-		 -p "issued_norm,pages_norm" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913) print $1"\t"$2}' | sort -n \
-	    > items_per_year-page.tsv
-#+END_SRC
+**** all items with a page number and an author with a Wikipedia link
+ #+BEGIN_SRC sh :results silent
+   ./json2json.py -f \
+		  -p "issued_norm,pages_norm,creator_wd.*.sitelinks" \
+		  DNBTitel_normalised_enriched.json.gz \
+       | awk -F'\t' '{if ($1 >= 1913) print $1"\t"$2}' | sort -n \
+	     > items_per_year-page_author.tsv
+ #+END_SRC
 
-*** all items with a page number and an author with a Wikipedia link
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f \
-		 -p "issued_norm,pages_norm,creator_wd.*.sitelinks" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913) print $1"\t"$2}' | sort -n \
-	    > items_per_year-page_author.tsv
-#+END_SRC
+**** all novels
+ #+BEGIN_SRC sh :results silent
+   ./json2json.py -f \
+		  -p "issued_norm,P60493" \
+		  DNBTitel_normalised_enriched.json.gz \
+       | awk -F'\t' '{if ($1 >= 1913 && $2 ~ /[rR]oman/) print $1}' | sort -n \
+	     > items_per_year-novel.tsv
+ #+END_SRC
 
-*** all novels
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f \
-		 -p "issued_norm,P60493" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $2 ~ /[rR]oman/) print $1}' | sort -n \
-	    > items_per_year-novel.tsv
-#+END_SRC
+**** all novels with a page number
+ #+BEGIN_SRC sh :results silent
+   ./json2json.py -f \
+		  -p "issued_norm,pages_norm,P60493" \
+		  DNBTitel_normalised_enriched.json.gz \
+       | awk -F'\t' '{if ($1 >= 1913 && $3 ~ /[rR]oman/) print $1"\t"$2}' | sort -n \
+	     > items_per_year-novel_page.tsv
+ #+END_SRC
 
-*** all novels with a page number
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f \
-		 -p "issued_norm,pages_norm,P60493" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $3 ~ /[rR]oman/) print $1"\t"$2}' | sort -n \
-	    > items_per_year-novel_page.tsv
-#+END_SRC
-
-*** all novels with a page number and an author with a Wikipedia link
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f \
-		 -p "issued_norm,pages_norm,P60493,creator_wd.*.sitelinks" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $3 ~ /[rR]oman/) print $1"\t"$2}' | sort -n \
-	    > items_per_year-novel_page_author.tsv
-#+END_SRC
+**** all novels with a page number and an author with a Wikipedia link
+ #+BEGIN_SRC sh :results silent
+   ./json2json.py -f \
+		  -p "issued_norm,pages_norm,P60493,creator_wd.*.sitelinks" \
+		  DNBTitel_normalised_enriched.json.gz \
+       | awk -F'\t' '{if ($1 >= 1913 && $3 ~ /[rR]oman/) print $1"\t"$2}' | sort -n \
+	     > items_per_year-novel_page_author.tsv
+ #+END_SRC
 
 *** counts
 
@@ -152,13 +152,13 @@ Condition for all items:
   wc -l items_per_year*.tsv
 #+END_SRC
 
-| file                                 | items   |
-|--------------------------------------+---------|
-| items_per_year-page.tsv              | 8346148 |
-| items_per_year-page_author.tsv       | 1349949 |
-| items_per_year-novel.tsv             |  353498 |
-| items_per_year-novel_page.tsv        |  316518 |
-| items_per_year-novel_page_author.tsv |  180219 |
+| filter                |   items |
+|-----------------------+---------|
+| page                  | 8346148 |
+| page + author         | 1349949 |
+| novel                 |  353498 |
+| novel + page          |  316518 |
+| novel + page + author |  180219 |
 
 *** temporal counts
 
@@ -167,7 +167,7 @@ reset
 set encoding utf8
 set grid
 set datafile separator "\t"
-set xrange [1913:2020]
+set xrange [1913:2017]
 set xtics 10,10
 set xlabel 'Jahr'
 set ylabel 'Buecher'
@@ -216,34 +216,33 @@ Relative numbers:
 [[items_per_year_rel.png]]
 
 ** DONE pages
-
-Get page frequencies from item file:
-#+BEGIN_SRC sh :results silent
-  cut -f2 items_per_year-novel_page_author.tsv | sort -n -S1G | uniq -c | awk '{print $2"\t"$1}' | sort -n > pages_freq.tsv
-#+END_SRC
-
-Sum of the pages:
+*** counts
 #+BEGIN_SRC sh
-  echo "items\tpages"
-  awk -F'\t' '{SUM+=$1*$2; CTR+=$2} END {print CTR"\t"SUM}' pages_freq.tsv
+  for i in $(ls items_per_*tsv); do
+    echo $i $(datamash count 1 sum 2 < $i)
+  done
 #+END_SRC
 
-| filter                                                        |   items |      pages |
-|---------------------------------------------------------------+---------+------------|
-| valid pages                                                   | 8471258 | 1353853314 |
-| + valid issued, occupation writer                             | 1046870 |  239308277 |
-| + issued >= 1913                                              | 1029609 |  235757219 |
-| valid pages, P60493~/[rRoman], issued >= 1913, Wikipedia page |  180219 |   60717476 |
+| filter                |   items |      pages | mean pages |
+|-----------------------+---------+------------+------------|
+| page                  | 8346148 | 1327973922 |        159 |
+| page + author         | 1349949 |  296472297 |        220 |
+| novel                 |  353498 |            |          0 |
+| novel + page          |  316518 |   98947311 |        313 |
+| novel + page + author |  180219 |   60717476 |        337 |
+#+TBLFM: $4=$-1/$-2;%2.0f
 
-Of the original 14,102,309 items, we can use 1,029,609 items with
-235,757,219 pages. Those items fulfill the following conditions:
+Of the original 14,102,309 items, we use 180,219 items with 60,717,476
+pages. Those items fulfill the following conditions:
 - We can extract the year they have been issued.
-- They have been issued in or after 1912.
+- They have been issued in or after 1913.
 - We can extract their extent (number of pages).
-- At least one of their authors has a GND id in Wikidata and an
-  occupation that is a subclass of writer.
+- At least one of their authors has a GND id in Wikidata and a
+  Wikipedia page (in any Wikipedia language version).
 For this set we did not require that any other values are available
 (e.g., publisher) but some analyses might further restrict that set.
+
+*** temporal counts
 
 Plot distribution:
 #+BEGIN_SRC gnuplot :results silent
@@ -251,7 +250,7 @@ reset
 set term svg enhanced size 800,600
 set out 'pages.svg'
 set grid
-set xrange [0:4000]
+set xrange [0:2000]
 set logscale y
 set format y "10^%T"
 
@@ -264,12 +263,10 @@ set term pngcairo enhanced size 800,600
 set out 'pages.png'
 replot
 
-
 # showing bogen boundaries
 unset logscale
 unset format y
 set xtics 0,16
-
 
 # zoom into range 400 to 600 to see 16-patterns of pages
 set xrange [400:600]
@@ -304,6 +301,64 @@ set out 'pages_000-200.svg'
 replot
 #+END_SRC
 
+*** TODO median/quartiles
+Let's plot the median number of pages per year and per decade:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.sitelinks,P60493" DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($4 ~ /de/ && $5 ~ /[rR]oman/) print $1"\t"$2}' \
+      | sort -S1G -nr \
+              > issued_pages.tsv
+  cat issued_pages.tsv | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
+      | sed "s/,/./g" \
+            > issued_pages_stats.tsv
+  awk -F'\t' '{print int($1/10)"\t"$2}' issued_pages.tsv \
+      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
+      | sed "s/,/./g" \
+            > issued_pages_decade_stats.tsv
+#+END_SRC
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'issued_pages_decade.png'
+
+set grid
+set datafile separator "\t"
+set xrange [1500:2020]
+set xlabel 'year'
+set ylabel 'number of pages per decade'
+
+plot \
+  'issued_pages_decade_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
+  'issued_pages_decade_stats.tsv' using ($1*10):2 with linespoints pt 7 lw 2 lt 3 lc rgb "green" title 'median'
+
+set term svg enhanced size 800,600
+set out 'issued_pages_decade.svg'
+replot
+
+
+# starting in 1913
+set xrange [1913:2020]
+set xtics 10,10
+
+set term pngcairo enhanced size 800,600
+set out 'issued_pages_1913.png'
+
+plot \
+  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
+  'issued_pages_stats.tsv' using 1:2 with lines lw 2 lt 3 lc rgb "green" title 'median'
+
+set term svg enhanced size 800,600
+set out 'issued_pages_1913.svg'
+replot
+#+END_SRC
+
+[[issued_pages_decade.png]]
+
+[[issued_pages_1913.png]]
+
+
 **** page distribution
 [[pages.png]]
 
@@ -314,9 +369,7 @@ replot
 
 [[pages_400-600.png]]
 
-
-
-** TODO comparison to [[1001-books]] top list
+** DONE [[../1001-books]]
 
 Plot cumulative frequency distribution of the number of pages:
 #+BEGIN_SRC gnuplot :results silent
@@ -350,7 +403,7 @@ than 1000 pages vs. between 100 and 400 pages.
 
 #+BEGIN_SRC sh
   echo "dataset\t>1000 pages\t100-400 pages\tratio"
-  for file in 1001-books/counts.tsv pages_freq.tsv; do
+  for file in ../1001-books/counts.tsv pages_freq.tsv; do
       awk -F'\t' '
           {
             SUM += $2;
@@ -360,14 +413,12 @@ than 1000 pages vs. between 100 and 400 pages.
             printf("%s\t%s (%2.1f%%)\t%s (%2.1f%%)\t%2.4f\n", FILENAME, SUMBIG, SUMBIG/SUM*100, SUMSMALL, SUMSMALL/SUM*100, SUMBIG/SUMSMALL)
           }' $file
   done
-
 #+END_SRC
 
-| dataset    | >1000 pages | 100-400 pages  | ratio |
-|------------+-------------+----------------+-------|
-| 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.0337 |
-| DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.0062 |
-
+| dataset     | >1000 pages | 100-400 pages  |  ratio |
+|-------------+-------------+----------------+--------|
+| 1001 -books | 23 (2.3%)   | 682 (68.1%)    | 0.0337 |
+| DNB         | 1056 (0.6%) | 129167 (71.7%) | 0.0082 |
 
 ** DONE authors
 
@@ -382,11 +433,11 @@ than 1000 pages vs. between 100 and 400 pages.
 	    > author_pages_stats.tsv
 #+END_SRC
 
-*** by item count
+*** DONE by item count
 
 #+BEGIN_SRC sh
   ./json2json.py -f \
-		 -p "issued_norm,pages_norm,P60493,creator_wd.*.name,creator_wd.*.sitelinks,creator_wd.*.id" \
+		 -p "issued_norm,pages_norm,P60493,creator_wd.*.name,creator_wd.*.id,creator_wd.*.sitelinks" \
 		 -c "creator_wd.*.name,creator_wd.*.id,creator_wd.*.sitelinks"\
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1913 && $3 ~ /[rR]oman/) print "[[https://www.wikidata.org/wiki/"$5"]["$4"]]"}' \
@@ -395,6 +446,58 @@ than 1000 pages vs. between 100 and 400 pages.
 
 | author                | items |
 |-----------------------+-------|
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]     |  2232 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]  |  1264 |
+| [[https://www.wikidata.org/wiki/Q1515191][Gert Fritz Unger]]      |  1013 |
+| [[https://www.wikidata.org/wiki/Q128790][Georges Simenon]]       |   783 |
+| [[https://www.wikidata.org/wiki/Q101221][Utta Danella]]          |   778 |
+| [[https://www.wikidata.org/wiki/Q271824][Edgar Wallace]]         |   654 |
+| [[https://www.wikidata.org/wiki/Q65078][Hedwig Courths-Mahler]] |   647 |
+| [[https://www.wikidata.org/wiki/Q142106][Eleanor Hibbert]]       |   635 |
+| [[https://www.wikidata.org/wiki/Q80900][Pearl S. Buck]]         |   596 |
+| [[https://www.wikidata.org/wiki/Q333713][Alistair MacLean]]      |   582 |
+| [[https://www.wikidata.org/wiki/Q39829][Stephen King]]          |   577 |
+| [[https://www.wikidata.org/wiki/Q272706][Georgette Heyer]]       |   576 |
+| [[https://www.wikidata.org/wiki/Q35064][Agatha Christie]]       |   574 |
+| [[https://www.wikidata.org/wiki/Q76632][Theodor Fontane]]       |   565 |
+| [[https://www.wikidata.org/wiki/Q1579382][Hans Ernst]]            |   563 |
+| [[https://www.wikidata.org/wiki/Q77024][Lion Feuchtwanger]]     |   501 |
+| [[https://www.wikidata.org/wiki/Q47293][Erich Maria Remarque]]  |   419 |
+| [[https://www.wikidata.org/wiki/Q63837][Hans Hellmut Kirst]]    |   411 |
+| [[https://www.wikidata.org/wiki/Q84208][Johannes Mario Simmel]] |   403 |
+| [[https://www.wikidata.org/wiki/Q76539][Hans Fallada]]          |   396 |
+| [[https://www.wikidata.org/wiki/Q76480][Heinrich Mann]]         |   394 |
+| [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]    |   390 |
+| [[https://www.wikidata.org/wiki/Q235965][Barbara Cartland]]      |   390 |
+| [[https://www.wikidata.org/wiki/Q231356][Nora Roberts]]          |   381 |
+| [[https://www.wikidata.org/wiki/Q128560][Graham Greene]]         |   375 |
+| [[https://www.wikidata.org/wiki/Q179059][A. J. Cronin]]          |   370 |
+| [[https://www.wikidata.org/wiki/Q93444][Vicki Baum]]            |   366 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]           |   359 |
+| [[https://www.wikidata.org/wiki/Q224113][Robert Ludlum]]         |   358 |
+| [[https://www.wikidata.org/wiki/Q2581888][Gerd Hafner]]           |   357 |
+| [[https://www.wikidata.org/wiki/Q272076][Dean Koontz]]           |   354 |
+| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]         |   340 |
+| [[https://www.wikidata.org/wiki/Q105125][Alexandra Cordes]]      |   325 |
+| [[https://www.wikidata.org/wiki/Q209641][John le Carré]]         |   322 |
+| [[https://www.wikidata.org/wiki/Q465179][Marion Zimmer Bradley]] |   321 |
+| [[https://www.wikidata.org/wiki/Q104029][Jason Dark]]            |   317 |
+| [[https://www.wikidata.org/wiki/Q106608][Willi Heinrich]]        |   313 |
+| [[https://www.wikidata.org/wiki/Q77475][Ludwig Ganghofer]]      |   311 |
+| [[https://www.wikidata.org/wiki/Q45765][Jack London]]           |   309 |
+| [[https://www.wikidata.org/wiki/Q78509][Joseph Roth]]           |   307 |
+| [[https://www.wikidata.org/wiki/Q72653][Danielle Steel]]        |   299 |
+| [[https://www.wikidata.org/wiki/Q273677][Johanna Lindsey]]       |   288 |
+| [[https://www.wikidata.org/wiki/Q357065][Erle Stanley Gardner]]  |   287 |
+| [[https://www.wikidata.org/wiki/Q76412][Siegfried Lenz]]        |   279 |
+| [[https://www.wikidata.org/wiki/Q33977][Jules Verne]]           |   277 |
+| [[https://www.wikidata.org/wiki/Q254240][Rosamunde Pilcher]]     |   274 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]           |   271 |
+| [[https://www.wikidata.org/wiki/Q23434][Ernest Hemingway]]      |   271 |
+| [[https://www.wikidata.org/wiki/Q445429][Taylor Caldwell]]       |   269 |
+| [[https://www.wikidata.org/wiki/Q106740][Dorothy L. Sayers]]     |   269 |
+
+
 | [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]     |  2232 |
 | [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]  |  1264 |
 | [[https://www.wikidata.org/wiki/Q1515191][Gert Fritz Unger]]      |  1013 |
@@ -472,7 +575,7 @@ than 1000 pages vs. between 100 and 400 pages.
 | Heinrich Mann         | 172019 |   394 |        436 |
 | Nora Roberts          | 171520 |   381 |        450 |
 | Hans Fallada          | 169877 |   396 |        428 |
-| Leo Tolstoy           | 163308 |   205 |        796 |
+| Leo Tolstoy           | 163126 |   204 |        799 |
 | Georgette Heyer       | 159427 |   576 |        276 |
 
 *** by mean page count
@@ -522,9 +625,9 @@ set format x "10^%T"
 set xlabel 'number of items'
 set ylabel 'mean number of pages per item'
 
-# set label "Reinhard Baumgart" left at 32, 10640 offset .5, .3
-# set label "Colleen McCullough" left at 143, 2966 offset .5, .3
-# set label "Samael Aun Weor" left at 27, 5226 offset .5, .3
+set label "Heinz G.\nKonsalik" left at 2232, 310 offset .5, .3
+set label "Colleen McCullough" left at 133, 3157 offset .5, .3
+set label "Margaret George" left at 30, 1187 offset .5, .3
 # set label "Guenther Bentele" left at 27, 3842 offset .5, .3
 # set label "Johann\nWolfgang\nvon\nGoethe" left at 5169, 235 offset -1.8, 3.6
 
@@ -542,37 +645,117 @@ replot
 - TODO: top lists for different occupations
 - TODO: item count vs. mean page count colored by occupation
 
-** DONE top works
+** DONE works
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,title,_id,P60493,creator_wd.*.sitelinks" \
 		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $5 ~ /[rR]oman/) {print $2"\t[[http://d-nb.info/"$4"]["$3"]]"}}' \
-      | sort -S1G -nr | head -n50
+      | awk -F'\t' '{if ($1 >= 1913 && $5 ~ /[rR]oman/) {print $2"\t[[http://d-nb.info/"$4"]["$3"]] ("$1")"}}' \
+      | sort -S1G -nr | head -n100
 #+END_SRC
 
-| title                              |  pages |
-|------------------------------------+--------|
-| [[http://d-nb.info/920918131][Tim]]                                | 348333 |
-| [[http://d-nb.info/964186179][Fado Alexandrino]]                   |   7969 |
-| [[http://d-nb.info/975045431][Die Waffen nieder!]]                 |   4292 |
-| [[http://d-nb.info/365618357][Ohne Heimat]]                        |   3202 |
-| [[http://d-nb.info/573875650][Rocambol, der Fürst der Katakomben]] |   3200 |
-| [[http://d-nb.info/930989244][Kein fremder Land]]                  |   2880 |
-| [[http://d-nb.info/978918266][Deutschland mittendrin]]             |   2290 |
-| [[http://d-nb.info/800790103][Der Mann ohne Eigenschaften]]        |   2154 |
-| [[http://d-nb.info/20876173X][Der Mann ohne Eigenschaften]]        |   2154 |
-| [[http://d-nb.info/574987010][Der Zauberberg]]                     |   2021 |
-| [[http://d-nb.info/977206513][Eine gute Partie]]                   |   1997 |
-| [[http://d-nb.info/960613994][Eine gute Partie]]                   |   1997 |
-| [[http://d-nb.info/957834195][Eine gute Partie]]                   |   1997 |
-| [[http://d-nb.info/946561486][Der weisse Chauffeur]]               |   1814 |
-| [[http://d-nb.info/1028105657][Parallelgeschichten]]                |   1723 |
-| [[http://d-nb.info/1062645235][The stand]]                          |   1711 |
-| [[http://d-nb.info/958433763][Die Elenden]]                        |   1684 |
-| [[http://d-nb.info/575594950][Der Mann ohne Eigenschaften]]        |   1671 |
-| [[http://d-nb.info/959984224][Krieg und Frieden]]                  |   1645 |
-| [[http://d-nb.info/750935014][Der Mann ohne Eigenschaften]]        |   1632 |
+| title                                     |  pages |
+|-------------------------------------------+--------|
+| [[http://d-nb.info/920918131][Tim]] (1992)                                | 348333 |
+| [[http://d-nb.info/964186179][Fado Alexandrino]] (2002)                   |   7969 |
+| [[http://d-nb.info/975045431][Die Waffen nieder!]] (2005)                 |   4292 |
+| [[http://d-nb.info/365618357][Ohne Heimat]] (1935)                        |   3202 |
+| [[http://d-nb.info/573875650][Rocambol, der Fürst der Katakomben]] (1925) |   3200 |
+| [[http://d-nb.info/930989244][Kein fremder Land]] (1993)                  |   2880 |
+| [[http://d-nb.info/978918266][Deutschland mittendrin]] (2006)             |   2290 |
+| [[http://d-nb.info/800790103][Der Mann ohne Eigenschaften]] (1980)        |   2154 |
+| [[http://d-nb.info/20876173X][Der Mann ohne Eigenschaften]] (1979)        |   2154 |
+| [[http://d-nb.info/574987010][Der Zauberberg]] (1951)                     |   2021 |
+| [[http://d-nb.info/977206513][Eine gute Partie]] (2006)                   |   1997 |
+| [[http://d-nb.info/960613994][Eine gute Partie]] (2000)                   |   1997 |
+| [[http://d-nb.info/957834195][Eine gute Partie]] (1999)                   |   1997 |
+| [[http://d-nb.info/946561486][Der weisse Chauffeur]] (1996)               |   1814 |
+| [[http://d-nb.info/1028105657][Parallelgeschichten]] (2013)                |   1723 |
+| [[http://d-nb.info/1062645235][The stand]] (2016)                          |   1711 |
+| [[http://d-nb.info/958433763][Die Elenden]] (1999)                        |   1684 |
+| [[http://d-nb.info/575594950][Der Mann ohne Eigenschaften]] (1952)        |   1671 |
+| [[http://d-nb.info/959984224][Krieg und Frieden]] (2000)                  |   1645 |
+| [[http://d-nb.info/750935014][Der Mann ohne Eigenschaften]] (1973)        |   1632 |
+| [[http://d-nb.info/750926627][Der Mann ohne Eigenschaften]] (1973)        |   1632 |
+| [[http://d-nb.info/740499734][Der Mann ohne Eigenschaften]] (1974)        |   1632 |
+| [[http://d-nb.info/575594977][Der Mann ohne Eigenschaften]] (1967)        |   1632 |
+| [[http://d-nb.info/575594969][Der Mann ohne Eigenschaften]] (1960)        |   1632 |
+| [[http://d-nb.info/457661054][Der Mann ohne Eigenschaften]] (1970)        |   1632 |
+| [[http://d-nb.info/579313425][Die Brüder Karamasoff]] (1914)              |   1612 |
+| [[http://d-nb.info/901346470][Krieg und Frieden]] (1989)                  |   1597 |
+| [[http://d-nb.info/900287799][Krieg und Frieden]] (1989)                  |   1597 |
+| [[http://d-nb.info/871184370][Krieg und Frieden]] (1988)                  |   1597 |
+| [[http://d-nb.info/850303559][Krieg und Frieden]] (1984)                  |   1597 |
+| [[http://d-nb.info/810194503][Krieg und Frieden]] (1975)                  |   1597 |
+| [[http://d-nb.info/760472971][Krieg und Frieden]] (1975)                  |   1597 |
+| [[http://d-nb.info/750806087][Krieg und Frieden]] (1972)                  |   1597 |
+| [[http://d-nb.info/750311282][Krieg und Frieden]] (1975)                  |   1597 |
+| [[http://d-nb.info/750280719][Krieg und Frieden]] (1975)                  |   1597 |
+| [[http://d-nb.info/458351849][Krieg und Frieden]] (1969)                  |   1597 |
+| [[http://d-nb.info/455088462][Krieg und Frieden]] (1964)                  |   1597 |
+| [[http://d-nb.info/455088357][Krieg und Frieden]] (1959)                  |   1597 |
+| [[http://d-nb.info/455088276][Krieg und Frieden]] (1956)                  |   1597 |
+| [[http://d-nb.info/455088268][Krieg und Frieden]] (1956)                  |   1597 |
+| [[http://d-nb.info/200345370][Krieg und Frieden]] (1975)                  |   1597 |
+| [[http://d-nb.info/998452734][Gegen den Tag]] (2010)                      |   1595 |
+| [[http://d-nb.info/986805394][Gegen den Tag]] (2008)                      |   1595 |
+| [[http://d-nb.info/999348760][Unendlicher Spass]] (2009)                  |   1547 |
+| [[http://d-nb.info/740012169][Dein Roman]] (1973)                         |   1539 |
+| [[http://d-nb.info/455088233][Krieg und Frieden]] (1953)                  |   1533 |
+| [[http://d-nb.info/455088195][Krieg und Frieden]] (1953)                  |   1533 |
+| [[http://d-nb.info/1006149368][Es]] (2011)                                 |   1533 |
+| [[http://d-nb.info/996605754][Krieg und Frieden]] (2009)                  |   1531 |
+| [[http://d-nb.info/986258695][Krieg und Frieden]] (2007)                  |   1531 |
+| [[http://d-nb.info/1116618346][Krieg und Frieden]] (2016)                  |   1531 |
+| [[http://d-nb.info/986883530][Die Wächter-Trilogie]] (2008)               |   1530 |
+| [[http://d-nb.info/575398078][Moskau, Stalingrad, Berlin]] (1966)         |   1500 |
+| [[http://d-nb.info/457821507][Der grosse Krieg im Osten]] (1966)          |   1500 |
+| [[http://d-nb.info/457821493][Moskau, Stalingrad, Berlin]] (1966)         |   1500 |
+| [[http://d-nb.info/1002247012][Der Graf von Monte Christo]] (2010)         |   1494 |
+| [[http://d-nb.info/959066101][Der stille Don]] (2000)                     |   1473 |
+| [[http://d-nb.info/931548950][Der stille Don]] (1993)                     |   1473 |
+| [[http://d-nb.info/450987965][Die Brüder Karamasoff]] (1949)              |   1471 |
+| [[http://d-nb.info/1060072238][Horcynus Orca]] (2015)                      |   1470 |
+| [[http://d-nb.info/974463159][Die Festung]] (2005)                        |   1469 |
+| [[http://d-nb.info/974444898][Die Festung]] (2005)                        |   1469 |
+| [[http://d-nb.info/973561610][Die Festung]] (2005)                        |   1469 |
+| [[http://d-nb.info/951583093][Die Festung]] (1997)                        |   1469 |
+| [[http://d-nb.info/944353843][Die Festung]] (1995)                        |   1469 |
+| [[http://d-nb.info/94346272X][Die Festung]] (1995)                        |   1469 |
+| [[http://d-nb.info/947458085][Das Leben des Balthasar Rüssow]] (1996)     |   1465 |
+| [[http://d-nb.info/945804903][Das Leben des Balthasar Rüssow]] (1995)     |   1465 |
+| [[http://d-nb.info/820712566][Krieg und Frieden]] (1979)                  |   1464 |
+| [[http://d-nb.info/960145605][Gleiwitz]] (2000)                           |   1452 |
+| [[http://d-nb.info/959930884][Gleiwitz]] (2000)                           |   1452 |
+| [[http://d-nb.info/958933022][Gleiwitz]] (2000)                           |   1452 |
+| [[http://d-nb.info/921007906][The stand]] (1992)                          |   1432 |
+| [[http://d-nb.info/1021813613][Die Orks - die Rückkehr]] (2012)            |   1424 |
+| [[http://d-nb.info/946729603][Eine gute Partie]] (1996)                   |   1421 |
+| [[http://d-nb.info/946052824][Eine gute Partie]] (1995)                   |   1421 |
+| [[http://d-nb.info/944249450][Eine gute Partie]] (1995)                   |   1421 |
+| [[http://d-nb.info/993894496][Ravenor]] (2010)                            |   1408 |
+| [[http://d-nb.info/998411752][Die Invasion]] (2010)                       |   1407 |
+| [[http://d-nb.info/1024512991][Küsse im Mondschein]] (2012)                |   1401 |
+| [[http://d-nb.info/993872115][Die Wohlgesinnten]] (2009)                  |   1383 |
+| [[http://d-nb.info/991899431][Die Wohlgesinnten]] (2008)                  |   1383 |
+| [[http://d-nb.info/990800415][Die Wohlgesinnten]] (2008)                  |   1383 |
+| [[http://d-nb.info/573955948][Die Ahnen]] (1953)                          |   1380 |
+| [[http://d-nb.info/451366891][Die Ahnen]] (1959)                          |   1380 |
+| [[http://d-nb.info/451366883][Die Ahnen]] (1953)                          |   1380 |
+| [[http://d-nb.info/1052444474][Die Wundärztin]] (2014)                     |   1373 |
+| [[http://d-nb.info/102058663X][Limit]] (2011)                              |   1370 |
+| [[http://d-nb.info/1008595160][Limit]] (2010)                              |   1370 |
+| [[http://d-nb.info/988488205][Der Pate von Bombay]] (2009)                |   1359 |
+| [[http://d-nb.info/1078328471][Outlander - das flammende Kreuz]] (2016)    |   1358 |
+| [[http://d-nb.info/1021128260][Eisenhorn]] (2012)                          |   1349 |
+| [[http://d-nb.info/998067105][Liebesleben]] (2010)                        |   1348 |
+| [[http://d-nb.info/943928648][Die Elenden]] (1995)                        |   1347 |
+| [[http://d-nb.info/930553926][Die Elenden]] (1993)                        |   1347 |
+| [[http://d-nb.info/901549118][Die Elenden]] (1991)                        |   1347 |
+| [[http://d-nb.info/860763153][Die Elenden]] (1986)                        |   1347 |
+| [[http://d-nb.info/850183324][Die Elenden]] (1985)                        |   1347 |
+| [[http://d-nb.info/457039094][Die Elenden]] (1968)                        |   1347 |
+| [[http://d-nb.info/990040372][Die Dämonen]] (2008)                        |   1344 |
 
 *** Kafkatest
 
@@ -638,27 +821,36 @@ replot
 | [[http://d-nb.info/973180161][Amerika]] (2003)                        |          375 |
 | [[http://d-nb.info/964719541][Amerika]] (2000)                        |          375 |
 
-** DONE top publishers
-*** DONE by item count
+** TODO publishers
 
+We additionally consider only books with no more than 5000 pages to
+avoid skews in the page counts due to errors.
+
+Extract data:
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
 		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $4 ~ /[rR]oman/) print $3}' \
-      | sort -S1G | uniq -c | sort -S1G -nr | head -n20
+      | awk -F'\t' '{if ($1 >= 1913 && $4 ~ /[rR]oman/ && $2 <= 5000) print $3"\t"$2}' \
+      | sort -S1G > publisher.tsv
+#+END_SRC
+
+*** DONE by item count
+
+#+BEGIN_SRC sh
+  datamash -s -g1 count 1 < publisher.tsv | sort -t$'\t' -S1G -nrk2 | head -n20
 #+END_SRC
 
 | publisher                          | items |
 |------------------------------------+-------|
 | Heyne                              | 17249 |
 | Rowohlt                            |  9356 |
-| Goldmann                           |  8849 |
+| Goldmann                           |  8848 |
 | Ullstein                           |  4986 |
 | Dt. Taschenbuch-Verl.              |  3864 |
 | Fischer-Taschenbuch-Verl.          |  3612 |
 | Suhrkamp                           |  3513 |
 | RM-Buch-und-Medien-Vertrieb [u.a.] |  3461 |
-| Piper                              |  3364 |
+| Piper                              |  3363 |
 | Diogenes                           |  2303 |
 | Dt. Buch-Gemeinschaft              |  1954 |
 | Weltbild                           |  1912 |
@@ -671,110 +863,70 @@ replot
 | Zsolnay                            |  1238 |
 | Lübbe                              |  1205 |
 
-After normalisation (see below)
+After normalisation: see below
 
 *** DONE by page count
 
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $4 ~ /[rR]oman/) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
-      | sort -S1G -nr | head -n20
+  LC_ALL=C datamash -s -g1 count 1 sum 2 mean 2 < publisher.tsv | sort -t$'\t' -S1G -nrk3 | head -n20
 #+END_SRC
 
-| publisher                          | page sum | items | mean pages |
-|------------------------------------+----------+-------+------------|
-| Heyne                              |  6066956 | 17249 |        351 |
-| Goldmann                           |  3246463 |  8849 |        366 |
-| Rowohlt                            |  2604056 |  9356 |        278 |
-| RM-Buch-und-Medien-Vertrieb [u.a.] |  1565075 |  3461 |        452 |
-| Ullstein                           |  1536849 |  4986 |        308 |
-| Dt. Taschenbuch-Verl.              |  1281876 |  3864 |        331 |
-| Fischer-Taschenbuch-Verl.          |  1280201 |  3612 |        354 |
-| Piper                              |  1265113 |  3364 |        376 |
-| Suhrkamp                           |  1071240 |  3513 |        304 |
-| Weltbild                           |   925697 |  1912 |        484 |
-| Blanvalet                          |   774248 |  1630 |        474 |
-| Dt. Buch-Gemeinschaft              |   746935 |  1954 |        382 |
-| Droemer Knaur                      |   716908 |  1719 |        417 |
-| Diogenes                           |   715190 |  2303 |        310 |
-| Büchergilde Gutenberg              |   679455 |  1810 |        375 |
-| Rowohlt-Taschenbuch-Verl.          |   610853 |  1678 |        364 |
-| Aufbau-Verl.                       |   525199 |  1205 |        435 |
-| Fischer-Taschenbuch-Verlag         |   519204 |  1853 |        280 |
-| Dt. Bücherbund                     |   514752 |  1139 |        451 |
-| Lübbe                              |   505148 |  1205 |        419 |
+| publisher                          | items | page sum | mean pages |
+|------------------------------------+-------+----------+------------|
+| Heyne                              | 17249 |  6066956 |        352 |
+| Goldmann                           |  8848 |  2898130 |        328 |
+| Rowohlt                            |  9356 |  2604056 |        278 |
+| RM-Buch-und-Medien-Vertrieb [u.a.] |  3461 |  1565075 |        452 |
+| Ullstein                           |  4986 |  1536849 |        308 |
+| Dt. Taschenbuch-Verl.              |  3864 |  1281876 |        332 |
+| Fischer-Taschenbuch-Verl.          |  3612 |  1280201 |        354 |
+| Piper                              |  3363 |  1264808 |        376 |
+| Suhrkamp                           |  3513 |  1071240 |        305 |
+| Weltbild                           |  1912 |   925697 |        484 |
+| Blanvalet                          |  1630 |   774248 |        475 |
+| Dt. Buch-Gemeinschaft              |  1954 |   746935 |        382 |
+| Droemer Knaur                      |  1719 |   716908 |        417 |
+| Diogenes                           |  2303 |   715190 |        311 |
+| Büchergilde Gutenberg              |  1810 |   679455 |        375 |
+| Rowohlt-Taschenbuch-Verl.          |  1678 |   610853 |        364 |
+| Aufbau-Verl.                       |  1205 |   525199 |        436 |
+| Fischer-Taschenbuch-Verlag         |  1853 |   519204 |        280 |
+| Dt. Bücherbund                     |  1139 |   514752 |        452 |
+| Lübbe                              |  1205 |   505148 |        419 |
 
-Only items with no more than 5000 pages:
-#+BEGIN_SRC sh
-  ./json2json.py -f -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $2 <= 5000 && $4 ~ /[rR]oman/) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
-      | sort -S1G -nr | head -n20
-#+END_SRC
-
-| publisher                          | page sum | items | mean pages |
-|------------------------------------+----------+-------+------------|
-| Heyne                              |  5963493 | 16969 |        351 |
-| Goldmann                           |  2834238 |  8638 |        328 |
-| Rowohlt                            |  2561798 |  9195 |        278 |
-| RM-Buch-und-Medien-Vertrieb [u.a.] |  1517759 |  3355 |        452 |
-| Ullstein                           |  1499865 |  4872 |        307 |
-| Fischer-Taschenbuch-Verl.          |  1258903 |  3535 |        356 |
-| Dt. Taschenbuch-Verl.              |  1247960 |  3743 |        333 |
-| Piper                              |  1224204 |  3237 |        378 |
-| Suhrkamp                           |  1058664 |  3467 |        305 |
-| Weltbild                           |   896222 |  1857 |        482 |
-| Dt. Buch-Gemeinschaft              |   735110 |  1920 |        382 |
-| Diogenes                           |   711362 |  2290 |        310 |
-| Blanvalet                          |   704751 |  1483 |        475 |
-| Droemer Knaur                      |   689177 |  1653 |        416 |
-| Büchergilde Gutenberg              |   677264 |  1800 |        376 |
-| Rowohlt-Taschenbuch-Verl.          |   596779 |  1640 |        363 |
-| Aufbau-Verl.                       |   517749 |  1186 |        436 |
-| Fischer-Taschenbuch-Verlag         |   516420 |  1844 |        280 |
-| Dt. Bücherbund                     |   507782 |  1123 |        452 |
-| Lübbe                              |   486821 |  1159 |        420 |
-
-*** by mean page count
+*** DONE by mean page count
 
 #+BEGIN_SRC sh
-  ./json2json.py -f -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
-		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $4 ~ /[rR]oman/) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
-      | sort -S1G -nrk3 | head -n20
+  LC_ALL=C datamash -s -g1 count 1 sum 2 mean 2 < publisher.tsv | sort -t$'\t' -S1G -nrk4 | head -n20
 #+END_SRC
 
-| publisher                      | page sum | items | mean pages |
-|--------------------------------+----------+-------+------------|
-| Ander                          |     3202 |     1 |       3202 |
-| K. M. John                     |     1258 |     1 |       1258 |
-| Dörfler                        |     1232 |     1 |       1232 |
-| Wissenschaftl. Buchges.        |     8052 |     7 |       1150 |
-| Uitg. NAS                      |     1075 |     1 |       1075 |
-| Parkland                       |     3214 |     3 |       1071 |
-| Blanvalet-Verlag               |     1056 |     1 |       1056 |
-| Nord                           |     1032 |     1 |       1032 |
-| Wissenschaftl. Buchges         |     2030 |     2 |       1015 |
-| Schweizer Druck- u. Verl.-haus |     1003 |     1 |       1003 |
-| Jokers-Ed.                     |      989 |     1 |        989 |
-| Zentralverl. d. NSDAP Eher     |      980 |     1 |        980 |
-| Uitg.De Arbeiderspers          |      972 |     1 |        972 |
-| Implex-Verl.                   |      971 |     1 |        971 |
-| Libr. General Française        |      955 |     1 |        955 |
-| Lesering. Das Bertelsmann Buch |      924 |     1 |        924 |
-| Parkland-Verlag                |     7397 |     8 |        924 |
-| Roder                          |      904 |     1 |        904 |
-| Leon                           |      904 |     1 |        904 |
-| List-Taschenbuchverl.          |      896 |     1 |        896 |
+| publisher                      | items | page sum | mean pages |
+|--------------------------------+-------+----------+------------|
+| Ander                          |     1 |     3202 |       3202 |
+| K. M. John                     |     1 |     1258 |       1258 |
+| Dörfler                        |     1 |     1232 |       1232 |
+| Wissenschaftl. Buchges.        |     7 |     8052 |       1150 |
+| Uitg. NAS                      |     1 |     1075 |       1075 |
+| Parkland                       |     3 |     3214 |       1071 |
+| Blanvalet-Verlag               |     1 |     1056 |       1056 |
+| Nord                           |     1 |     1032 |       1032 |
+| Wissenschaftl. Buchges         |     2 |     2030 |       1015 |
+| Schweizer Druck- u. Verl.-haus |     1 |     1003 |       1003 |
+| Jokers-Ed.                     |     1 |      989 |        989 |
+| Zentralverl. d. NSDAP Eher     |     1 |      980 |        980 |
+| Uitg.De Arbeiderspers          |     1 |      972 |        972 |
+| Implex-Verl.                   |     1 |      971 |        971 |
+| Libr. General Française        |     1 |      955 |        955 |
+| Parkland-Verlag                |     8 |     7397 |        925 |
+| Lesering. Das Bertelsmann Buch |     1 |      924 |        924 |
+| Roder                          |     1 |      904 |        904 |
+| Leon                           |     1 |      904 |        904 |
+| List-Taschenbuchverl.          |     1 |      896 |        896 |
 
 How is the number of items per publisher related to the mean number of
 pages per publisher?
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
-                 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $4 ~ /[rR]oman/) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", count[p], sum[p], int(sum[p]/count[p]), p)}' \
-            > publisher_page_stats.tsv
+  LC_ALL=C datamash -s -g1 count 1 sum 2 mean 2 < publisher.tsv > publisher_page_stats.tsv
 #+END_SRC
 
 #+BEGIN_SRC gnuplot :results silent
@@ -789,7 +941,7 @@ set logscale
 set xlabel 'number of items
 set ylabel 'mean number of pages per item'
 
-plot 'publisher_page_stats.tsv' using 1:3 with points pt 7 title ''
+plot 'publisher_page_stats.tsv' using 2:4 with points pt 7 title ''
 
 set term svg enhanced size 800,600
 set out 'publisher_pages.svg'
@@ -798,13 +950,9 @@ replot
 
 [[publisher_pages.png]]
 
-*** top normalised publishers
+*** TODO top normalised publishers
 
-These rankings only comprise the normalised publishers!
-
-TODO: The rankings by page count and mean page count are currently
-without the 5000 pages limit ... but only Goldmann is affected due to
-the error with [[http://d-nb.info/920918131][Tim]].
+These rankings only comprise the normalised publishers.
 
 Cleaning up the publishers now by deleting all rows which should not
 be regarded the same publisher and then creating a big intermediate
@@ -823,30 +971,30 @@ file:
 
 | publisher                   | items |
 |-----------------------------+-------|
-| Heyne                       | 17138 |
-| Rowohlt                     | 11140 |
-| Goldmann                    |  8675 |
-| Ullstein                    |  5470 |
-| Suhrkamp                    |  3507 |
-| Piper                       |  3257 |
-| Aufbau                      |  2885 |
-| Kiepenheuer & Witsch        |  1261 |
-| Reclam                      |  1072 |
-| Insel                       |  1028 |
-| Hoffmann und Campe          |   967 |
-| Hanser                      |   831 |
-| Luchterhand Literaturverlag |   764 |
-| Manesse                     |   381 |
-| Eichborn                    |   341 |
-| Nagel & Kimche              |   223 |
-| Berlin Verlag               |   223 |
-| Ammann                      |   146 |
-| Schöffling & Co.            |   143 |
-| Wallstein                   |    57 |
+| Heyne                       | 17430 |
+| Rowohlt                     | 11354 |
+| Goldmann                    |  8887 |
+| Ullstein                    |  5597 |
+| Suhrkamp                    |  3554 |
+| Piper                       |  3394 |
+| Aufbau                      |  2957 |
+| Kiepenheuer & Witsch        |  1285 |
+| Reclam                      |  1117 |
+| Insel                       |  1063 |
+| Hoffmann und Campe          |   988 |
+| Hanser                      |   854 |
+| Luchterhand Literaturverlag |   784 |
+| Manesse                     |   390 |
+| Eichborn                    |   360 |
+| Berlin Verlag               |   238 |
+| Nagel & Kimche              |   228 |
+| Ammann                      |   150 |
+| Schöffling & Co.            |   147 |
+| Wallstein                   |    60 |
 | Verbrecher Verlag           |    37 |
-| Blumenbar                   |    29 |
-| Rogner & Bernhard           |    21 |
-| Wiesenburg                  |    17 |
+| Blumenbar                   |    30 |
+| Rogner & Bernhard           |    23 |
+| Wiesenburg                  |    20 |
 | Voland & Quist              |     9 |
 | Urs Engeler Editor          |     4 |
 
@@ -859,30 +1007,30 @@ file:
 
 | publisher                   | page sum | items | mean pages |
 |-----------------------------+----------+-------+------------|
-| Heyne                       |  6041445 | 17138 |        352 |
-| Rowohlt                     |  3258380 | 11140 |        292 |
-| Goldmann                    |  3195060 |  8675 |        368 |
-| Ullstein                    |  1667197 |  5470 |        304 |
-| Piper                       |  1231254 |  3257 |        378 |
-| Aufbau                      |  1178750 |  2885 |        408 |
-| Suhrkamp                    |  1073405 |  3507 |        306 |
-| Kiepenheuer & Witsch        |   415369 |  1261 |        329 |
-| Insel                       |   373911 |  1028 |        363 |
-| Hoffmann und Campe          |   369031 |   967 |        381 |
-| Hanser                      |   291366 |   831 |        350 |
-| Reclam                      |   278548 |  1072 |        259 |
-| Luchterhand Literaturverlag |   254858 |   764 |        333 |
-| Manesse                     |   202995 |   381 |        532 |
-| Eichborn                    |   111541 |   341 |        327 |
-| Berlin Verlag               |    67871 |   223 |        304 |
-| Nagel & Kimche              |    51367 |   223 |        230 |
-| Schöffling & Co.            |    46841 |   143 |        327 |
-| Ammann                      |    44341 |   146 |        303 |
-| Wallstein                   |    13587 |    57 |        238 |
+| Heyne                       |  6148284 | 17430 |        352 |
+| Rowohlt                     |  3319270 | 11354 |        292 |
+| Goldmann                    |  2911633 |  8887 |        327 |
+| Ullstein                    |  1708227 |  5597 |        305 |
+| Piper                       |  1274961 |  3394 |        375 |
+| Aufbau                      |  1203891 |  2957 |        407 |
+| Suhrkamp                    |  1086269 |  3554 |        305 |
+| Kiepenheuer & Witsch        |   422237 |  1285 |        328 |
+| Insel                       |   382329 |  1063 |        359 |
+| Hoffmann und Campe          |   374922 |   988 |        379 |
+| Hanser                      |   298526 |   854 |        349 |
+| Reclam                      |   283163 |  1117 |        253 |
+| Luchterhand Literaturverlag |   253884 |   784 |        323 |
+| Manesse                     |   205907 |   390 |        527 |
+| Eichborn                    |   117060 |   360 |        325 |
+| Berlin Verlag               |    72008 |   238 |        302 |
+| Nagel & Kimche              |    53012 |   228 |        232 |
+| Schöffling & Co.            |    48106 |   147 |        327 |
+| Ammann                      |    45497 |   150 |        303 |
+| Wallstein                   |    14337 |    60 |        238 |
 | Verbrecher Verlag           |    12290 |    37 |        332 |
-| Rogner & Bernhard           |     8878 |    21 |        422 |
-| Blumenbar                   |     7166 |    29 |        247 |
-| Wiesenburg                  |     4251 |    17 |        250 |
+| Rogner & Bernhard           |     9376 |    23 |        407 |
+| Blumenbar                   |     7595 |    30 |        253 |
+| Wiesenburg                  |     4799 |    20 |        239 |
 | Voland & Quist              |     2349 |     9 |        261 |
 | Urs Engeler Editor          |     1197 |     4 |        299 |
 
@@ -895,32 +1043,32 @@ file:
 
 | publisher                   | page sum | items | mean pages |
 |-----------------------------+----------+-------+------------|
-| Manesse                     |   202995 |   381 |        532 |
-| Rogner & Bernhard           |     8878 |    21 |        422 |
-| Aufbau                      |  1178750 |  2885 |        408 |
-| Hoffmann und Campe          |   369031 |   967 |        381 |
-| Piper                       |  1231254 |  3257 |        378 |
-| Goldmann                    |  3195060 |  8675 |        368 |
-| Insel                       |   373911 |  1028 |        363 |
-| Heyne                       |  6041445 | 17138 |        352 |
-| Hanser                      |   291366 |   831 |        350 |
-| Luchterhand Literaturverlag |   254858 |   764 |        333 |
+| Manesse                     |   205907 |   390 |        527 |
+| Rogner & Bernhard           |     9376 |    23 |        407 |
+| Aufbau                      |  1203891 |  2957 |        407 |
+| Hoffmann und Campe          |   374922 |   988 |        379 |
+| Piper                       |  1274961 |  3394 |        375 |
+| Insel                       |   382329 |  1063 |        359 |
+| Heyne                       |  6148284 | 17430 |        352 |
+| Hanser                      |   298526 |   854 |        349 |
 | Verbrecher Verlag           |    12290 |    37 |        332 |
-| Kiepenheuer & Witsch        |   415369 |  1261 |        329 |
-| Schöffling & Co.            |    46841 |   143 |        327 |
-| Eichborn                    |   111541 |   341 |        327 |
-| Suhrkamp                    |  1073405 |  3507 |        306 |
-| Berlin Verlag               |    67871 |   223 |        304 |
-| Ullstein                    |  1667197 |  5470 |        304 |
-| Ammann                      |    44341 |   146 |        303 |
+| Kiepenheuer & Witsch        |   422237 |  1285 |        328 |
+| Schöffling & Co.            |    48106 |   147 |        327 |
+| Goldmann                    |  2911633 |  8887 |        327 |
+| Eichborn                    |   117060 |   360 |        325 |
+| Luchterhand Literaturverlag |   253884 |   784 |        323 |
+| Ullstein                    |  1708227 |  5597 |        305 |
+| Suhrkamp                    |  1086269 |  3554 |        305 |
+| Ammann                      |    45497 |   150 |        303 |
+| Berlin Verlag               |    72008 |   238 |        302 |
 | Urs Engeler Editor          |     1197 |     4 |        299 |
-| Rowohlt                     |  3258380 | 11140 |        292 |
+| Rowohlt                     |  3319270 | 11354 |        292 |
 | Voland & Quist              |     2349 |     9 |        261 |
-| Reclam                      |   278548 |  1072 |        259 |
-| Wiesenburg                  |     4251 |    17 |        250 |
-| Blumenbar                   |     7166 |    29 |        247 |
-| Wallstein                   |    13587 |    57 |        238 |
-| Nagel & Kimche              |    51367 |   223 |        230 |
+| Blumenbar                   |     7595 |    30 |        253 |
+| Reclam                      |   283163 |  1117 |        253 |
+| Wiesenburg                  |     4799 |    20 |        239 |
+| Wallstein                   |    14337 |    60 |        238 |
+| Nagel & Kimche              |    53012 |   228 |        232 |
 
 Average page count per year per publisher:
 #+BEGIN_SRC sh :results silent
@@ -940,16 +1088,16 @@ set ylabel 'median number of pages'
 set key top left horizontal maxcols 4
 
 plot \
-  '< grep Rowohlt  publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Rowohlt',\
   '< grep Heyne    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Heyne',\
-  '< grep Reclam   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Reclam',\
-  '< grep Suhrkamp publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Suhrkamp',\
+  '< grep Rowohlt  publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Rowohlt',\
   '< grep Goldmann publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Goldmann',\
   '< grep Ullstein publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Ullstein',\
-  '< grep Insel    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Insel',\
+  '< grep Suhrkamp publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Suhrkamp',\
   '< grep Piper    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Piper',\
   '< grep Aufbau   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Aufbau',\
-  '< grep Hanser   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Hanser'
+  '< grep Kiepenheuer   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 8 lw 2 title 'Kiepenheuer & Witsch',\
+  '< grep Reclam   publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Reclam',\
+  '< grep Insel    publisher_pages_decades.tsv' using ($1*10):4 with linespoints pt 7 lw 2 title 'Insel'
 
 set term svg enhanced size 800,600
 set out 'publisher_pages_decades.svg'
@@ -958,7 +1106,7 @@ replot
 
 [[publisher_pages_decades.png]]
 
-*** DONE ranking per publisher
+*** TODO ranking per publisher
 
 Iterate over publishers:
 #+BEGIN_SRC sh :results raw
@@ -1626,58 +1774,3 @@ replot
 #+END_SRC
 
 *** pages
-Let's plot the median number of pages per year and per decade:
-#+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.sitelinks,P60493" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($4 ~ /de/ && $5 ~ /[rR]oman/) print $1"\t"$2}' \
-      | sort -S1G -nr \
-              > issued_pages.tsv
-  cat issued_pages.tsv | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
-      | sed "s/,/./g" \
-            > issued_pages_stats.tsv
-  awk -F'\t' '{print int($1/10)"\t"$2}' issued_pages.tsv \
-      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
-      | sed "s/,/./g" \
-            > issued_pages_decade_stats.tsv
-#+END_SRC
-
-#+BEGIN_SRC gnuplot :results silent
-reset
-set encoding utf8
-set term pngcairo enhanced size 800,600
-set out 'issued_pages_decade.png'
-
-set grid
-set datafile separator "\t"
-set xrange [1500:2020]
-set xlabel 'year'
-set ylabel 'number of pages per decade'
-
-plot \
-  'issued_pages_decade_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
-  'issued_pages_decade_stats.tsv' using ($1*10):2 with linespoints pt 7 lw 2 lt 3 lc rgb "green" title 'median'
-
-set term svg enhanced size 800,600
-set out 'issued_pages_decade.svg'
-replot
-
-
-# starting in 1913
-set xrange [1913:2020]
-set xtics 10,10
-
-set term pngcairo enhanced size 800,600
-set out 'issued_pages_1913.png'
-
-plot \
-  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
-  'issued_pages_stats.tsv' using 1:2 with lines lw 2 lt 3 lc rgb "green" title 'median'
-
-set term svg enhanced size 800,600
-set out 'issued_pages_1913.svg'
-replot
-#+END_SRC
-
-[[issued_pages_decade.png]]
-
-[[issued_pages_1913.png]]

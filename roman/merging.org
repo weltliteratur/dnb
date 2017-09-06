@@ -14,7 +14,7 @@
 * DONE analysis
 data filters:
 1. ~issued_norm~ >= 1913
-2. author has [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and a sitelink to Wikipedia
+2. author has [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and a [[https://www.wikidata.org/wiki/Help:Sitelinks][sitelink]] to Wikipedia
 3. work has a page number (extent)
 4. DNB property [[http://www.rdaregistry.info/Elements/u/#P60526][P60493]] contains "[rR]oman"
 
@@ -22,7 +22,7 @@ for publishers:
 5. limit maximal number of pages per work to exclude outliers (e.g., to 5000)
 
 ** novels
-All values for the P60493 property for items that fulfill our conditions:
+All values of the P60493 property for items that fulfill our conditions:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f \
 		 -p "issued_norm,pages_norm,P60493,creator_wd.*.sitelinks" \
@@ -164,8 +164,8 @@ set term pngcairo enhanced size 800,600
 set out 'items_per_year.png'
 
 plot \
-  '< datamash -g1 count 1 < items_per_year-page.tsv' using 1:2 with lines axes x1y2 title 'Buecher mit Seitenzahlangabe (rechte y-Achse)',\
-  '< datamash -g1 count 1 < items_per_year-page_author.tsv' using 1:2 with lines title 'Buecher mit Seitenzahlangabe und Autor*in in Wikipedia',\
+  '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:2 with lines axes x1y2 title 'Buecher mit Seitenzahlangabe (rechte y-Achse)',\
+  '< datamash -g1 count 1 < items_per_year-page_author.tsv'       using 1:2 with lines title 'Buecher mit Seitenzahlangabe und Autor*in in Wikipedia',\
   '< datamash -g1 count 1 < items_per_year-novel.tsv'             using 1:2 with lines title 'Romane',\
   '< datamash -g1 count 1 < items_per_year-novel_page.tsv'        using 1:2 with lines title 'Romane mit Seitenzahlangabe',\
   '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:2 with lines title 'Romane mit Seitenzahlangabe und Autor*in in Wikipedia'
@@ -173,7 +173,33 @@ plot \
 set term svg enhanced size 800,600
 set out 'items_per_year.svg'
 replot
+
+
+# relative frequency
+set ylabel 'Anteil Buecher'
+set format y "%2.0f%%"
+
+set term pngcairo enhanced size 800,600
+set out 'items_per_year_rel.png'
+
+plot \
+  '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:(100*($2/8346148)) with lines title 'Buecher mit Seitenzahlangabe',\
+  '< datamash -g1 count 1 < items_per_year-page_author.tsv'       using 1:(100*($2/1349949)) with lines title 'Buecher mit Seitenzahlangabe und Autor*in in Wikipedia',\
+  '< datamash -g1 count 1 < items_per_year-novel.tsv'             using 1:(100*($2/353498))  with lines title 'Romane',\
+  '< datamash -g1 count 1 < items_per_year-novel_page.tsv'        using 1:(100*($2/316518))  with lines title 'Romane mit Seitenzahlangabe',\
+  '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:(100*($2/180219))  with lines title 'Romane mit Seitenzahlangabe und Autor*in in Wikipedia'
+
+set term svg enhanced size 800,600
+set out 'items_per_year_rel.svg'
+replot
+
 #+END_SRC
+
+Absolute numbers:
+[[items_per_year.png]]
+
+Relative numbers:
+[[items_per_year_rel.png]]
 
 ** DONE pages
 

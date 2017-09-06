@@ -306,6 +306,16 @@ set out 'pages_000-200.svg'
 replot
 #+END_SRC
 
+**** page distribution
+[[pages.png]]
+
+**** page ranges
+[[pages_000-200.png]]
+
+[[pages_200-400.png]]
+
+[[pages_400-600.png]]
+
 *** temporal counts
 Let's plot the median number of pages per year:
 #+BEGIN_SRC sh :results silent
@@ -341,17 +351,6 @@ replot
 #+END_SRC
 
 [[issued_pages_1913.png]]
-
-
-**** page distribution
-[[pages.png]]
-
-**** page ranges
-[[pages_000-200.png]]
-
-[[pages_200-400.png]]
-
-[[pages_400-600.png]]
 
 ** DONE [[../1001-books]]
 

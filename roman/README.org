@@ -21,7 +21,7 @@ data filters:
 for publishers:
 5. limit maximal number of pages per work to exclude outliers (e.g., to 5000)
 
-** novels
+** DONE novels
 All values of the P60493 property for items that fulfill our conditions:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f \
@@ -146,7 +146,21 @@ Condition for all items:
 	    > items_per_year-novel_page_author.tsv
 #+END_SRC
 
-*** comparison
+*** counts
+
+#+BEGIN_SRC sh
+  wc -l items_per_year*.tsv
+#+END_SRC
+
+| file                                 | items   |
+|--------------------------------------+---------|
+| items_per_year-page.tsv              | 8346148 |
+| items_per_year-page_author.tsv       | 1349949 |
+| items_per_year-novel.tsv             |  353498 |
+| items_per_year-novel_page.tsv        |  316518 |
+| items_per_year-novel_page_author.tsv |  180219 |
+
+*** temporal counts
 
 #+BEGIN_SRC gnuplot :results silent
 reset
@@ -213,9 +227,6 @@ Sum of the pages:
   echo "items\tpages"
   awk -F'\t' '{SUM+=$1*$2; CTR+=$2} END {print CTR"\t"SUM}' pages_freq.tsv
 #+END_SRC
-
-|  items |    pages |
-|--------+----------|
 
 | filter                                                        |   items |      pages |
 |---------------------------------------------------------------+---------+------------|

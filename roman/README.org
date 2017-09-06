@@ -97,6 +97,15 @@ Print the top matches:
 |-------------------------------+------------|
 | *Gesamtsumme*                 |     180219 |
 
+*** Reclamtest
+
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f \
+		 -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1913 && $3 == "Reclam") print $4}' | sort | uniq -c | sort -nr > reclam.tsv
+#+END_SRC
+
 ** DONE items
 Condition for all items:
 - ~issued_norm~ >= 1913
@@ -1428,6 +1437,36 @@ Iterate over publishers:
 |  1066 | [[https://www.wikidata.org/wiki/Q189665][Ivan Goncharov]]: [[http://d-nb.info/451615573][Eine alltägliche Geschichte]] (1960)          |
 |  1062 | [[https://www.wikidata.org/wiki/Q131333][George Eliot]]: [[http://d-nb.info/940063506][Daniel Deronda]] (1994)                         |
 |   990 | [[https://www.wikidata.org/wiki/Q366040][Stefan Żeromski]]: [[http://d-nb.info/880058579][In Schutt und Asche]] (1988)                 |
+|   960 | [[https://www.wikidata.org/wiki/Q127332][Charlotte Brontë]]: [[http://d-nb.info/910666148][Shirley]] (1991)                            |
+|   956 | [[https://www.wikidata.org/wiki/Q127332][Charlotte Brontë]]: [[http://d-nb.info/890260427][Shirley]] (1989)                            |
+|   953 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/947314563][Schuld und Sühne]] (1996)                 |
+|   953 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/930831292][Schuld und Sühne]] (1993)                 |
+|   953 | [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]: [[http://d-nb.info/850791359][Schuld und Sühne]] (1985)                 |
+|   919 | [[https://www.wikidata.org/wiki/Q4985][Herman Melville]]: [[http://d-nb.info/931619726][Moby Dick]] (1994)                           |
+|   918 | [[https://www.wikidata.org/wiki/Q4985][Herman Melville]]: [[http://d-nb.info/969747187][Moby Dick]] (2004)                           |
+|   918 | [[https://www.wikidata.org/wiki/Q4985][Herman Melville]]: [[http://d-nb.info/956677185][Moby Dick]] (1999)                           |
+|   918 | [[https://www.wikidata.org/wiki/Q4985][Herman Melville]]: [[http://d-nb.info/941493148][Moby Dick]] (1994)                           |
+|   904 | [[https://www.wikidata.org/wiki/Q123469][Sinclair Lewis]]: [[http://d-nb.info/946293600][Main street]] (1996)                          |
+|   898 | [[https://www.wikidata.org/wiki/Q82006][Benjamin Disraeli]]: [[http://d-nb.info/971247927][Tancred oder der neue Kreuzzug]] (2004)    |
+|   893 | [[https://www.wikidata.org/wiki/Q318399][Anthony Trollope]]: [[http://d-nb.info/984786597][Die Claverings]] (2007)                     |
+|   893 | [[https://www.wikidata.org/wiki/Q174152][Munshi Premchand]]: [[http://d-nb.info/979421802][Godan oder Das Opfer]] (2006)               |
+|   892 | [[https://www.wikidata.org/wiki/Q318399][Anthony Trollope]]: [[http://d-nb.info/972791582][Die Türme von Barchester]] (2005)           |
+|   885 | [[https://www.wikidata.org/wiki/Q34190][Henry Fielding]]: [[http://d-nb.info/943056497][Tom Jones]] (1995)                            |
+|   879 | [[https://www.wikidata.org/wiki/Q318399][Anthony Trollope]]: [[http://d-nb.info/910026211][Der Premierminister]] (1991)                |
+|   876 | [[https://www.wikidata.org/wiki/Q504][Émile Zola]]: [[http://d-nb.info/965070026][Germinal]] (2002)                                 |
+|   864 | [[https://www.wikidata.org/wiki/Q229226][Elizabeth Gaskell]]: [[http://d-nb.info/950538485][Frauen und Töchter]] (1997)                |
+|   860 | [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]: [[http://d-nb.info/455088543][Auferstehung]] (1949)                            |
+|   857 | [[https://www.wikidata.org/wiki/Q34970][D. H. Lawrence]]: [[http://d-nb.info/964059487][Liebende Frauen]] (2002)                      |
+|   846 | [[https://www.wikidata.org/wiki/Q127332][Charlotte Brontë]]: [[http://d-nb.info/910666083][Villette]] (1991)                           |
+|   846 | [[https://www.wikidata.org/wiki/Q127332][Charlotte Brontë]]: [[http://d-nb.info/860160688][Villette]] (1986)                           |
+|   845 | [[https://www.wikidata.org/wiki/Q237833][George Santayana]]: [[http://d-nb.info/900227095][Der letzte Puritaner]] (1990)               |
+|   845 | [[https://www.wikidata.org/wiki/Q127332][Charlotte Brontë]]: [[http://d-nb.info/840879911][Villette]] (1984)                           |
+|   831 | [[https://www.wikidata.org/wiki/Q2207346][Dmitry Mamin-Sibiryak]]: [[http://d-nb.info/453195008][Die Priwalowschen Millionen]] (1953)   |
+|   818 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/931809339][Grosse Erwartungen]] (1993)                  |
+|   818 | [[https://www.wikidata.org/wiki/Q5686][Charles Dickens]]: [[http://d-nb.info/450925293][Grosse Erwartungen]] (1947)                  |
+|   795 | [[https://www.wikidata.org/wiki/Q216478][Italo Svevo]]: [[http://d-nb.info/1011329581][Zenos Gewissen]] (2011)                          |
+|   792 | [[https://www.wikidata.org/wiki/Q154010][Christoph Martin Wieland]]: [[http://d-nb.info/961747528][Geschichte des Agathon]] (2001)     |
+|   784 | [[https://www.wikidata.org/wiki/Q1064][Alessandro Manzoni]]: [[http://d-nb.info/574992391][Die Verlobten]] (1958)                    |
 
 **** Merve
 

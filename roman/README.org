@@ -242,7 +242,12 @@ pages. Those items fulfill the following conditions:
 For this set we did not require that any other values are available
 (e.g., publisher) but some analyses might further restrict that set.
 
-*** temporal counts
+*** frequency
+
+Compute frequencies:
+#+BEGIN_SRC sh :results silent
+  sort -nk2 items_per_year-novel_page_author.tsv | datamash -g2 count 2 > pages_freq.tsv
+#+END_SRC
 
 Plot distribution:
 #+BEGIN_SRC gnuplot :results silent
@@ -301,20 +306,11 @@ set out 'pages_000-200.svg'
 replot
 #+END_SRC
 
-*** TODO median/quartiles
-Let's plot the median number of pages per year and per decade:
+*** temporal counts
+Let's plot the median number of pages per year:
 #+BEGIN_SRC sh :results silent
-  ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.sitelinks,P60493" DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($4 ~ /de/ && $5 ~ /[rR]oman/) print $1"\t"$2}' \
-      | sort -S1G -nr \
-              > issued_pages.tsv
-  cat issued_pages.tsv | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
-      | sed "s/,/./g" \
-            > issued_pages_stats.tsv
-  awk -F'\t' '{print int($1/10)"\t"$2}' issued_pages.tsv \
-      | datamash -g 1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 \
-      | sed "s/,/./g" \
-            > issued_pages_decade_stats.tsv
+  export LC_ALL=C
+  datamash -g1 median 2 mean 2 min 2 max 2 count 2 q1 2 q3 2 < items_per_year-novel_page_author.tsv > issued_pages_stats.tsv
 #+END_SRC
 
 #+BEGIN_SRC gnuplot :results silent
@@ -325,20 +321,8 @@ set out 'issued_pages_decade.png'
 
 set grid
 set datafile separator "\t"
-set xrange [1500:2020]
 set xlabel 'year'
 set ylabel 'number of pages per decade'
-
-plot \
-  'issued_pages_decade_stats.tsv' using ($1*10):7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
-  'issued_pages_decade_stats.tsv' using ($1*10):2 with linespoints pt 7 lw 2 lt 3 lc rgb "green" title 'median'
-
-set term svg enhanced size 800,600
-set out 'issued_pages_decade.svg'
-replot
-
-
-# starting in 1913
 set xrange [1913:2020]
 set xtics 10,10
 
@@ -346,15 +330,15 @@ set term pngcairo enhanced size 800,600
 set out 'issued_pages_1913.png'
 
 plot \
-  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 3rd quartile',\
+  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st and 2nd quartile',\
   'issued_pages_stats.tsv' using 1:2 with lines lw 2 lt 3 lc rgb "green" title 'median'
+#,\
+#  'issued_pages_stats.tsv' using 1:3 with lines lw 2 lt 3 lc rgb "blue" title 'mean'
 
 set term svg enhanced size 800,600
 set out 'issued_pages_1913.svg'
 replot
 #+END_SRC
-
-[[issued_pages_decade.png]]
 
 [[issued_pages_1913.png]]
 
@@ -821,7 +805,7 @@ replot
 | [[http://d-nb.info/973180161][Amerika]] (2003)                        |          375 |
 | [[http://d-nb.info/964719541][Amerika]] (2000)                        |          375 |
 
-** TODO publishers
+** DONE publishers
 
 We additionally consider only books with no more than 5000 pages to
 avoid skews in the page counts due to errors.
@@ -950,7 +934,7 @@ replot
 
 [[publisher_pages.png]]
 
-*** TODO top normalised publishers
+*** DONE top normalised publishers
 
 These rankings only comprise the normalised publishers.
 
@@ -1106,7 +1090,7 @@ replot
 
 [[publisher_pages_decades.png]]
 
-*** TODO ranking per publisher
+*** DONE ranking per publisher
 
 Iterate over publishers:
 #+BEGIN_SRC sh :results raw
@@ -1748,32 +1732,3 @@ Iterate over publishers:
 |   143 | [[https://www.wikidata.org/wiki/Q1571412][Ralf Schwob]]: [[http://d-nb.info/965768996][Geschlossene Station]] (2003)                                |
 |   140 | [[https://www.wikidata.org/wiki/Q15447339][Eckhard Erxleben]]: [[http://d-nb.info/972139397][Die Haut der Platane]] (2004)                           |
 |   129 | [[https://www.wikidata.org/wiki/Q19278283][Dieter Günther]]: [[http://d-nb.info/956578667][Blühende Landschaften]] (1999)                            |
-
-** DONE temporal distribution
-*** items
-
-#+BEGIN_SRC gnuplot :results silent
-reset
-set encoding utf8
-set term pngcairo enhanced size 800,600
-set out 'issued_decade.png'
-
-set grid
-#set datafile separator "\t"
-set xrange [1913:2020]
-set xtics 10,10
-set xlabel 'year'
-set ylabel 'items'
-
-set term pngcairo enhanced size 800,600
-set out 'issued_items_1913.png'
-
-plot \
-  '< cut -f1 issued_pages.tsv | sort | uniq -c' using 2:1 with lines lw 2 lt 3 lc rgb "green" title ''
-
-set term svg enhanced size 800,600
-set out 'issued_items_1913.svg'
-replot
-#+END_SRC
-
-*** pages

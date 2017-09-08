@@ -13,8 +13,8 @@
 
 * page lengths of novels in the DNB catalogue
 
-We analyse measure the number of pages of novels (i.e., fictional
-literary works) in the [[http://www.dnb.de/][German National Library]] (DNB).
+We analyse the number of pages of novels (i.e., fictional literary
+works) in the [[http://www.dnb.de/][German National Library]] (DNB).
 
 It is not trivial to extract all novels from a big catalogue like that
 of the German National library. "Librarians estimate that genre

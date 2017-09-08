@@ -1,0 +1,1171 @@
+* measuring
+We want to measure the size (number of pages) of novels (i.e.,
+fictional literary works) in the [[http://www.dnb.de/][German National Library]] (DNB).
+
+It is not trivial to extract all novels from a big catalogue like that
+of the German National library. "Librarians estimate that genre
+information is present in the expected MARC field for less than a
+quarter of the volumes in HathiTrust Digital Library," ([[https://arxiv.org/abs/1309.3323][Underwood et
+al. 2013]]) and we encounter the same problem, which calls for an
+innovative solution.
+
+Our approach is to
+1. extract a list of writers from [[https://www.wikidata.org/][Wikidata]] together with their GND id
+2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
+3. join the writer list with the list of books using the GND id
+
+This page documents the evolution of this process, which turned out to
+be not as straightforward as it seems. One reason is the size of the
+data and the complexity of path traversal queries (more on that
+later). Therefore, our final solution relies on rather simple SPARQL
+queries to Wikidata and manual joins of the retrieved datasets.
+
+** extracting writers from Wikidata
+We query Wikidata's [[https://query.wikidata.org/][SPARQL endpoint]] to get a list of writers. Since
+[[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries][SPARQL queries]] become complex quickly, we build the final query step
+by step.
+
+We will use the following Wikidata items:
+- property [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]]
+- property [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]]
+- property [[https://www.wikidata.org/wiki/Property:P279][subclass of (P279)]]
+- class [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+- potentially also the following subclasses of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]: [[https://www.wikidata.org/wiki/Q49757][poet
+  (Q49757)]], [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]], [[https://www.wikidata.org/wiki/Q15949613][short story writer (Q15949613)]]
+
+*** occupation is writer
+
+First, we query for all Wikidata items whose [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] is
+[[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A%0A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?item ?itemLabel
+  WHERE
+  {
+    ?item wdt:P106 wd:Q36180 .              # occupation(P106) is writer(Q36180)
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item         | itemLabel                    |
+|--------------+------------------------------|
+| wd:Q3737990  | Fabrizio Corona              |
+| wd:Q10329870 | Miguel Temprano              |
+| wd:Q17639667 | Sébastien Valiela            |
+| wd:Q3335     | George Orwell                |
+| wd:Q23434    | Ernest Hemingway             |
+| wd:Q28658    | John F. Burns                |
+| wd:Q29344    | William T. Vollmann          |
+| wd:Q74465    | Friedrich Wilhelm Hackländer |
+| wd:Q75265    | Otto von Corvin              |
+| wd:Q77475    | Ludwig Ganghofer             |
+
+*** occupation is writer or a subclass
+
+/Background:/ Not all people which we consider to be a "writer" have
+as occupation property the class [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]] but instead a
+subclass of it, for instance [[https://www.wikidata.org/wiki/Q49757][poet (Q49757)]] or [[https://www.wikidata.org/wiki/Q18844224][science fiction writer
+(Q18844224)]] (see the [[subclasses of writer]]). Since subclasses can have
+further subclasses, we need to traverse the whole subclass tree (the
+transitive closure of the subclass relation) to find all people who
+can be subsumed as writers. (see [[transitive subclasses of writer]]).
+
+Second, we extend this to include [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?item ?itemLabel
+  WHERE
+  {
+    ?item wdt:P106/wdt:P279* wd:Q36180 .   # occupation(P106) is writer(Q36180) or a subclass(P279)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item         | itemLabel                    |
+|--------------+------------------------------|
+| wd:Q3737990  | Fabrizio Corona              |
+| wd:Q10329870 | Miguel Temprano              |
+| wd:Q17639667 | Sébastien Valiela            |
+| wd:Q3335     | George Orwell                |
+| wd:Q23434    | Ernest Hemingway             |
+| wd:Q28658    | John F. Burns                |
+| wd:Q29344    | William T. Vollmann          |
+| wd:Q74465    | Friedrich Wilhelm Hackländer |
+| wd:Q75265    | Otto von Corvin              |
+| wd:Q77475    | Ludwig Ganghofer             |
+
+Let us download the actual data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclass.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+**** checking the result
+
+Let us check the result by comparing its size and searching for
+Goethe:
+
+#+BEGIN_SRC sh
+  wc -l wikidata_writer_subclass.tsv
+#+END_SRC
+
+- 73796
+
+#+BEGIN_SRC sh
+  grep Goethe wikidata_writer_subclass.tsv
+#+END_SRC
+
+| <http://www.wikidata.org/entity/Q4322238> | Nicole Van Goethem         |
+| <http://www.wikidata.org/entity/Q5879>    | Johann Wolfgang von Goethe |
+
+That looks good at first sight, but at least [[http://www.wikidata.org/entity/Q1586540][Wolfgang Maximilian von
+Goethe]] and [[http://www.wikidata.org/entity/Q1585819][Johann Caspar Goethe]] are missing. Furthermore, the
+following query returns a count of 358703 (on 2016-12-15) instead of
+73796:
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT (COUNT(DISTINCT ?item) AS ?count)
+  WHERE
+  {
+    ?item wdt:P106/wdt:P279* wd:Q36180 .   # occupation(P106) is writer(Q36180) or a subclass(P279)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+We can see the reason for this problem by checking the end of the
+result file:
+
+#+BEGIN_SRC sh
+  grep Exception wikidata_writer_subclass.tsv | head -n1
+#+END_SRC
+
+: java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: org.openrdf.query.QueryInterruptedException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: com.bigdata.bop.engine.QueryTimeoutException: Query deadline is expired.
+
+Not all writers are returned due to a query timeout which is likely
+caused by the expensive [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries#Querying_a_class_tree][path query]] to get all subclasses of writer.
+
+*** occupation is writer or a subclass and has GND id
+/Background:/ It is clear by now that the path query will not return
+all results but for the sake of completeness, we continue with this
+approach to explain how it works in principle.
+
+Third, we ensure that the item has a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%2Fwdt%3AP279*%20wd%3AQ36180%20.%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%20or%20a%20subclass%28P279%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fgndid%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20with%20a%20GND%20ID%28P227%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?item ?itemLabel ?gndid
+  WHERE
+  {
+    ?item wdt:P106/wdt:P279* wd:Q36180 .  # occupation(P106) is writer(Q36180) or a subclass(P279)
+    ?item p:P227 ?gndid .                 # ... with a GND ID(P227)
+    SERVICE wikibase:label {              # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+*TODO*: ~FILTER(BOUND(?gndid))~?
+
+| item    | itemLabel        | gndid                                                  |
+|---------+------------------+--------------------------------------------------------|
+| wd:Q42  | Douglas Adams    | wd:statement/q42-8AA8CCC1-86CE-4C66-88FC-267621A81EA0  |
+| wd:Q272 | Paul Morand      | wd:statement/q272-9373E898-F2B0-4BF8-871A-B09A3A055577 |
+| wd:Q303 | Elvis Presley    | wd:statement/q303-44C100BC-71C3-4D4F-881D-6729D4B58D28 |
+| wd:Q392 | Bob Dylan        | wd:statement/q392-0190B28E-161C-4BA9-99D4-4B7C27B6F4FD |
+| wd:Q489 | Bill Maher       | wd:statement/q489-79FF5E0D-6C59-48AE-8266-775105133852 |
+| wd:Q765 | Dario Fo         | wd:statement/q765-5FD4C8D5-2258-4091-87AB-C4112FE30CE3 |
+| wd:Q835 | Mikhail Bulgakov | wd:statement/q835-94A1550F-D43D-4C6F-A80F-563889002835 |
+| wd:Q853 | Andrei Tarkovsky | wd:statement/q853-A2E1C3C3-2F32-4A0B-B091-2DBB06BCEF18 |
+| wd:Q882 | Charlie Chaplin  | wd:statement/q882-A7EB6AB3-8F42-4405-8B47-6E78D2C1E2C1 |
+| wd:Q892 | J. R. R. Tolkien | wd:statement/q892-122F7562-51B2-4A14-82D6-6202DB5A79ED |
+
+Unfortunately, we do not get the GND id but a reference to a
+[[https://www.wikidata.org/wiki/Help:Statements][statement]].
+# Explain in detail what this means? 
+We have to resolve this statement to get the actual GND id ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20LIMIT%2010%0A][SPARQL]],
+inspired by [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#Awarded_Chemistry_Nobel_Prizes][an example query for awarded Chemistry Nobel Prizes]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?item ?itemLabel ?gndid
+  WHERE
+  {
+    ?item wdt:P106 wd:Q36180 .              # occupation(P106) is writer(Q36180)
+    ?item p:P227 ?wds . 
+    ?wds ?v ?gndid .
+    ?wdP wikibase:claim p:P227 .
+    ?wdP wikibase:statementProperty ?v .
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  LIMIT 10
+#+END_SRC
+
+| item     | itemLabel          |      gndid |
+|----------+--------------------+------------|
+| wd:Q4498 | Beatritz de Dia    |  134832809 |
+| wd:Q42   | Douglas Adams      |  119033364 |
+| wd:Q377  | Yanka Kupala       |  118640267 |
+| wd:Q501  | Charles Baudelaire |  118507184 |
+| wd:Q555  | Rachel Maddow      | 1022390589 |
+| wd:Q747  | Pierre Corneille   |  118522175 |
+| wd:Q926  | Roald Amundsen     |  118502670 |
+| wd:Q1151 | Hector Berlioz     |  118509675 |
+| wd:Q4128 | Louis Aragon       |  118503774 |
+| wd:Q4340 | Andreas Capellanus |  118502905 |
+
+Let us download the actual data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclass_gndid.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%20is%20writer%28Q36180%29%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+**** checking the result
+Let us again check the result comparing its size and searching for
+Goethe:
+
+#+BEGIN_SRC sh
+  wc -l wikidata_writer_subclass_gndid.tsv
+#+END_SRC
+
+- 57495
+
+#+BEGIN_SRC sh
+  grep Goethe wikidata_writer_subclass_gndid.tsv
+#+END_SRC
+
+| <http://www.wikidata.org/entity/Q1586540> | Wolfgang Maximilian von Goethe | 118717928 |
+| <http://www.wikidata.org/entity/Q1585819> | Johann Caspar Goethe           | 118695940 |
+
+Unfortunately, Johann Wolfgang von Goethe is not contained, although
+[[https://www.wikidata.org/wiki/Q5879][he]] has a GND id and as occupation (among others) [[https://www.wikidata.org/wiki/Q6625963][novelist (Q6625963)]]
+which is a subclass of [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]. The reason is again a query
+timeout:
+
+#+BEGIN_SRC sh
+  grep Exception wikidata_writer_subclass_gndid.tsv | head -n1
+#+END_SRC
+
+: java.util.concurrent.ExecutionException: java.util.concurrent.ExecutionException: org.openrdf.query.QueryInterruptedException: java.lang.RuntimeException: java.util.concurrent.ExecutionException: com.bigdata.bop.engine.QueryTimeoutException: Query deadline is expired.
+
+Therefore, we must find another way to extract the data from
+Wikidata. One option is to avoid the expensive joins and instead
+extract separate datasets and join them manually.
+
+** downloading the individual parts and joining them
+Presumably due to the size of the data and the complexity of path
+queries and joins, we struggle to put all pieces together within
+Wikidata. Therefore, we here try to download the different bits and
+pieces and put them together manually (well, with some simple tools):
+
+- all items with an [[https://www.wikidata.org/wiki/Property:P106][occupation (P106)]] property
+- all [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer (Q36180)]]
+- all items with a [[https://www.wikidata.org/wiki/Property:P227][GND ID (P227)]] property
+
+We then join the resulting three files and get a list of writers
+together with their GND id.
+
+*** item has an occupation property
+This is quite simple: we get all items which have an occupation
+property together with the value of that property ([[https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20}][SPARQL]]):
+#+BEGIN_SRC sparql
+  SELECT ?item ?itemLabel ?occupation
+  WHERE
+  {
+    ?item wdt:P106 ?occupation .            # occupation(P106)
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+Let us download the data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_occupation.tsv \
+      --globoff \
+'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Foccupation%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP106%20%3Foccupation%20.%20%20%20%20%20%20%20%20%20%20%20%20%23%20occupation%28P106%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+and count the number of items:
+
+#+BEGIN_SRC sh 
+  wc -l wikidata_occupation.tsv
+#+END_SRC
+
+- 3053738 
+
+Impressive!
+
+*** all subclasses of writer
+
+This is the expensive path query, except that we avoid to join any
+large amounts of data such that the result is quite small:
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?subclass
+  WHERE
+  {
+    ?subclass wdt:P279* wd:Q36180
+  }
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_subclasses.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=%23added%20before%202016-10%0ASELECT%20%3Fsubclass%0AWHERE%0A{%0A%20%20%3Fsubclass%20wdt%3AP279*%20wd%3AQ36180%0A}'
+#+END_SRC
+
+We get a list of all [[#transitive-subclasses-of-writer]].
+
+*** item has a GND id
+We download all items which have a GND id:
+
+#+BEGIN_SRC sparql
+  SELECT ?item ?itemLabel ?gndid
+  WHERE
+  {
+    ?item p:P227 ?wds .                     # has property occupation(P227)
+    ?wds ?v ?gndid .
+    ?wdP wikibase:claim p:P227 .
+    ?wdP wikibase:statementProperty ?v .
+    SERVICE wikibase:label {                # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_gndid.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3Fgndid%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+#+BEGIN_SRC sh
+  wc -l wikidata_gndid.tsv
+#+END_SRC
+
+- 449396
+
+This is close to the count of 447551 returned by a [[https://query.wikidata.org/#%20%20SELECT%20%28COUNT%28DISTINCT%20%3Fitem%29%20AS%20%3Fcount%29%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20p%3AP227%20%3Fwds%20.%20%0A%20%20%20%20%3Fwds%20%3Fv%20%3Fgndid%20.%0A%20%20%20%20%3FwdP%20wikibase%3Aclaim%20p%3AP227%20.%0A%20%20%20%20%3FwdP%20wikibase%3AstatementProperty%20%3Fv%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A][COUNT query]].
+
+**** TODO struggles with the itemLabel
+
+The ~itemLabel~ was later added to the query but Wikidata struggled to
+deliver the complete results. Hence, when less results are returned,
+try removing the ~itemLabel~ from the ~SELECT~ statement.
+
+Another alternative is to retrieve the labels for the items using the
+query where an [[item has an occupation property]].
+
+We then also need to adopt the columns which are joined in the next
+section.
+
+*** joining the files
+We want to join the following three files:
+
+1. ~wikidata_occupation.tsv~
+2. ~wikidata_writer_subclasses.tsv~
+3. ~wikidata_gndid.tsv~
+
+Due to [[https://unix.stackexchange.com/questions/12942/join-file-2-not-in-sorted-order][an incompatibility]] between the ~sort~ and ~join~ program, we
+have to ensure that all operations use the same collation. In our
+example we use ~en_EN~.
+
+To join the files, they need to be sorted. Therefore, we first sort
+them using the ~en_EN~ collation:
+
+#+BEGIN_SRC sh :results silent
+  export LANG=en_EN
+  sort -k1 wikidata_writer_subclasses.tsv > wd_ws
+  sort -k2 wikidata_occupation.tsv > wd_o
+  sort -k1 wikidata_gndid.tsv > wd_g
+#+END_SRC
+
+We can now join ~wikidata_occupation.tsv~ (column 2) with
+~wikidata_writer_subclasses.tsv~ (column1) using the occupation:
+
+#+BEGIN_SRC sh :results silent
+  export LANG=en_EN
+  join -1 1 -2 2 wd_ws wd_o | cut -d' ' -f2 | sort -u > wd_w
+#+END_SRC
+
+We now join this with the GND ids:
+
+#+BEGIN_SRC sh
+  export LANG=en_EN
+  join wd_g wd_w > wd_result
+  wc -l wd_result
+#+END_SRC
+
+- 114872
+
+So we have at least more results than we got directly from Wikidata.
+Let's check for Goethe:
+
+#+BEGIN_SRC sh
+  grep "Q5879>" wd_result
+#+END_SRC
+
+| <http://www.wikidata.org/entity/Q5879> | 118540238 |
+
+Success! Goethe is included. We can now continue and join the writers
+from Wikidata with the records from the DNB
+
+** Linked Data from DNB
+
+*** download
+
+#+BEGIN_SRC sh :results silent
+  curl --output DNBTitel.rdf.gz "http://datendienst.dnb.de/cgi-bin/mabit.pl?cmd=fetch&userID=opendata&pass=opendata&mabheft=DNBTitel.rdf.gz"
+#+END_SRC
+
+*** checks
+It contains entries like these:
+
+#+BEGIN_SRC ttl
+<http://d-nb.info/1057803898> a bibo:Document ;
+        dcterms:medium <http://rdvocab.info/termList/RDACarrierType/1044> ;
+        owl:sameAs <http://hub.culturegraph.org/resource/DNB-1057803898> ;
+        dc:identifier "(DE-101)1057803898" ;
+        bibo:isbn13 "9783150186329" ;
+        rdau:P60521 "kart. : EUR 3.60" ;
+        dc:identifier "(OCoLC)890646150" ;
+        dcterms:language <http://id.loc.gov/vocabulary/iso639-2/ger> ;
+        dc:title "Die Leiden des jungen Werthers" ;
+        dcterms:creator <http://d-nb.info/gnd/118540238> ;
+        rdau:P60163 "Stuttgart" ;
+        dc:publisher "Reclam" ;
+        rdau:P60333 "Stuttgart : Reclam, 2014" ;
+        isbd:P1053 "140 S." ;
+        dcterms:bibliographicCitation "Reclams Universal-Bibliothek ; Nr. 18632" ;
+        dcterms:issued "2014" ;
+        rdau:P60493 "erste Fassung 1774" ;
+        bibo:authorList _:node1ashhhff1x4370327 .
+#+END_SRC
+
+We find the GND id 118540238 in the URL http://d-nb.info/gnd/118540238
+of the ~dcterms:creator~ property. It points to 
+
+#+BEGIN_SRC sh
+  grep 118540238 wd_result
+#+END_SRC
+
+| <http://www.wikidata.org/entity/Q5879> | 118540238 |
+
+Goethe!
+
+*** extraction
+We want to find all entries in that file with a GND id from our
+Wikidata items.
+
+To have some smaller data to play around, we extract some entries:
+#+BEGIN_SRC sh :results silent
+ zcat DNBTitel.ttl.gz| head -n29999 > dnbtest.ttl
+#+END_SRC
+
+(We need almost 30000 lines to get some entries with a ~dc:creator~
+property below.)
+
+Now we need Python and [[https://github.com/RDFLib/rdflib][rdflib]] to parse the data:
+
+#+begin_src emacs-lisp :results none
+  (setq org-babel-python-command "python3")
+#+end_src
+
+#+BEGIN_SRC python :results output
+  import rdflib
+  from rdflib.namespace import DCTERMS, DC
+
+  g = rdflib.Graph()
+  g.parse('dnbtest.ttl', format='n3')
+  isbd = rdflib.Namespace("http://iflastandards.info/ns/isbd/elements/")
+   
+  for s, o in g.subject_objects(DCTERMS["creator"]):
+      # property with linked GND id found, extract GND id
+      url, gndid = o.rsplit('/', 1)
+      # get title and page number
+      title = g.value(s, DC["title"], None)
+      pages = g.value(s, isbd["P1053"], None)
+      print(s, gndid, title, pages, sep='|')
+#+END_SRC
+
+| http://d-nb.info/97559074X |  110717996 | Der Lehrprinz                                  | X, 528 S.   |
+| http://d-nb.info/968668267 | 1074145577 | Integrierte digitale Schaltungen               | XII, 711 S. |
+| http://d-nb.info/966102002 | 1030562091 | Brandschutzgeschichte                          | 250 S.      |
+| http://d-nb.info/973161485 |  117227242 | Der Logos des Spiegels                         | 366 S.      |
+| http://d-nb.info/969479468 |  121279723 | Tessloffs Aufklärungsbuch                      | 80 S.       |
+| http://d-nb.info/966102002 | 1049499417 | Brandschutzgeschichte                          | 250 S.      |
+| http://d-nb.info/963874004 |  121412636 | Durch Wüste und Steppe                         | 610 S.      |
+| http://d-nb.info/968668267 | 1074145798 | Integrierte digitale Schaltungen               | XII, 711 S. |
+| http://d-nb.info/972213066 |  123476879 | Modellfall für Deutschland?                    | 1382 S.     |
+| http://d-nb.info/970176384 | 1043946004 | Beck'sches Handbuch Umwandlungen international | XIV, 697 S. |
+| http://d-nb.info/972500502 |  118176900 | Gastling                                       | 103 S.      |
+| http://d-nb.info/975731858 |  128369078 | Opfer rechtsextremer Gewalt                    | 176 S.      |
+| http://d-nb.info/969479468 |  129025232 | Tessloffs Aufklärungsbuch                      | 80 S.       |
+| http://d-nb.info/972647988 |  121742660 | Produkthaftpflichtversicherung                 | XVI, 498 S. |
+| http://d-nb.info/966547403 |  118503901 | Trug doch die Nacht den Albatros               | 133 S.      |
+| http://d-nb.info/969932391 |  121102467 | Fichte lesen                                   | XV, 119 S.  |
+| http://d-nb.info/975731858 | 1043395121 | Opfer rechtsextremer Gewalt                    | 176 S.      |
+| http://d-nb.info/975192507 |  118509861 | Gedichte                                       | 601 Seiten  |
+| http://d-nb.info/96665241X |  118654292 | Luther                                         | 158 S.      |
+| http://d-nb.info/972721304 |  115881301 | Frank Bsirske macht Urlaub au Krk              | 315 S.      |
+| http://d-nb.info/972721304 |  141422114 | Frank Bsirske macht Urlaub au Krk              | 315 S.      |
+| http://d-nb.info/975731858 |  123182301 | Opfer rechtsextremer Gewalt                    | 176 S.      |
+| http://d-nb.info/975778269 |  170750345 | Nachhaltigkeit und Betriebswirtschaftslehre    | 598 S.      |
+
+It is slow but it works pretty well. In the last column we can already
+see that processing the page numbers will require some effort.
+
+*** joining writers and books
+
+We extend the Python code to check for each GND whether it appears in
+the writer list ~wd_result~ from Wikidata (and we add support to read
+the gzip compressed file from the DNB):
+
+#+BEGIN_SRC python :results output
+  from __future__ import print_function
+  import rdflib
+  import gzip
+  import codecs
+  import logging
+  from rdflib.namespace import DCTERMS, DC
+
+  logging.basicConfig()
+
+  # read Wikidata GND ids of writers
+  writers = set()
+  with open('wd_result', 'r') as f:
+      for line in f:
+          entity, gndid = line.strip().split()
+          writers.add(gndid)
+
+  # read DNB data
+  g = rdflib.Graph()
+  g.parse(gzip.open('DNBTitel.ttl.gz', 'rt'), format='n3')
+  isbd = rdflib.Namespace("http://iflastandards.info/ns/isbd/elements/")
+
+  fout = open('dnb_pages.tsv', 'wt')
+
+  for s, o in g.subject_objects(DCTERMS["creator"]):
+      # property with linked GND id found, extract GND id
+      url, gndid = o.rsplit('/', 1)
+      # check whether this is a writer
+      if gndid in writers:
+          # get title and page number
+          title = g.value(s, DC["title"], None)
+          pages = g.value(s, isbd["P1053"], None)
+          if title == None:
+              title = ""
+          if pages == None:
+              pages = ""
+          
+          print(s.encode("utf-8"), gndid.encode("utf-8"), title.encode("utf-8"), pages.encode("utf-8"), sep='\t', file=fout)
+
+  fout.close()
+#+END_SRC
+
+Don't try this at home kids! This loads the whole DNB RDF graph into
+memory and this requires an enormous amount of main memory (200GB).
+
+Error output:
+
+: WARNING:rdflib.term:http://d-nb.info/gnd/11900951X  does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/104288744 ; 116055804 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/104288744 ; 116055804 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/104288744 ; 116055804 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/ 110148991 does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/105112348; 116518308; 118667653 (3 Tp) does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/105112348; 116518308; 118667653 (3 Tp) does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/119193906 (VWForm) does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/116596376; 10083485X does not look like a valid URI, trying to serialize this will break.
+: WARNING:rdflib.term:http://d-nb.info/gnd/ 113519834 does not look like a valid URI, trying to serialize this will break.
+
+The RDF extraction is also non-deterministic, since some properties
+have several values, for instance, this document has two values for
+the ~isbd:P1053~ property which holds the number of pages:
+
+#+BEGIN_SRC n3
+<http://d-nb.info/1010791265> a bibo:Document ;
+        dcterms:medium <http://rdvocab.info/termList/RDACarrierType/1044> ;
+        owl:sameAs <http://hub.culturegraph.org/resource/DNB-1010791265> ;
+        dc:identifier "(DE-101)1010791265" ;
+        rdau:P60521 "Lw. : Pta 125.00" ;
+        dc:identifier "(OCoLC)254209729" ;
+        dc:title "Los pájaros de Baden-Baden" ;
+        dcterms:creator <http://d-nb.info/gnd/118644491> ;
+        rdau:P60163 "Madrid" ;
+        dc:publisher "Ed. Cid" ;
+        rdau:P60333 "Madrid : Ed. Cid, 1965" ;
+        isbd:P1053 "263 S." , "8" ;
+        dcterms:issued "1965" ;
+        bibo:authorList _:node1ashhhfpkx8672282 .
+#+END_SRC
+
+In our implementation a random value is selected, such that either
+~263 S.~ or ~8~ will be extracted.
+
+** analysing the page numbers
+
+We finally have a result and can analyse ~dnb_pages.tsv~.
+
+*** syntax
+
+A quick look at the data immediately reveals that there are many
+different ways how page numbers are specified:
+
+#+BEGIN_SRC sh
+  cut -f4 dnb_pages.tsv | sed -e "s/[0-9][0-9]*/0/g"  | sort -u | wc -l
+#+END_SRC
+
+- 6903
+
+Impressive! Let's have a look at the most frequent examples:
+
+#+BEGIN_SRC sh
+  cut -f4 dnb_pages.tsv | sed -e "s/[0-9][0-9]*/0/g"  | sort | uniq -c | sort -nr | head
+#+END_SRC
+
+| 902634 | 0 S.       |
+| 116585 |            |
+|  18909 | 0 S.;      |
+|  18739 | [0] S.     |
+|  13436 | 0 Seiten   |
+|  13105 | 0 Bl.      |
+|   7168 | VIII, 0 S. |
+|   5758 | 0, [0] S.  |
+|   4643 | 0, 0 S.    |
+|   4224 | XII, 0 S.  |
+
+And the least frequent examples:
+
+#+BEGIN_SRC sh
+  cut -f4 dnb_pages.tsv | sed -e "s/[0-9][0-9]*/0/g"  | sort | uniq -c | sort -nr | tail
+#+END_SRC
+
+| 1 | 0, 0, 0, 0, 0, 0, 0, 0, 0 S. |
+| 1 | 0, [0], [0]                  |
+| 1 | [0] - 0                      |
+| 1 | 0, [0]                       |
+| 1 | 0-0.                         |
+| 1 | 0 (0)                        |
+| 1 | 0 0                          |
+| 1 | 0 0                          |
+| 1 | [0].                         |
+| 1 | 0,                           |
+
+*** counting
+
+Given the top list above, with the very simple regular expression
+~[0-9]+ S~ we can cover three of the most important cases and extract
+the longest works in our list:
+
+#+BEGIN_SRC python :results output
+  import re
+  import numpy as np
+
+  re_pages = re.compile("([0-9]+) S")
+
+  items = []
+  pagecounts = []
+
+  with open("dnb_pages.tsv", "rt") as f:
+      for line in f:
+          parts = line.strip().split('\t')
+          # ignore broken lines for now
+          if len(parts) == 4:
+              item, gndid, title, pages = parts
+              # parse pages
+              match = re_pages.search(pages)
+              if match:
+                  # store page and item
+                  pagecounts.append(int(match.group(1)))
+                  items.append(line.strip())
+
+  # get permutation to sort by pagecount
+  pagecounts_sorted = np.argsort(pagecounts)
+
+  # print top 10
+  for i in range(1,11):
+      print(pagecounts[pagecounts_sorted[-i]], items[pagecounts_sorted[-i]])
+#+END_SRC
+
+|  pages | item id                    |    GND id | title                                                                 | pages     |
+|--------+----------------------------+-----------+-----------------------------------------------------------------------+-----------|
+| 348333 | http://d-nb.info/920918131 | 119483823 | Tim                                                                   | 348333 S. |
+| 332331 | http://d-nb.info/930916484 | 118507591 | Selbstvergessenheit                                                   | 332331 S. |
+| 239240 | http://d-nb.info/920996760 | 118815202 | Denkzettel                                                            | 239240 S. |
+| 176150 | http://d-nb.info/880974125 | 118520520 | Die fünfte Freiheit                                                   | 176150 S. |
+| 137317 | http://d-nb.info/942067983 | 130671088 | Revolutionäre Psychologie                                             | 137317 S. |
+|  96104 | http://d-nb.info/959654496 | 115662863 | Die Malerei im Bietigheimer Hornmoldhaus                              | 96104 S.  |
+|  22522 | http://d-nb.info/951007475 | 118694316 | Dictionnaire universel, contenant generalement tous les mots françois | 22522 S.  |
+|  21920 | http://d-nb.info/820541613 | 11890423X | Die grünen Augen                                                      | 21920 S.  |
+|  13008 | http://d-nb.info/958168091 | 121276791 | Nicht mehr rauchen und dabei schlank bleiben                          | 13008 S.  |
+|   9306 | http://d-nb.info/964760746 | 128401370 | Flying Dutchmen                                                       | 9306 S.   |
+
+The names of the authors are missing for now but having a look at the
+corresponding DNB pages we can get an idea that something must be
+wrong here:
+
+1. The page numbers seem to be too large to be true.
+2. The first book, "Tim", was published by Goldmann Verlag, a typical
+   paperback publisher. 
+3. The last book, "Flying Dutchmen" from the architect Kari Jormakka
+   is non-fiction.
+
+We will investigate these issues in the next steps.
+
+** additional information
+
+*** subclasses of writer
+
+Just out of curiosity: what are the [[https://www.wikidata.org/wiki/Property:P279][subclasses of (P279)]] [[https://www.wikidata.org/wiki/Q36180][writer
+(Q36180)]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ36180%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fdesc%250A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url https://query.wikidata.org/sparql :format text/csv
+  SELECT ?item ?itemLabel
+  WHERE
+  {
+    ?item wdt:P279 wd:Q36180 .             # subclass(P279) of writer(Q36180)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  ORDER BY ?itemLabel
+#+END_SRC
+
+| item         | itemLabel              |
+|--------------+------------------------|
+| wd:Q152182   |                        |
+| wd:Q21140478 |                        |
+| wd:Q26203955 |                        |
+| wd:Q26260814 |                        |
+| wd:Q4938203  | Boholano writers       |
+| wd:Q16637669 | Félibresse             |
+| wd:Q764233   | Geoponici              |
+| wd:Q20532870 | Uzbek writers          |
+| wd:Q864380   | biographer             |
+| wd:Q4853732  | children's writer      |
+| wd:Q27431213 | cookery writer         |
+| wd:Q11500768 | cooking expert         |
+| wd:Q14466416 | copywriter             |
+| wd:Q3589290  | correspondent          |
+| wd:Q21036234 | crime writer           |
+| wd:Q10297252 | detective writer       |
+| wd:Q22811127 | devotional writer      |
+| wd:Q487596   | dramaturge             |
+| wd:Q11774202 | essayist               |
+| wd:Q3064032  | fabulist               |
+| wd:Q623386   | ghostwriter            |
+| wd:Q5689489  | head writer            |
+| wd:Q8178443  | librettist             |
+| wd:Q18533509 | medical writer         |
+| wd:Q24387326 | mythographer           |
+| wd:Q15980158 | non-fiction writer     |
+| wd:Q6625963  | novelist               |
+| wd:Q16254673 | pamphleteer            |
+| wd:Q551835   | physician writer       |
+| wd:Q214917   | playwright             |
+| wd:Q49757    | poet                   |
+| wd:Q12144794 | prosaist               |
+| wd:Q18844224 | science fiction writer |
+| wd:Q28389    | screenwriter           |
+| wd:Q15949613 | short story writer     |
+| wd:Q175301   | speechwriter           |
+| wd:Q7596574  | staff writer           |
+| wd:Q15979013 | surrealist writer      |
+| wd:Q1568338  | technical writer       |
+| wd:Q381353   | woman of letters       |
+| wd:Q27212012 | young adult writer     |
+
+Some item labels are empty because the items do not have an English
+label. For instance, the first item [[https://www.wikidata.org/wiki/Q152182][wd:Q152182]] refers to the German
+concept "Literat" for which no English translation is provided. 
+
+*** transitive subclasses of writer
+
+And now let us respect transitivity:
+
+#+BEGIN_SRC sparql :url http://query.wikidata.org/sparql :format text/csv
+  SELECT ?item ?itemLabel
+  WHERE
+  {
+    ?item wdt:P279* wd:Q36180 .            # subclass(P279) (transitive) of writer(Q36180)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+  ORDER BY ?itemLabel
+#+END_SRC
+
+| item         | itemLabel                                 |
+|--------------+-------------------------------------------|
+| wd:Q152182   |                                           |
+| wd:Q1456208  |                                           |
+| wd:Q2325224  |                                           |
+| wd:Q2393424  |                                           |
+| wd:Q2781593  |                                           |
+| wd:Q3477303  |                                           |
+| wd:Q3531683  |                                           |
+| wd:Q3765898  |                                           |
+| wd:Q3765897  |                                           |
+| wd:Q11301725 |                                           |
+| wd:Q11598626 |                                           |
+| wd:Q11711601 |                                           |
+| wd:Q16681315 |                                           |
+| wd:Q18059311 |                                           |
+| wd:Q18222085 |                                           |
+| wd:Q21140478 |                                           |
+| wd:Q22929895 |                                           |
+| wd:Q24812704 |                                           |
+| wd:Q25277824 |                                           |
+| wd:Q26203955 |                                           |
+| wd:Q26234215 |                                           |
+| wd:Q26260814 |                                           |
+| wd:Q779388   | Akhmatova's Orphans                       |
+| wd:Q2632248  | Akhoond                                   |
+| wd:Q2870087  | Atthidographer                            |
+| wd:Q4938203  | Boholano writers                          |
+| wd:Q670974   | Bollandist                                |
+| wd:Q2936875  | Cantore al liuto                          |
+| wd:Q1107241  | Coirpre                                   |
+| wd:Q14466416 | Copywriter                                |
+| wd:Q2354449  | Dichter des Vaderlands                    |
+| wd:Q5338722  | Editor-at-large                           |
+| wd:Q22888258 | Edward James Bennell                      |
+| wd:Q744738   | Encyclopédistes                           |
+| wd:Q16637669 | Félibresse                                |
+| wd:Q764233   | Geoponici                                 |
+| wd:Q767975   | Goliard                                   |
+| wd:Q4529715  | Hittitologist                             |
+| wd:Q6296256  | Journalist                                |
+| wd:Q956365   | Liedermacher                              |
+| wd:Q1133078  | Logographer                               |
+| wd:Q3296111  | Marxist historian                         |
+| wd:Q156624   | Paparazzi                                 |
+| wd:Q7207430  | Poet Laureate of the District of Columbia |
+| wd:Q41775    | Poète maudit                              |
+| wd:Q3403391  | Prince des poètes                         |
+| wd:Q7459839  | Sha'ir                                    |
+| wd:Q20002503 | Story artist                              |
+| wd:Q19346706 | US american journalist                    |
+| wd:Q20532870 | Uzbek writers                             |
+| wd:Q6399436  | VJ                                        |
+| wd:Q23038345 | Wikipedian                                |
+| wd:Q3809586  | Wikipedian in Residence                   |
+| wd:Q17486321 | agrarian historian                        |
+| wd:Q794686   | aoidos                                    |
+| wd:Q3606216  | aphorist                                  |
+| wd:Q619553   | apologist                                 |
+| wd:Q17486326 | architectural historian                   |
+| wd:Q17391659 | architectural theoretician                |
+| wd:Q17391654 | architecture critic                       |
+| wd:Q4164507  | art critic                                |
+| wd:Q1792450  | art historian                             |
+| wd:Q17391638 | art theorist                              |
+| wd:Q18814623 | autobiographer                            |
+| wd:Q215144   | bard                                      |
+| wd:Q10429346 | bibliographer                             |
+| wd:Q864380   | biographer                                |
+| wd:Q24705156 | broadcast journalist                      |
+| wd:Q26233771 | building researcher                       |
+| wd:Q26132815 | byzantinist                               |
+| wd:Q13391399 | chansonnier                               |
+| wd:Q15986551 | chess journalist                          |
+| wd:Q15958307 | chess theoretician                        |
+| wd:Q4853732  | children's writer                         |
+| wd:Q3330547  | chronicler                                |
+| wd:Q1743122  | church historian                          |
+| wd:Q15983985 | classical archaeologist                   |
+| wd:Q16267607 | classical philologist                     |
+| wd:Q2468727  | classical scholar                         |
+| wd:Q3276037  | color commentator                         |
+| wd:Q1086863  | columnist                                 |
+| wd:Q11914886 | comedy writer                             |
+| wd:Q21207686 | comics critic                             |
+| wd:Q20669602 | contemporary historian                    |
+| wd:Q2995513  | contemporary historian                    |
+| wd:Q876864   | contributing editor                       |
+| wd:Q27431213 | cookery writer                            |
+| wd:Q11500768 | cooking expert                            |
+| wd:Q1155838  | correspondent                             |
+| wd:Q3589290  | correspondent                             |
+| wd:Q21036234 | crime writer                              |
+| wd:Q6430706  | critic                                    |
+| wd:Q21286455 | critic of religions                       |
+| wd:Q20020377 | cultural critic                           |
+| wd:Q15462162 | cultural historian                        |
+| wd:Q19765978 | dance critic                              |
+| wd:Q10297252 | detective writer                          |
+| wd:Q22811127 | devotional writer                         |
+| wd:Q3026032  | dialogue writer                           |
+| wd:Q18939491 | diarist                                   |
+| wd:Q23117687 | dithyrambic poet                          |
+| wd:Q487596   | dramaturge                                |
+| wd:Q17488363 | economic historian                        |
+| wd:Q589298   | editor-in-chief                           |
+| wd:Q3024627  | editorial cartoonist                      |
+| wd:Q17342450 | editorial columnist                       |
+| wd:Q1350189  | egyptologist                              |
+| wd:Q16314501 | encyclopedist                             |
+| wd:Q22917056 | engraved gem researcher                   |
+| wd:Q26237228 | epigrammatist                             |
+| wd:Q15632632 | epigrapher                                |
+| wd:Q11774202 | essayist                                  |
+| wd:Q20743624 | etruscologist                             |
+| wd:Q3064032  | fabulist                                  |
+| wd:Q4220892  | film critic                               |
+| wd:Q20971250 | film historian                            |
+| wd:Q17391605 | film theorist                             |
+| wd:Q1495660  | food critic                               |
+| wd:Q18190897 | foreign correspondent                     |
+| wd:Q22662561 | game show host                            |
+| wd:Q8963721  | genealogist                               |
+| wd:Q623386   | ghostwriter                               |
+| wd:Q5615122  | guest host                                |
+| wd:Q17166634 | hagiographer                              |
+| wd:Q5689489  | head writer                               |
+| wd:Q19967350 | hellenist                                 |
+| wd:Q18916625 | hellenist                                 |
+| wd:Q516463   | heraldist                                 |
+| wd:Q201788   | historian                                 |
+| wd:Q17504989 | historian of Eastern Europe               |
+| wd:Q17488392 | historian of cartography                  |
+| wd:Q20873384 | historian of classical antiquity          |
+| wd:Q17486330 | historian of mathematics                  |
+| wd:Q17488357 | historian of religion                     |
+| wd:Q16063546 | historian of science                      |
+| wd:Q17505002 | historian of student                      |
+| wd:Q17486338 | historian of technology                   |
+| wd:Q17489339 | historian of the modern age               |
+| wd:Q5905231  | horror host                               |
+| wd:Q20738773 | hymnwriter                                |
+| wd:Q256876   | improvvisatore                            |
+| wd:Q15931838 | investigative reporter                    |
+| wd:Q1930187  | journalist                                |
+| wd:Q17598791 | latinist                                  |
+| wd:Q2135538  | legal historian                           |
+| wd:Q16012028 | legal scholar                             |
+| wd:Q8178443  | librettist                                |
+| wd:Q11236655 | light novel writer                        |
+| wd:Q2617025  | list of Muslim historians                 |
+| wd:Q4263842  | literary critic                           |
+| wd:Q13570226 | literary historian                        |
+| wd:Q15962340 | literary theorist                         |
+| wd:Q1595570  | local historian                           |
+| wd:Q822146   | lyricist                                  |
+| wd:Q19251029 | media critic                              |
+| wd:Q8175949  | media historian                           |
+| wd:Q15985128 | medical historian                         |
+| wd:Q18533509 | medical writer                            |
+| wd:Q3332711  | medievalist                               |
+| wd:Q11774156 | memoirist                                 |
+| wd:Q1493121  | military historian                        |
+| wd:Q18932086 | military theorist                         |
+| wd:Q11781549 | minnesänger                               |
+| wd:Q1350157  | music critic                              |
+| wd:Q20198542 | music historian                           |
+| wd:Q20669622 | music journalist                          |
+| wd:Q16031530 | music theorist                            |
+| wd:Q12270170 | mutakallim                                |
+| wd:Q26425137 | mykenologist                              |
+| wd:Q24387326 | mythographer                              |
+| wd:Q17351648 | newspaper editor                          |
+| wd:Q15980158 | non-fiction writer                        |
+| wd:Q6625963  | novelist                                  |
+| wd:Q2004963  | numismatist                               |
+| wd:Q21272406 | paleoanthropologist                       |
+| wd:Q16254673 | pamphleteer                               |
+| wd:Q16267158 | papyrologist                              |
+| wd:Q24265174 | philosophy historian                      |
+| wd:Q957729   | photojournalist                           |
+| wd:Q551835   | physician writer                          |
+| wd:Q214917   | playwright                                |
+| wd:Q49757    | poet                                      |
+| wd:Q1209498  | poet lawyer                               |
+| wd:Q12901590 | poetaster                                 |
+| wd:Q4992409  | political editor                          |
+| wd:Q15973695 | political journalist                      |
+| wd:Q15994177 | political theorist                        |
+| wd:Q15958642 | political writer                          |
+| wd:Q17488316 | prehistorian                              |
+| wd:Q12144794 | prosaist                                  |
+| wd:Q16755977 | racial theorist                           |
+| wd:Q24702769 | radio journalist                          |
+| wd:Q3406651  | radio producer                            |
+| wd:Q17488465 | regional historian                        |
+| wd:Q24262594 | religious writer                          |
+| wd:Q42909    | reporter                                  |
+| wd:Q936371   | rhapsode                                  |
+| wd:Q15978391 | satirist                                  |
+| wd:Q18844224 | science fiction writer                    |
+| wd:Q17433421 | science journalist                        |
+| wd:Q3745071  | science writer                            |
+| wd:Q28389    | screenwriter                              |
+| wd:Q839935   | script doctor                             |
+| wd:Q7458488  | sex columnist                             |
+| wd:Q15949613 | short story writer                        |
+| wd:Q7508381  | sideline reporter                         |
+| wd:Q15981299 | singer-lyricist                           |
+| wd:Q488205   | singer-songwriter                         |
+| wd:Q947305   | skald                                     |
+| wd:Q2293636  | slam poet                                 |
+| wd:Q1366909  | soccer commentator                        |
+| wd:Q15978337 | social critic                             |
+| wd:Q17504992 | social historian                          |
+| wd:Q753110   | songwriter                                |
+| wd:Q175301   | speechwriter                              |
+| wd:Q17504998 | sport historian                           |
+| wd:Q7579803  | sports analyst                            |
+| wd:Q15941595 | sports columnist                          |
+| wd:Q2986228  | sports commentator                        |
+| wd:Q13219447 | sports journalist                         |
+| wd:Q11313148 | sportswriter                              |
+| wd:Q7596574  | staff writer                              |
+| wd:Q27915504 | story by                                  |
+| wd:Q7620399  | story editor                              |
+| wd:Q1771040  | stringer                                  |
+| wd:Q15979013 | surrealist writer                         |
+| wd:Q18668527 | talk show host                            |
+| wd:Q11122954 | tanka poet                                |
+| wd:Q1568338  | technical writer                          |
+| wd:Q19607300 | television columnist                      |
+| wd:Q18810130 | television critic                         |
+| wd:Q22976182 | television journalist                     |
+| wd:Q947873   | television presenter                      |
+| wd:Q17337766 | theatre critic                            |
+| wd:Q1234713  | theologian                                |
+| wd:Q16270720 | theoretical biologist                     |
+| wd:Q19350898 | theoretical physicist                     |
+| wd:Q18931911 | theorist                                  |
+| wd:Q22073916 | tragedy writer                            |
+| wd:Q23055218 | travel guide writer                       |
+| wd:Q3579035  | travel writer                             |
+| wd:Q1747339  | trobairitz                                |
+| wd:Q186370   | troubadour                                |
+| wd:Q1996467  | trouvère                                  |
+| wd:Q189459   | ulama                                     |
+| wd:Q3476620  | video game writer                         |
+| wd:Q619514   | video journalist                          |
+| wd:Q164236   | war correspondent                         |
+| wd:Q11496048 | war photographer                          |
+| wd:Q2556193  | wine critic                               |
+| wd:Q381353   | woman of letters                          |
+| wd:Q3589292  | women letter writer                       |
+| wd:Q36180    | writer                                    |
+| wd:Q27212012 | young adult writer                        |
+
+This list is amazing and disturbing at the same time.
+
+BTW: the query to get the subclasses of [[https://www.wikidata.org/wiki/Q7725634][literary work (Q7725634)]] is
+provided as [[https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples#All_subclasses_of_.22Literary_Work.22][an example]] ([[https://query.wikidata.org/#%2520%2520SELECT%2520%253Fs%2520%253Fdesc%250A%2520%2520WHERE%250A%2520%2520{%250A%2520%2520%2520%2520%253Fs%2520wdt%253AP279%2520wd%253AQ7725634%2520.%250A%2520%2520%2520%2520OPTIONAL%2520{%250A%2520%2520%2520%2520%2520%2520%253Fs%2520rdfs%253Alabel%2520%253Fdesc%2520filter%2520%2528lang%2528%253Fdesc%2529%2520%253D%2520%2522en%2522%2529.%250A%2520%2520%2520%2520}%250A%2520%2520}%250A%2520%2520ORDER%2520BY%2520%253Fs][SPARQL]]):
+
+#+BEGIN_SRC sparql
+  SELECT ?s ?desc
+  WHERE
+  {
+    ?s wdt:P279 wd:Q7725634 .
+    OPTIONAL {
+      ?s rdfs:label ?desc filter (lang(?desc) = "en").
+    }
+  }
+  ORDER BY ?s
+#+END_SRC
+
+
+*** the writer class hierarchy
+
+Let us visualise the subclasses of writer in a tree. First, we need to
+get pairs of subclasses ([[https://query.wikidata.org/#%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3FotherItem%20%3FotherItemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP279%20%3FotherItem%20.%0A%20%20%20%20%3FotherItem%20wdt%3AP279*%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%23%20subclass%28P279%29%20%28transitive%29%20of%20writer%28Q36180%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}%0A%20%20ORDER%20BY%20%3FitemLabel%0A][SPARQL]]):
+
+#+BEGIN_SRC sparql :url http://query.wikidata.org/sparql :format text/csv
+  #defaultView:Graph
+  SELECT ?item ?itemLabel ?otherItem ?otherItemLabel
+  WHERE
+  {
+    ?item wdt:P279 ?otherItem .
+    ?otherItem wdt:P279* wd:Q36180 .            # subclass(P279) (transitive) of writer(Q36180)
+    SERVICE wikibase:label {               # ... include the labels
+      bd:serviceParam wikibase:language "en"
+    }
+  }
+#+END_SRC
+
+Downloading the data:
+
+#+BEGIN_SRC sh :results silent
+  curl \
+      --header "Accept: text/tab-separated-values" \
+      --output wikidata_writer_pairs.tsv \
+      --globoff \
+       'https://query.wikidata.org/sparql?query=%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3FotherItem%20%3FotherItemLabel%0A%20%20WHERE%0A%20%20{%0A%20%20%20%20%3Fitem%20wdt%3AP279%20%3FotherItem%20.%0A%20%20%20%20%3FotherItem%20wdt%3AP279*%20wd%3AQ36180%20.%20%20%20%20%20%20%20%20%20%20%20%20%23%20subclass%28P279%29%20%28transitive%29%20of%20writer%28Q36180%29%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20{%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20...%20include%20the%20labels%0A%20%20%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%0A%20%20%20%20}%0A%20%20}'
+#+END_SRC
+
+And creating a [[http://www.graphviz.org/][GraphViz]] file to plot it:
+
+#+BEGIN_SRC python :results silent
+  vertices = dict()
+  edges = []
+
+  with open("wikidata_writer_pairs.tsv", "rt") as f:
+      for line in f:
+          # ignore first line
+          if line[0] != "?":
+              item, itemLabel, otherItem, otherItemLabel = line.strip().split('\t')
+              # shorten item ids
+              item = item[len("<http://www.wikidata.org/entity/"):-1]
+              otherItem = otherItem[len("<http://www.wikidata.org/entity/"):-1]
+              # clean labels
+              if itemLabel[0] == "\"":
+                  itemLabel = itemLabel[1:-len("\"@en")]
+              if otherItemLabel[0] == "\"":
+                  otherItemLabel = otherItemLabel[1:-len("\"@en")]
+              # add vertices
+              vertices[item] = itemLabel
+              vertices[otherItem] = otherItemLabel
+              # add edge
+              edges.append((item, otherItem))
+  # print graph
+  with open("wikidata_writer_graph.dot", "wt") as f:
+      print("digraph writers {", file=f)
+      print("  graph [overlap=none, rankdir=RL];", file=f)
+      for v in vertices:
+          print("  ", v, " [label=\"", vertices[v], "\"];", sep='', file=f)
+      for d, e in edges:
+          print("  ", d, " -> ", e, ";", sep='', file=f)
+      print("}", file=f)
+#+END_SRC
+
+#+BEGIN_SRC sh
+  dot -Tpng -owikidata_writer_graph.png wikidata_writer_graph.dot
+  dot -Tsvg -owikidata_writer_graph.svg wikidata_writer_graph.dot
+#+END_SRC
+
+#+CAPTION: Graph of all subclasses of writer
+#+NAME:   fig:writer_graph
+[[https://raw.githubusercontent.com/weltliteratur/weighing/master/wikidata_writer_graph.png]]
+
+[[file:wikidata_writer_graph.svg]]

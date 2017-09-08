@@ -1,0 +1,16 @@
+reset
+set grid y
+set datafile separator "\t"
+set xlabel 'Seitenanzahl'
+set ylabel 'Häufigkeit'
+set style data histogram
+set style fill solid 1.0 noborder
+set xtics rotate
+
+set term pngcairo enhanced size 1000,600 font "Arial,10"
+set out 'img/pages_16_de.png'
+plot 'pages_freq_16.tsv' using 2:xticlabels(1) title ''
+
+set term svg enhanced size 1000,600 font "Arial,10"
+set out 'img/pages_16_de.svg'
+replot

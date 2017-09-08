@@ -369,7 +369,7 @@ Bin pages in multiples of 16:
               if page > limit:
                   if bin != limit:
                       bin = limit
-                      binstr = ">= " + str(limit)
+                      binstr = str(limit) + " und mehr"
               elif page > bin:
                   if sumcount > 0:
                       print(binstr, sumcount, file=out, sep='\t')

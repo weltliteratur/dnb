@@ -29,7 +29,7 @@ set xtics rotate
 
 set term png enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16_de.png'
-plot '1001-books_number_of_books_per_16-step_page_range.csv' using 2:xticlabels(1) title ''
+plot '1001-books_number_of_books_per_16-step_page_range.tsv' using 2:xticlabels(1) title ''
 
 set term svg enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16_de.svg'
@@ -38,7 +38,7 @@ replot
 
 set term png enhanced size 1600,400 font "Arial,8"
 set out 'number_of_books_25_de.png'
-plot '1001-books_number_of_books_per_25-step_page_range.csv' using 2:xticlabels(1) title ''
+plot '1001-books_number_of_books_per_25-step_page_range.tsv' using 2:xticlabels(1) title ''
 
 set term svg enhanced size 1600,400 font "Arial,8"
 set out 'number_of_books_25_de.svg'
@@ -51,9 +51,25 @@ set y2label 'Anzahl Bücher (DNB)'
 
 set term png enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16_de_comp.png'
-plot '1001-books_number_of_books_per_16-step_page_range.csv' using 2:xticlabels(1) title '1001 Bücher',\
+plot '1001-books_number_of_books_per_16-step_page_range.tsv' using 2:xticlabels(1) title '1001 Bücher',\
      '../pages_freq_16.tsv' using 2:xticlabels(1) title 'DNB' axes x1y2
 
 set term svg enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16_de_comp.svg'
+replot
+
+# relative
+set y2tics
+set ylabel 'Anteil Bücher (1001 Bücher)'
+set format y "%2.0f%%"
+unset y2label
+unset y2tics
+
+set term png enhanced size 1000,600 font "Arial,10"
+set out 'number_of_books_16_de_comp_rel.png'
+plot '1001-books_number_of_books_per_16-step_page_range.tsv' using ($2/1001*100):xticlabels(1) title '1001 Bücher',\
+     '../pages_freq_16.tsv' using ($2/180219*100):xticlabels(1) title 'DNB'
+
+set term svg enhanced size 1000,600 font "Arial,10"
+set out 'number_of_books_16_de_comp_rel.svg'
 replot

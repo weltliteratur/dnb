@@ -11,6 +11,8 @@
 #+LaTeX_CLASS_OPTIONS: [a4paper,11pt]
 #+PANDOC_OPTIONS:
 
+* page lengths of novels in the DNB catalogue
+
 We analyse measure the number of pages of novels (i.e., fictional
 literary works) in the [[http://www.dnb.de/][German National Library]] (DNB).
 

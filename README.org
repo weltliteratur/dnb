@@ -358,7 +358,7 @@ replot
 Bin pages in multiples of 16:
 #+BEGIN_SRC python :results silent
   steps = 16
-  limit = 1000
+  limit = 1009
   with open("pages_freq_" + str(steps) + ".tsv", "wt") as out:
       with open("pages_freq.tsv", "rt") as f:
           bin = 0
@@ -367,13 +367,14 @@ Bin pages in multiples of 16:
           for line in f:
               page, count = map(int, line.strip().split())
               if page > limit:
-                  bin = limit
-                  binstr = ">" + str(limit)
+                  if bin != limit:
+                      bin = limit
+                      binstr = ">= " + str(limit)
               elif page > bin:
                   if sumcount > 0:
                       print(binstr, sumcount, file=out, sep='\t')
                   bin += steps
-                  binstr = str(bin-steps) + "-" + str(bin)
+                  binstr = str(bin-steps+1) + "-" + str(bin)
                   sumcount = 0
               sumcount += count
           print(binstr, sumcount, file=out, sep='\t')

@@ -11,16 +11,53 @@
 #+LaTeX_CLASS_OPTIONS: [a4paper,11pt]
 #+PANDOC_OPTIONS:
 
-* DONE analysis
-data filters:
-1. ~issued_norm~ >= 1913
-2. author has [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and a [[https://www.wikidata.org/wiki/Help:Sitelinks][sitelink]] to Wikipedia
-3. work has a page number (extent)
-4. DNB property [[http://www.rdaregistry.info/Elements/u/#P60526][P60493]] contains "[rR]oman"
+We analyse measure the number of pages of novels (i.e., fictional
+literary works) in the [[http://www.dnb.de/][German National Library]] (DNB).
 
-for publishers:
-5. limit maximal number of pages per work to exclude outliers (e.g., to 5000)
+It is not trivial to extract all novels from a big catalogue like that
+of the German National library. "Librarians estimate that genre
+information is present in the expected MARC field for less than a
+quarter of the volumes in HathiTrust Digital Library," ([[https://arxiv.org/abs/1309.3323][Underwood et
+al. 2013]]) and we encounter the same problem, which calls for an
+innovative solution.
 
+Our approach is to
+1. extract a list of writers from [[https://www.wikidata.org/][Wikidata]] together with their GND id
+2. download [[http://www.dnb.de/EN/Service/DigitaleDienste/LinkedData/linkeddata_node.html][linked data about the DNB books]]
+3. join the writer list with the list of books using the GND id
+
+This repository documents the evolution of this process, which turned
+out to be not as straightforward as it seems. One reason is the size
+of the data and the complexity of queries.
+
+* overview on aproaches
+These are the different approaches we have tried, ordered chronologically:
+1. [[sparql][querying Wikidata using a SPARQL endpoint]]
+2. [[writer][extracting authors from the Wikidata dump with an occupation property of a subclass of Writer]]
+3. [[wikide][restricting to authors with a page in the German Wikipedia and works classified as "Roman"]]
+
+This page shows the results for the latest approach which uses the
+tools and methods developed before with different restrictions to
+authors and works. Details on data extraction, cleansing, and joining
+are described in [[wikide][one of the earlier documents]].
+
+We have also [[1001-books][compared page lengths against the "1001 Books You Must
+Read Before You Die"]].
+
+* data filters
+We restrict our analysis to works from the DNB dump which adhere to
+the following conditions:
+1. They were published in or after 1913 (~issued_norm~ >= 1913).
+2. At least one of their authors has a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and a
+   [[https://www.wikidata.org/wiki/Help:Sitelinks][sitelink]] to Wikipedia.
+3. The work has a page number (~extent~).
+4. The works DNB property [[http://www.rdaregistry.info/Elements/u/#P60526][P60493]] contains the character sequence
+   "roman" or "Roman".
+
+When analysing publishers we further limit the maximal number of pages
+per work to 5000 to exclude errors.
+
+* results
 ** DONE novels
 All values of the P60493 property for items that fulfill our conditions:
 #+BEGIN_SRC sh :results silent
@@ -199,7 +236,7 @@ replot
 
 
 # relative frequency
-set ylabel 'items' 
+set ylabel 'items'
 set format y "%2.0f%%"
 
 set term pngcairo enhanced size 800,600

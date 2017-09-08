@@ -589,56 +589,56 @@ than 1000 pages vs. between 100 and 400 pages.
 
 | author                     | items |
 |----------------------------+-------|
-| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]]                |  1932 |
-| [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]]              |  1930 |
-| [[https://www.wikidata.org/wiki/Q9061][Karl Marx]]                  |  1198 |
-| [[https://www.wikidata.org/wiki/Q34787][Friedrich Engels]]           |  1198 |
-| [[https://www.wikidata.org/wiki/Q1717270][Jürgen Hesse]]               |   380 |
-| [[https://www.wikidata.org/wiki/Q1578988][Hans Christian Schrader]]    |   380 |
-| [[https://www.wikidata.org/wiki/Q264855][Maj Sjöwall]]                |   229 |
-| [[https://www.wikidata.org/wiki/Q553730][Per Wahlöö]]                 |   227 |
-| [[https://www.wikidata.org/wiki/Q1686762][Thomas Narcejac]]            |   122 |
-| [[https://www.wikidata.org/wiki/Q1283738][Pierre Boileau]]             |   122 |
-| [[https://www.wikidata.org/wiki/Q937][Albert Einstein]]            |   115 |
-| [[https://www.wikidata.org/wiki/Q6529342][Johanna Paungger]]           |   115 |
-| [[https://www.wikidata.org/wiki/Q15456701][Thomas Poppe]]               |   115 |
-| [[https://www.wikidata.org/wiki/Q61994][Wolfgang Hohlbein]]          |   113 |
-| [[https://www.wikidata.org/wiki/Q1394][Vladimir Lenin]]             |   109 |
-| [[https://www.wikidata.org/wiki/Q1648610][Aljoscha Long]]              |   108 |
-| [[https://www.wikidata.org/wiki/Q1448174][Ronald Schweppe]]            |   108 |
-| [[https://www.wikidata.org/wiki/Q152388][Theodor W. Adorno]]          |   106 |
-| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |   105 |
-| [[https://www.wikidata.org/wiki/Q89891][Cheryl Benard]]              |   104 |
-| [[https://www.wikidata.org/wiki/Q88696][Edit Schlaffer]]             |   104 |
-| [[https://www.wikidata.org/wiki/Q113764][Mira Lobe]]                  |    97 |
-| [[https://www.wikidata.org/wiki/Q71804][K. H. Scheer]]               |    95 |
-| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |    90 |
-| [[https://www.wikidata.org/wiki/Q57317][Karl Rahner]]                |    88 |
-| [[https://www.wikidata.org/wiki/Q1594527][Heike Hohlbein]]             |    88 |
-| [[https://www.wikidata.org/wiki/Q71309][Walter Ernsting]]            |    86 |
-| [[https://www.wikidata.org/wiki/Q2494][Benedict XVI]]               |    82 |
-| [[https://www.wikidata.org/wiki/Q1288981][Rolf Rettich]]               |    80 |
-| [[https://www.wikidata.org/wiki/Q76826][Max Horkheimer]]             |    79 |
-| [[https://www.wikidata.org/wiki/Q9215][Sigmund Freud]]              |    75 |
-| [[https://www.wikidata.org/wiki/Q778716][Carlo Fruttero]]             |    71 |
-| [[https://www.wikidata.org/wiki/Q1560358][Günter Braun]]               |    71 |
-| [[https://www.wikidata.org/wiki/Q123267][Johanna Braun]]              |    71 |
-| [[https://www.wikidata.org/wiki/Q1227036][Franco Lucentini]]           |    71 |
-| [[https://www.wikidata.org/wiki/Q742632][Douglas Preston]]            |    66 |
-| [[https://www.wikidata.org/wiki/Q465488][Leopold Infeld]]             |    66 |
-| [[https://www.wikidata.org/wiki/Q1448511][Franz Petermann]]            |    66 |
-| [[https://www.wikidata.org/wiki/Q793895][Lincoln Child]]              |    64 |
-| [[https://www.wikidata.org/wiki/Q57235][Clemens Brentano]]           |    63 |
-| [[https://www.wikidata.org/wiki/Q1672582][Irene Zimmermann]]           |    62 |
-| [[https://www.wikidata.org/wiki/Q1577117][Hans-Günther Zimmermann]]    |    62 |
-| [[https://www.wikidata.org/wiki/Q1895432][Margret Rettich]]            |    61 |
-| [[https://www.wikidata.org/wiki/Q1690555][Joachim Wagner]]             |    60 |
-| [[https://www.wikidata.org/wiki/Q70988][Ludwig Achim von Arnim]]     |    56 |
-| [[https://www.wikidata.org/wiki/Q30073243][Claus Schnabel]]             |    55 |
-| [[https://www.wikidata.org/wiki/Q2802376][Susi Weigel]]                |    55 |
-| [[https://www.wikidata.org/wiki/Q107295][Rüdiger Dahlke]]             |    55 |
-| [[https://www.wikidata.org/wiki/Q931452][Evgeny Lifshitz]]            |    54 |
-| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |    54 |
+| [[https://www.wikidata.org/wiki/Q5879][Johann Wolfgang von Goethe]] |  5160 |
+| [[https://www.wikidata.org/wiki/Q78484][Rudolf Steiner]]             |  3992 |
+| [[https://www.wikidata.org/wiki/Q25973][Hermann Hesse]]              |  3363 |
+| [[https://www.wikidata.org/wiki/Q60753][Heinz G. Konsalik]]          |  3190 |
+| [[https://www.wikidata.org/wiki/Q37030][Thomas Mann]]                |  2609 |
+| [[https://www.wikidata.org/wiki/Q9061][Karl Marx]]                  |  2577 |
+| [[https://www.wikidata.org/wiki/Q34787][Friedrich Engels]]           |  2568 |
+| [[https://www.wikidata.org/wiki/Q78491][Stefan Zweig]]               |  2532 |
+| [[https://www.wikidata.org/wiki/Q22670][Friedrich Schiller]]         |  2047 |
+| [[https://www.wikidata.org/wiki/Q905][Franz Kafka]]                |  2020 |
+| [[https://www.wikidata.org/wiki/Q6701][Jacob Grimm]]                |  2020 |
+| [[https://www.wikidata.org/wiki/Q26993][Theodor Storm]]              |  1967 |
+| [[https://www.wikidata.org/wiki/Q38757][Bertolt Brecht]]             |  1948 |
+| [[https://www.wikidata.org/wiki/Q6714][Wilhelm Grimm]]              |  1943 |
+| [[https://www.wikidata.org/wiki/Q76546][Erich Kästner]]              |  1873 |
+| [[https://www.wikidata.org/wiki/Q42747][Heinrich Böll]]              |  1796 |
+| [[https://www.wikidata.org/wiki/Q9358][Friedrich Nietzsche]]        |  1788 |
+| [[https://www.wikidata.org/wiki/Q692][William Shakespeare]]        |  1700 |
+| [[https://www.wikidata.org/wiki/Q76483][Rainer Maria Rilke]]         |  1689 |
+| [[https://www.wikidata.org/wiki/Q110382][Marie Louise Fischer]]       |  1678 |
+| [[https://www.wikidata.org/wiki/Q122370][Gottfried Keller]]           |  1666 |
+| [[https://www.wikidata.org/wiki/Q45330][Anselm Grün]]                |  1605 |
+| [[https://www.wikidata.org/wiki/Q9554][Martin Luther]]              |  1590 |
+| [[https://www.wikidata.org/wiki/Q9215][Sigmund Freud]]              |  1568 |
+| [[https://www.wikidata.org/wiki/Q76632][Theodor Fontane]]            |  1549 |
+| [[https://www.wikidata.org/wiki/Q150471][E. T. A. Hoffmann]]          |  1533 |
+| [[https://www.wikidata.org/wiki/Q35064][Agatha Christie]]            |  1531 |
+| [[https://www.wikidata.org/wiki/Q22714][Karl May]]                   |  1503 |
+| [[https://www.wikidata.org/wiki/Q44403][Heinrich Heine]]             |  1388 |
+| [[https://www.wikidata.org/wiki/Q93652][Christine Nöstlinger]]       |  1344 |
+| [[https://www.wikidata.org/wiki/Q65078][Hedwig Courths-Mahler]]      |  1302 |
+| [[https://www.wikidata.org/wiki/Q57966][Wilhelm Hauff]]              |  1290 |
+| [[https://www.wikidata.org/wiki/Q9312][Immanuel Kant]]              |  1280 |
+| [[https://www.wikidata.org/wiki/Q1515191][Gert Fritz Unger]]           |  1264 |
+| [[https://www.wikidata.org/wiki/Q28494][Heinrich von Kleist]]        |  1250 |
+| [[https://www.wikidata.org/wiki/Q77206][Janosch]]                    |  1210 |
+| [[https://www.wikidata.org/wiki/Q192069][Enid Blyton]]                |  1210 |
+| [[https://www.wikidata.org/wiki/Q109540][Wilhelm Busch]]              |  1191 |
+| [[https://www.wikidata.org/wiki/Q168542][Adalbert Stifter]]           |  1184 |
+| [[https://www.wikidata.org/wiki/Q47293][Erich Maria Remarque]]       |  1181 |
+| [[https://www.wikidata.org/wiki/Q1394][Vladimir Lenin]]             |  1117 |
+| [[https://www.wikidata.org/wiki/Q123053][Johanna Spyri]]              |  1106 |
+| [[https://www.wikidata.org/wiki/Q991][Fyodor Dostoyevsky]]         |  1088 |
+| [[https://www.wikidata.org/wiki/Q7243][Leo Tolstoy]]                |  1082 |
+| [[https://www.wikidata.org/wiki/Q9711][Honoré de Balzac]]           |  1081 |
+| [[https://www.wikidata.org/wiki/Q115483][Max Frisch]]                 |  1079 |
+| [[https://www.wikidata.org/wiki/Q45765][Jack London]]                |  1071 |
+| [[https://www.wikidata.org/wiki/Q77024][Lion Feuchtwanger]]          |  1048 |
+| [[https://www.wikidata.org/wiki/Q271824][Edgar Wallace]]              |  1041 |
+| [[https://www.wikidata.org/wiki/Q41532][Carl Jung]]                  |   996 |
 
 *** by page count
 

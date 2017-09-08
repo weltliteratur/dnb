@@ -67,7 +67,7 @@ All values of the P60493 property for items that fulfill our conditions:
 		 -p "issued_norm,pages_norm,P60493,creator_wd.*.sitelinks" \
 		 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1913) print $3}' | sort -n | uniq -c | sort -nr\
-	    > P60493.tsv
+									   > P60493.tsv
 #+END_SRC
 
 Print the top matches:
@@ -142,7 +142,8 @@ Print the top matches:
   ./json2json.py -f \
 		 -p "issued_norm,pages_norm,publisher,P60493,creator_wd.*.sitelinks" \
 		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913 && $3 == "Reclam") print $4}' | sort | uniq -c | sort -nr > reclam.tsv
+      | awk -F'\t' '{if ($1 >= 1913 && $3 == "Reclam") print $4}' | sort | uniq -c | sort -nr \
+											  > reclam.tsv
 #+END_SRC
 
 ** DONE items
@@ -353,6 +354,52 @@ set out 'img/pages_000-200.svg'
 replot
 #+END_SRC
 
+*** histogram
+Bin pages in multiples of 16:
+#+BEGIN_SRC python :results silent
+  steps = 16
+  limit = 1000
+  with open("pages_freq_" + str(steps) + ".tsv", "wt") as out:
+      with open("pages_freq.tsv", "rt") as f:
+          bin = 0
+          binstr = ""
+          sumcount = 0
+          for line in f:
+              page, count = map(int, line.strip().split())
+              if page > limit:
+                  bin = limit
+                  binstr = ">" + str(limit)
+              elif page > bin:
+                  if sumcount > 0:
+                      print(binstr, sumcount, file=out, sep='\t')
+                  bin += steps
+                  binstr = str(bin-steps) + "-" + str(bin)
+                  sumcount = 0
+              sumcount += count
+          print(binstr, sumcount, file=out, sep='\t')
+#+END_SRC
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set grid y
+set datafile separator "\t"
+set xlabel 'page ranges'
+set ylabel 'number of books'
+set style data histogram filled
+set style fill solid 1.0 noborder lt -1
+set xtics rotate
+
+set term pngcairo enhanced size 1000,600 font "Arial,10"
+set out 'img/pages_16.png'
+plot 'pages_freq_16.tsv' using 2:xticlabels(1) title ''
+
+set term svg enhanced size 1000,600 font "Arial,10"
+set out 'img/pages_16.svg'
+replot
+#+END_SRC
+
+[[img/pages_16.png]]
+
 **** page distribution
 [[img/pages.png]]
 
@@ -399,7 +446,7 @@ replot
 
 [[img/issued_pages_1913.png]]
 
-** DONE [[../1001-books]]
+** DONE [[1001-books]]
 
 Plot cumulative frequency distribution of the number of pages:
 #+BEGIN_SRC gnuplot :results silent

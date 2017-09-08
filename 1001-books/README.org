@@ -46,7 +46,7 @@ set ylabel 'frequency'
 
 plot '<sort -n counts.tsv' using 1:2 with points pt 7 title ''
 
-set term png enhanced size 800,600
+set term pngcairo enhanced size 800,600
 set out 'number_of_books.png'
 replot
 #+END_SRC
@@ -70,7 +70,7 @@ set style data histogram filled
 set style fill solid 1.0 noborder lt -1
 set xtics rotate
 
-set term png enhanced size 1000,600 font "Arial,10"
+set term pngcairo enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16.png'
 plot '1001-books_number_of_books_per_16-step_page_range.csv' using 2:xticlabels(1) title ''
 
@@ -78,7 +78,7 @@ set term svg enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16.svg'
 replot
 
-set term png enhanced size 1600,400 font "Arial,8"
+set term pngcairo enhanced size 1600,400 font "Arial,8"
 set out 'number_of_books_25.png'
 plot '1001-books_number_of_books_per_25-step_page_range.csv' using 2:xticlabels(1) title ''
 

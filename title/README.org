@@ -45,6 +45,122 @@ With the same conditions [[README.org][as before]] we extract the titles:
 #+END_SRC
 
 
+*** nouns
+| noun      | frequency |
+|-----------+-----------|
+| Liebe     |      3117 |
+| Mann      |      1906 |
+| Frau      |      1686 |
+| Tod       |      1537 |
+| Nacht     |      1505 |
+| Leben     |      1496 |
+| Welt      |      1188 |
+| Haus      |      1158 |
+| Zeit      |      1037 |
+| Schatten  |      1029 |
+| Herz      |       983 |
+| Mädchen   |       885 |
+| Himmel    |       818 |
+| Glück     |       814 |
+| Geheimnis |       782 |
+| Mord      |       713 |
+| Land      |       708 |
+| Stadt     |       692 |
+| Tag       |       655 |
+| Tage      |       654 |
+*** 1
+| unigram   | frequency |
+|-----------+-----------|
+| für       |      1657 |
+| Mann      |      1506 |
+| Liebe     |      1414 |
+| Frau      |      1126 |
+| Tod       |      1016 |
+| über      |       920 |
+| letzte    |       898 |
+| Haus      |       806 |
+| Leben     |       761 |
+| de        |       698 |
+| Schatten  |       691 |
+| Geheimnis |       645 |
+| Herz      |       632 |
+| Nacht     |       622 |
+| Mädchen   |       618 |
+| Zeit      |       577 |
+| Mord      |       565 |
+| schwarze  |       529 |
+| Herr      |       516 |
+| La        |       502 |
+*** 2
+| bigram        | frequency |
+|---------------+-----------|
+| Der Mann      |       702 |
+| Das Geheimnis |       550 |
+| Das Haus      |       522 |
+| Die Frau      |       436 |
+| Das Mädchen   |       382 |
+| Der Tod       |       364 |
+| Der letzte    |       327 |
+| Ein Mann      |       300 |
+| Haus der      |       300 |
+| Die letzte    |       299 |
+| Der schwarze  |       257 |
+| Geheimnis der |       257 |
+| Im Schatten   |       249 |
+| Zeit der      |       241 |
+| Die Nacht     |       239 |
+| Das Lied      |       237 |
+| Das Herz      |       236 |
+| Maigret und   |       234 |
+| Der Fall      |       229 |
+| Mann der      |       221 |
+*** 3
+| trigram            | frequency |
+|--------------------+-----------|
+| Das Geheimnis der  |       238 |
+| Das Haus der       |       224 |
+| Der Mann der       |       189 |
+| Das Geheimnis des  |       175 |
+| Die Tochter des    |       160 |
+| Im Schatten des    |       128 |
+| Der Mann im        |       128 |
+| Das Lied der       |       125 |
+| Die Frau des       |       124 |
+| Die Reise nach     |       108 |
+| Der Mann mit       |       108 |
+| Das Erbe der       |        98 |
+| Maigret und der    |        97 |
+| Der Tod des        |        95 |
+| Das Tal der        |        94 |
+| Die Stunde der     |        93 |
+| Don Camillo und    |        93 |
+| Im Schatten der    |        89 |
+| Modesty Blaise die |        89 |
+| des Königs Henri   |        85 |
+*** 4
+| 4-gram                       | frequency |
+|------------------------------+-----------|
+| Der Richter und sein         |        75 |
+| Die letzten Tage von         |        66 |
+| Auf der Suche nach           |        62 |
+| Das Bildnis des Dorian       |        58 |
+| Modesty Blaise die Lady      |        51 |
+| Perry Mason und die          |        48 |
+| das den Menschen die         |        47 |
+| seltsame Geschichte von den  |        47 |
+| Kind das den Menschen        |        47 |
+| dem Kind das den             |        47 |
+| Streit um den Sergeanten     |        46 |
+| von dem Kind das             |        46 |
+| Menschen die gestohlene Zeit |        46 |
+| Der Streit um den            |        46 |
+| den Menschen die gestohlene  |        46 |
+| und von dem Kind             |        46 |
+| die seltsame Geschichte von  |        45 |
+| Momo oder die seltsame       |        45 |
+| oder die seltsame Geschichte |        45 |
+| Die Jugend des Königs        |        45 |
+
 ** temporal evolution
 
 Overall counts per year:

@@ -3200,3 +3200,12 @@ than 1000 pages vs. between 100 and 400 pages.
 |------------+-------------+----------------+-------|
 | 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.0337 |
 | DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.0062 |
+** TODO occupations
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f \
+		 -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+		 -c "creator_wd.*.name,creator_wd.*.occupation_writer"\
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1913) print $2"\t"$3"\t"}' \
+	    > author_occupations_stats.tsv
+#+END_SRC

@@ -1,0 +1,87 @@
+#+TITLE:
+#+AUTHOR: 
+#+EMAIL: 
+#+KEYWORDS:
+#+DESCRIPTION:
+#+TAGS:
+#+LANGUAGE: en
+#+OPTIONS: toc:nil ':t H:5
+#+STARTUP: hidestars overview
+#+LaTeX_CLASS: scrartcl
+#+LaTeX_CLASS_OPTIONS: [a4paper,11pt]
+#+PANDOC_OPTIONS:
+
+* title words
+Current data processing:
+- tokenize texts at ' ' (space) into words
+- ignore words surrounded by "[" and "]"
+- remove non-word characters (\W) at the start and end of words
+- ignore empty words or words completely consisting of non-word characters
+
+Open questions regarding data processing:
+- Consider works or books? (deduplication can be complex ... we could
+  simply deduplicate based on matching title and author and only keep
+  the first book)
+- title normalisation
+  - ignore punctuation?
+    - punctuation might be relevant for n-grams which should probably
+      not span punctuation marks like ? or .
+  - ignore case of letters?
+
+** data extraction
+With the same conditions [[README.org][as before]] we extract the titles:
+
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f \
+		  -p "issued_norm,pages_norm,P60493,creator_wd.*.sitelinks,title" \
+		  DNBTitel_P60493_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1913 && $3 ~ /[rR]oman/) print $1"\t"$5}' > year_title.tsv
+#+END_SRC
+
+** most frequent n-grams
+
+#+BEGIN_SRC sh :results output
+  ./ngrams.py < year_title.tsv
+#+END_SRC
+
+
+** temporal evolution
+
+Overall counts per year:
+#+BEGIN_SRC sh :results silent
+  sort year_title.tsv | datamash -g1 count 1 > year_title_counts.tsv
+#+END_SRC
+
+#+BEGIN_SRC sh :results silent
+  for term in Liebe Herz Tod Leben Krieg Frieden; do
+    grep $term year_title.tsv | cut -f1 | sort | datamash -g1 count 1 | join - year_title_counts.tsv > year_title_$term.tsv
+  done
+#+END_SRC
+
+#+BEGIN_SRC gnuplot :results silent
+reset
+set grid
+#set datafile separator ""
+set xlabel 'year'
+set ylabel 'books'
+set format y "%2.1f%%"
+#set key left
+set xrange [1910:2020]
+set xtics 1910,10
+
+set term pngcairo enhanced size 800,600
+set out 'year_title.png'
+plot 'year_title_Liebe.tsv'   using 1:(($2/$3)*100) with line title 'Liebe',\
+     'year_title_Herz.tsv'    using 1:(($2/$3)*100) with line title 'Herz',\
+     'year_title_Leben.tsv'   using 1:(($2/$3)*100) with line title 'Leben',\
+     'year_title_Tod.tsv'     using 1:(($2/$3)*100) with line title 'Tod',\
+     'year_title_Krieg.tsv'   using 1:(($2/$3)*100) with line title 'Krieg',\
+     'year_title_Frieden.tsv' using 1:(($2/$3)*100) with line title 'Frieden'
+
+set term svg enhanced size 800,600
+set out 'year_title.svg'
+replot
+#+END_SRC
+
+relative frequency:
+[[year_title.png]]

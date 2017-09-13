@@ -11,6 +11,8 @@
 # Author: rja
 #
 # Changes:
+# 2017-09-13 (rja)
+# - add additional filtering step after cutting
 # 2017-08-25 (rja)
 # - added support to split items (e.g., co-authors) (--cut)
 # 2017-08-24 (rja)
@@ -30,7 +32,7 @@
 # 2017-06-21 (rja)
 # - initial version
 
-version = "0.0.4"
+version = "0.0.5"
 
 import argparse
 import json
@@ -325,6 +327,9 @@ if __name__ == '__main__':
             items = gen_filter(items)
         if args.cut:
             items = gen_cut(items, args.print.split(","), args.cut.split(","), args.item_sep)
+        # FIXME: check whether first filtering can be removed
+        if args.filter:
+            items = gen_filter(items)
         dump_cols(items, args.sep)
     else:
         if args.elastic:

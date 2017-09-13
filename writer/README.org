@@ -3200,48 +3200,46 @@ than 1000 pages vs. between 100 and 400 pages.
 |------------+-------------+----------------+-------|
 | 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.0337 |
 | DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.0062 |
-** TODO occupations
+** DONE occupations
 Extract:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f \
 		 -p "issued_norm,pages_norm,creator_wd.*.id,creator_wd.*.occupation_writer" \
 		 -c "creator_wd.*.id,creator_wd.*.occupation_writer"\
 		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913) {gsub(/,.*/, "", $4); print $3"\t"$4"\t"$2}}' \
+      | awk -F'\t' '{if ($1 >= 1913 && $2 <= 5000) {gsub(/,.*/, "", $4); print $3"\t"$4"\t"$2}}' \
 	    > author_occupations.tsv
 #+END_SRC
 
 Count:
 #+BEGIN_SRC sh
-  LC_ALL=C datamash -s -g1,2 count 3 mean 3 sum 3 < author_occupations.tsv > author_occupations_stats.tsv
-  awk -F'\t' '{sum[$2]+=$5; count[$2]+=1; pcount[$2]+=$3} END {for (p in sum) printf("%s\t%s\t%s\t%s\t%s\n", count[p], pcount[p], sum[p], int(sum[p]/pcount[p]), p)}' author_occupations_stats.tsv > occupations_stats.tsv
-  sort -rn occupations_stats.tsv | head -n20
+  LC_ALL=C datamash -s -g2 countunique 1 count 2 sum 3 mean 3 median 3 q1 3 q3 3 min 3 max 3 < author_occupations.tsv | sort -t$'\t' -nrk2 | head -n20
 #+END_SRC
 
-Plot:
+Table:
 #+TBLNAME:occupations
-| occupation                  | people |  books |     pages | mean pages |
-|-----------------------------+--------+--------+-----------+------------|
-| writer                      |  23988 | 502389 | 115075229 |        229 |
-| journalist                  |   7040 |  96522 |  23122118 |        239 |
-| historian                   |   4691 |  33445 |   8407044 |        251 |
-| theologian                  |   3304 |  51627 |   9778274 |        189 |
-| poet                        |   2794 |  63918 |  12729171 |        199 |
-| art historian               |   2287 |  21165 |   3776973 |        178 |
-| screenwriter                |   2051 |  41553 |  10150555 |        244 |
-| non-fiction writer          |   1740 |  26179 |   6024093 |        230 |
-| translator                  |   1535 |  26961 |   5539519 |        205 |
-| novelist                    |   1211 |  37813 |  12025521 |        318 |
-| archaeologist               |    982 |   6205 |   1123262 |        181 |
-| historian of the modern age |    737 |   7808 |   2233148 |        286 |
-| television presenter        |    680 |   7556 |   1701370 |        225 |
-| medievalist                 |    502 |   4210 |   1031582 |        245 |
-| church historian            |    463 |   4713 |   1013817 |        215 |
-| playwright                  |    452 |  25094 |   5112597 |        203 |
-| opinion journalist          |    441 |   5110 |   1033536 |        202 |
-| regional historian          |    387 |   3299 |    662127 |        200 |
-| legal historian             |    330 |   3226 |    766138 |        237 |
-| literary historian          |    315 |   3802 |    907947 |        238 |
+| occupation                  | people |  books |     pages | mean pages | median pages |  q1 |     q3 | min |  max |
+|-----------------------------+--------+--------+-----------+------------+--------------+-----+--------+-----+------|
+| writer                      |  23988 | 502385 | 114811542 |        229 |          191 | 109 |    310 |   1 | 4292 |
+| journalist                  |   7040 |  96521 |  23109110 |        239 |          217 | 127 |    319 |   1 | 3376 |
+| historian                   |   4691 |  33445 |   8407044 |        251 |          215 |  96 |    353 |   1 | 2536 |
+| theologian                  |   3304 |  51627 |   9778274 |        189 |          152 |  71 |    259 |   1 | 2661 |
+| poet                        |   2794 |  63917 |  12707251 |        199 |          153 |  80 |    266 |   1 | 4290 |
+| art historian               |   2287 |  21164 |   3767667 |        178 |          131 |  48 | 255.25 |   1 | 1691 |
+| screenwriter                |   2051 |  41552 |   9911315 |        239 |          206 | 128 |    317 |   1 | 1711 |
+| non-fiction writer          |   1740 |  26179 |   6024093 |        230 |          198 | 118 |    298 |   1 | 3296 |
+| translator                  |   1535 |  26961 |   5539519 |        205 |          167 |  92 |    271 |   1 | 1853 |
+| novelist                    |   1211 |  37811 |  11671572 |        309 |          280 | 175 |    399 |   1 | 2021 |
+| archaeologist               |    982 |   6205 |   1123262 |        181 |          138 |  54 |    264 |   1 | 1420 |
+| historian of the modern age |    737 |   7808 |   2233148 |        286 |          254 | 128 |    392 |   3 | 1607 |
+| television presenter        |    680 |   7556 |   1701370 |        225 |          205 | 127 |    301 |   2 | 1067 |
+| medievalist                 |    502 |   4209 |   1026456 |        244 |          207 |  89 |    350 |   2 | 1423 |
+| church historian            |    463 |   4713 |   1013817 |        215 |          166 |  61 |    311 |   2 | 1302 |
+| playwright                  |    452 |  25094 |   5112597 |        204 |          156 |  95 |    255 |   1 | 3360 |
+| opinion journalist          |    441 |   5110 |   1033536 |        202 |          184 |  85 |    282 |   2 | 1531 |
+| regional historian          |    387 |   3299 |    662127 |        201 |          149 |  56 |    287 |   2 | 1580 |
+| legal historian             |    330 |   3226 |    766138 |        237 |          186 |  73 |    339 |   3 | 2998 |
+| literary historian          |    315 |   3802 |    907947 |        239 |          190 |  78 |    346 |   2 | 1779 |
 
 Plot:
 #+BEGIN_SRC gnuplot :results silent :var data=occupations
@@ -3249,16 +3247,21 @@ reset
 set term pngcairo enhanced size 800,600
 set out 'occupations.png'
 
-set grid
+set grid y
 set datafile separator "\t"
 set xlabel 'occupation'
-set ylabel 'mean number of pages'
-set style data histogram
-set style fill solid 1.0 noborder
+set ylabel 'number of pages'
+set style fill solid .2 noborder
+set boxwidth .6
 set xtics rotate by 45 right
 set yrange [0:]
+set offset 0.8,0.8
 
-plot data using 5:xticlabels(1) title ''
+#plot data using 5:xticlabels(1) title '',\
+#  data using 10:xticlabels(1) title ''
+
+plot data using :7:7:8:8:xticlabels(1) with candlesticks lt 2 lw 2 notitle,\
+     data using :6:6:6:6:xticlabels(1) with candlesticks lt 2 lw 2 notitle
 
 set term svg enhanced size 800,600
 set out 'occupations.svg'

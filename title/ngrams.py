@@ -9,16 +9,19 @@
 # Author: rja 
 #
 # Changes:
+# 2017-09-13 (rja)
+# - added command line support
+# - added duplicate removal
 # 2017-09-12 (rja)
 # - added punctuation cleansing
 # - added counting of nouns
 # 2017-09-11 (rja)
 # - initial version 
 
-version = "0.0.1"
+version = "0.0.3"
 
 import re
-import fileinput
+import argparse
 from collections import Counter
 
 re_punct_start = re.compile("^\W+", re.UNICODE)
@@ -33,9 +36,10 @@ def get_stopwords(fname):
             stop.add(line.strip())
     return stop
 
-def gen_lines():
-    for line in fileinput.input():
-        yield line
+def gen_lines(fname):
+    with open(fname, "rt", encoding="utf-8") as f:
+        for line in f:
+            yield line
 
 def gen_text(lines):
     for line in lines:
@@ -70,12 +74,21 @@ def clean_word(word):
         return None
     return word
 
+# remove duplicates
+def gen_filter(texts, sep=' '):
+    seen = set()
+    for text in texts:
+        string = ' '.join(text)
+        if string not in seen:
+            seen.add(string)
+            yield text
+
 def print_words(texts):
     for w in texts:
         for ww in w:
             print(ww)
 
-def print_counts(ngrams, nouns, topk, sep='\t'):
+def print_counts(ngrams, nouns, topk, sep):
     print("*** nouns")
     for val, ct in nouns.most_common(topk):
         print(ct, val, sep=sep)
@@ -85,51 +98,53 @@ def print_counts(ngrams, nouns, topk, sep='\t'):
         for val, ct in count.most_common(topk):
             print(ct, val, sep=sep)
 
-#stop = get_stopwords('german_stopwords_full.txt')
-stop = get_stopwords('/home/rja/nltk_data/corpora/stopwords/german')
-
-def stopwords(words):
-    # are all of them stopwords?
-    return all([word.lower() in stop for word in words])
-
-def count_ngrams(ngrams, text, n):
+def count_ngrams(ngrams, text, n, stopwords):
     l = len(text)
     for i, p in enumerate(text):
         for k, counts in enumerate(ngrams):
             j = i + k + 1
             if j < l:
                 words = text[i:j]
-                if not stopwords(words):
+                # all stopwords?
+                if not all([word.lower() in stopwords for word in words]):
                     counts[' '.join(words)] += 1
 
-def count_nouns(nouns, text):
+def count_nouns(nouns, text, stopwords):
     for word in text:
-        # FIXME: isupper() only works for A-Z
-        if word.lower() not in stop and word[0:1].isupper():
+        if word.lower() not in stopwords and (word[0:1].isupper() or word[0:1] in ('Ä', 'Ö', 'Ü')):
             nouns[word] += 1
     
-def count(texts, n):
+def count(texts, n, fstopwords):
+    stopwords = get_stopwords(fstopwords)
     ngrams = [Counter() for k in range(n)]
     nouns = Counter()
     
     for text in texts:
-        count_ngrams(ngrams, text, n)
-        count_nouns(nouns, text)
+        count_ngrams(ngrams, text, n, stopwords)
+        count_nouns(nouns, text, stopwords)
         
     return ngrams, nouns
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Compute text statistics.', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('input', type=str, help='input file')
+    parser.add_argument('-d', '--deduplicate', action="store_true", help="remove duplicates")
+    parser.add_argument('-k', '--topk', type=int, metavar="K", help="print top k results", default=20)
+    parser.add_argument('-n', '--ngrams', type=int, metavar="N", help="print n grams for n=1,...,N", default=4)
+    parser.add_argument('-s', '--sep', type=str, metavar="S", help="column separator", default='\t')
+    parser.add_argument('--stopwords', type=str, metavar="FILE", help="stopword file", default="/home/rja/nltk_data/corpora/stopwords/german")
 
-    n = 4
-    topk = 20
-    
-    lines  = gen_lines()
-    texts  = gen_text(lines)
-    texts  = gen_words(texts)
-    texts  = clean_words(texts)
+    args = parser.parse_args()
+
+    lines = gen_lines(args.input)
+    texts = gen_text(lines)
+    texts = gen_words(texts)
+    texts = clean_words(texts)
+    if args.deduplicate:
+        texts = gen_filter(texts)
 
 #    print_words(texts)
     
-    ngrams, nouns = count(texts, n)
+    ngrams, nouns = count(texts, args.ngrams, args.stopwords)
 
-    print_counts(ngrams, nouns, topk)
+    print_counts(ngrams, nouns, args.topk, args.sep)

@@ -41,9 +41,8 @@ With the same conditions [[README.org][as before]] we extract the titles:
 ** most frequent n-grams
 
 #+BEGIN_SRC sh :results output
-  ./ngrams.py < year_title.tsv
+  ./ngrams.py year_title.tsv
 #+END_SRC
-
 
 *** nouns
 | noun      | frequency |
@@ -160,6 +159,129 @@ With the same conditions [[README.org][as before]] we extract the titles:
 | Momo oder die seltsame       |        45 |
 | oder die seltsame Geschichte |        45 |
 | Die Jugend des Königs        |        45 |
+
+** most frequent n-grams (duplicate titles removed)
+
+#+BEGIN_SRC sh :results output raw
+  ./ngrams.py -d year_title.tsv
+#+END_SRC
+
+*** nouns
+| noun      | frequency |
+|-----------+-----------|
+| Liebe     |      1210 |
+| Tod       |       693 |
+| Mann      |       676 |
+| Nacht     |       660 |
+| Leben     |       652 |
+| Frau      |       600 |
+| Welt      |       471 |
+| Haus      |       446 |
+| Schatten  |       438 |
+| Zeit      |       433 |
+| Glück     |       392 |
+| Herz      |       379 |
+| La        |       359 |
+| Mädchen   |       356 |
+| Mord      |       356 |
+| Geheimnis |       339 |
+| Stadt     |       315 |
+| Tag       |       294 |
+| Land      |       293 |
+| Le        |       278 |
+
+*** 1
+| unigram   | frequency |
+|-----------+-----------|
+| für       |       775 |
+| Liebe     |       574 |
+| Mann      |       536 |
+| de        |       514 |
+| Tod       |       464 |
+| Frau      |       422 |
+| letzte    |       406 |
+| über      |       396 |
+| Leben     |       360 |
+| La        |       358 |
+| Haus      |       338 |
+| Le        |       278 |
+| Geheimnis |       276 |
+| Mord      |       268 |
+| Mädchen   |       265 |
+| Schatten  |       260 |
+| Nacht     |       255 |
+| Herz      |       225 |
+| Zeit      |       219 |
+| Herr      |       212 |
+*** 2
+| bigram        | frequency |
+|---------------+-----------|
+| Der Mann      |       275 |
+| Das Geheimnis |       233 |
+| Das Haus      |       212 |
+| Die Frau      |       163 |
+| Das Mädchen   |       158 |
+| Der Tod       |       154 |
+| Der letzte    |       146 |
+| Die letzte    |       125 |
+| Geheimnis der |       110 |
+| Ein Mann      |       106 |
+| Haus der      |       104 |
+| Im Schatten   |       103 |
+| Die Nacht     |        98 |
+| Zeit der      |        97 |
+| Ende der      |        92 |
+| Geheimnis des |        91 |
+| Die Tochter   |        91 |
+| Mann der      |        90 |
+| Die Liebe     |        90 |
+| Der schwarze  |        88 |
+*** 3
+| trigram           | frequency |
+|-------------------+-----------|
+| Das Geheimnis der |       100 |
+| Das Geheimnis des |        83 |
+| Der Mann der      |        77 |
+| Das Haus der      |        72 |
+| Die Tochter des   |        63 |
+| Perry Mason und   |        58 |
+| Im Schatten der   |        46 |
+| Der Mann mit      |        45 |
+| Im Schatten des   |        41 |
+| Der Mann im       |        41 |
+| Die Frau des      |        39 |
+| Das Lied der      |        39 |
+| Die Insel der     |        37 |
+| Der Sohn des      |        37 |
+| Die Nacht der     |        35 |
+| Das Mädchen aus   |        34 |
+| Der Mann aus      |        34 |
+| Das Erbe der      |        33 |
+| Der Tod des       |        33 |
+| Die Katze die     |        33 |
+*** 4
+| 4-gram                | frequency |
+|-----------------------+-----------|
+| Perry Mason und die   |        32 |
+| Der Tag an dem        |        23 |
+| Perry Mason und der   |        18 |
+| Der Mann mit den      |        17 |
+| Auf der Suche nach    |        16 |
+| Al Wheeler und die    |        16 |
+| Der Mann mit dem      |        16 |
+| Das Mädchen mit dem   |        12 |
+| Der Mann aus dem      |        12 |
+| Das Haus an der       |        11 |
+| Das Mädchen aus dem   |        11 |
+| Das Mädchen aus der   |        11 |
+| Der Mann mit der      |        10 |
+| Die Frau mit den      |         9 |
+| In den Armen des      |         8 |
+| Perry Mason und das   |         8 |
+| Die letzten Tage von  |         8 |
+| Das Mädchen mit den   |         8 |
+| Indiana Jones und das |         8 |
+| Der Mann in der       |         8 |
 
 ** temporal evolution
 

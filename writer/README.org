@@ -3201,11 +3201,94 @@ than 1000 pages vs. between 100 and 400 pages.
 | 1001 books | 23 (2.3%)   | 682 (68.1%)    | 0.0337 |
 | DNB        | 3954 (0.4%) | 641780 (62.3%) | 0.0062 |
 ** TODO occupations
+Extract:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f \
-		 -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
-		 -c "creator_wd.*.name,creator_wd.*.occupation_writer"\
+		 -p "issued_norm,pages_norm,creator_wd.*.id,creator_wd.*.occupation_writer" \
+		 -c "creator_wd.*.id,creator_wd.*.occupation_writer"\
 		 DNBTitel_normalised_enriched.json.gz \
-      | awk -F'\t' '{if ($1 >= 1913) print $2"\t"$3"\t"}' \
-	    > author_occupations_stats.tsv
+      | awk -F'\t' '{if ($1 >= 1913) {gsub(/,.*/, "", $4); print $3"\t"$4"\t"$2}}' \
+	    > author_occupations.tsv
 #+END_SRC
+
+Count:
+#+BEGIN_SRC sh
+  LC_ALL=C datamash -s -g1,2 count 3 mean 3 sum 3 < author_occupations.tsv > author_occupations_stats.tsv
+  awk -F'\t' '{sum[$2]+=$5; count[$2]+=1; pcount[$2]+=$3} END {for (p in sum) printf("%s\t%s\t%s\t%s\t%s\n", count[p], pcount[p], sum[p], int(sum[p]/pcount[p]), p)}' author_occupations_stats.tsv > occupations_stats.tsv
+  sort -rn occupations_stats.tsv | head -n20
+#+END_SRC
+
+Plot:
+#+TBLNAME:occupations
+| occupation                  | people |  books |     pages | mean pages |
+|-----------------------------+--------+--------+-----------+------------|
+| writer                      |  23988 | 502389 | 115075229 |        229 |
+| journalist                  |   7040 |  96522 |  23122118 |        239 |
+| historian                   |   4691 |  33445 |   8407044 |        251 |
+| theologian                  |   3304 |  51627 |   9778274 |        189 |
+| poet                        |   2794 |  63918 |  12729171 |        199 |
+| art historian               |   2287 |  21165 |   3776973 |        178 |
+| screenwriter                |   2051 |  41553 |  10150555 |        244 |
+| non-fiction writer          |   1740 |  26179 |   6024093 |        230 |
+| translator                  |   1535 |  26961 |   5539519 |        205 |
+| novelist                    |   1211 |  37813 |  12025521 |        318 |
+| archaeologist               |    982 |   6205 |   1123262 |        181 |
+| historian of the modern age |    737 |   7808 |   2233148 |        286 |
+| television presenter        |    680 |   7556 |   1701370 |        225 |
+| medievalist                 |    502 |   4210 |   1031582 |        245 |
+| church historian            |    463 |   4713 |   1013817 |        215 |
+| playwright                  |    452 |  25094 |   5112597 |        203 |
+| opinion journalist          |    441 |   5110 |   1033536 |        202 |
+| regional historian          |    387 |   3299 |    662127 |        200 |
+| legal historian             |    330 |   3226 |    766138 |        237 |
+| literary historian          |    315 |   3802 |    907947 |        238 |
+
+Plot:
+#+BEGIN_SRC gnuplot :results silent :var data=occupations
+reset
+set term pngcairo enhanced size 800,600
+set out 'occupations.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'occupation'
+set ylabel 'mean number of pages'
+set style data histogram
+set style fill solid 1.0 noborder
+set xtics rotate by 45 right
+set yrange [0:]
+
+plot data using 5:xticlabels(1) title ''
+
+set term svg enhanced size 800,600
+set out 'occupations.svg'
+replot
+#+END_SRC
+
+[[occupations.png]]
+
+
+(Skipped:)
+#+BEGIN_SRC gnuplot :results silent
+reset
+set term pngcairo enhanced size 800,600
+set out 'author_occupations.png'
+
+set grid
+set datafile separator "\t"
+set logscale
+
+set xlabel 'number of items
+set ylabel 'mean number of pages per item'
+
+plot 'author_occupations_stats.tsv' using 3:(stringcolumn(2) eq "writer" ? $4 : 1/0) title 'writer',\
+     'author_occupations_stats.tsv' using 3:(stringcolumn(2) eq "journalist" ? $4 : 1/0) title 'journalist',\
+     'author_occupations_stats.tsv' using 3:(stringcolumn(2) eq "historian" ? $4 : 1/0) title 'historian',\
+     'author_occupations_stats.tsv' using 3:(stringcolumn(2) eq "theologian" ? $4 : 1/0) title 'theologian',\
+     'author_occupations_stats.tsv' using 3:(stringcolumn(2) eq "poet" ? $4 : 1/0) title 'poet'
+
+set term svg enhanced size 800,600
+set out 'author_occupations.svg'
+replot
+#+END_SRC
+

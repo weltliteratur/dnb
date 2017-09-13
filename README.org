@@ -59,6 +59,18 @@ the following conditions:
 When analysing publishers we further limit the maximal number of pages
 per work to 5000 to exclude errors.
 
+Checksums:
+#+BEGIN_SRC sh
+  for i in DNBTitel_normalised_enriched.json.gz gnditems_2017-09-05_14:59.json.gz; do
+    echo "$i\t" $(ls -lh $i | awk '{print $5"\t"$6,$7,$8"\t"}') $(md5sum < $i)
+  done
+#+END_SRC
+
+| file name                            | size | date        | md5 hash                         |
+|--------------------------------------+------+-------------+----------------------------------|
+| DNBTitel_normalised_enriched.json.gz | 1,1G | Sep 5 16:38 | 8e640bca81e6ac7504da00e223d766d1 |
+| gnditems_2017-09-05_14:59.json.gz    | 23M  | Sep 5 16:33 | 943a6a50e2c19afb73fb859b64b20f06 |
+
 * results
 ** DONE novels
 All values of the P60493 property for items that fulfill our conditions:

@@ -3216,6 +3216,8 @@ Count:
   LC_ALL=C datamash -s -g2 countunique 1 count 2 sum 3 mean 3 median 3 q1 3 q3 3 min 3 max 3 < author_occupations.tsv | sort -t$'\t' -nrk2 | head -n20
 #+END_SRC
 
+*** top 20 occupations
+
 Table:
 #+TBLNAME:occupations
 | occupation                  | people |  books |     pages | mean pages | median pages |  q1 |     q3 | min |  max |
@@ -3241,6 +3243,7 @@ Table:
 | legal historian             |    330 |   3226 |    766138 |        237 |          186 |  73 |    339 |   3 | 2998 |
 | literary historian          |    315 |   3802 |    907947 |        239 |          190 |  78 |    346 |   2 | 1779 |
 
+*** plot
 Plot:
 #+BEGIN_SRC gnuplot :results silent :var data=occupations
 reset
@@ -3270,7 +3273,161 @@ replot
 
 [[occupations.png]]
 
+*** example writers
 
+Extract author names together with occupation:
+#+BEGIN_SRC sh :results silent
+  ./json2json.py -f \
+		 -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+		 -c "creator_wd.*.occupation_writer,creator_wd.*.name"\
+		 DNBTitel_normalised_enriched.json.gz \
+      | awk -F'\t' '{if ($1 >= 1913 && $2 <= 5000) {gsub(/,.*/, "", $4); print $3"\t"$4"\t"$2}}' \
+	    > author_occupations_name.tsv
+#+END_SRC
+
+
+#+BEGIN_SRC sh
+  for writer in $(LC_ALL=C datamash -s -g2 countunique 1  < author_occupations.tsv | awk -F'\t' '{print $2"\t"$1}' | sort -nr | cut -f2 | sed "s/ /_/g" | head); do
+      writer=$(echo $writer | sed "s/_/ /g")
+      echo
+      echo "$writer\tbooks\tpages\tmean pages\tmedian pages"
+      awk -F'\t' -v writer="$writer" '{if ($2 == writer) print $1"\t"$3}' author_occupations_name.tsv \
+	  | LC_ALL=C datamash -s -g1 count 2 sum 2 mean 2 median 2 \
+	  | sort -t$'\t' -nrk2 | head
+  done
+#+END_SRC
+
+| writer               | books |  pages | mean pages | median pages |
+|----------------------+-------+--------+------------+--------------|
+| Rudolf Steiner       |  3992 | 698028 |        175 |          168 |
+| Stefan Zweig         |  2532 | 689691 |        272 |          253 |
+| Jacob Grimm          |  2020 | 263521 |        130 |         66.5 |
+| Wilhelm Grimm        |  1943 | 251255 |        129 |           64 |
+| Erich Kästner        |  1873 | 310086 |        166 |          155 |
+| Heinrich Böll        |  1796 | 392384 |        218 |          189 |
+| Rainer Maria Rilke   |  1689 | 288839 |        171 |          125 |
+| Marie Louise Fischer |  1678 | 436068 |        260 |        246.5 |
+| Gottfried Keller     |  1666 | 326156 |        196 |           95 |
+| Anselm Grün          |  1605 | 229154 |        143 |          142 |
+
+| journalist         | books |  pages | mean pages | median pages |
+|--------------------+-------+--------+------------+--------------|
+| Heinz G. Konsalik  |  3190 | 984514 |        309 |          286 |
+| Karl Marx          |  2578 | 550296 |        213 |          140 |
+| Edgar Wallace      |  1041 | 209826 |        202 |          188 |
+| Mark Twain         |   964 | 256933 |        267 |          254 |
+| Kurt Tucholsky     |   664 | 150305 |        226 |        166.5 |
+| Emil Ludwig        |   456 | 154424 |        339 |          311 |
+| Simone de Beauvoir |   400 | 155462 |        389 |          347 |
+| A. E. Johann       |   385 | 137705 |        358 |          344 |
+| Manfred Hausmann   |   341 |  47191 |        138 |          101 |
+| Brigitte Blobel    |   332 |  80939 |        244 |          223 |
+
+| historian                 | books | pages | mean pages | median pages |
+|---------------------------+-------+-------+------------+--------------|
+| Tacitus                   |   270 | 50119 |        186 |          108 |
+| Gottfried Wilhelm Leibniz |   267 | 73252 |        274 |          208 |
+| Hannah Arendt             |   231 | 72724 |        315 |          293 |
+| Sallust                   |   192 | 26642 |        139 |          119 |
+| Franz Mehring             |   161 | 60334 |        375 |          398 |
+| Leopold von Ranke         |   153 | 58303 |        381 |          316 |
+| Franz Herre               |   146 | 48391 |        331 |          367 |
+| Jochen Brennecke          |   143 | 41538 |        290 |          272 |
+| Gershom Scholem           |   143 | 41669 |        291 |          286 |
+| Egon Caesar Corti         |   136 | 50235 |        369 |        391.5 |
+
+| theologian             | books |  pages | mean pages | median pages |
+|------------------------+-------+--------+------------+--------------|
+| Benedict XVI           |   783 | 138029 |        176 |          143 |
+| Karl Rahner            |   716 | 132551 |        185 |          132 |
+| Karl Jaspers           |   583 | 152073 |        261 |          186 |
+| Albert Schweitzer      |   558 | 112662 |        202 |          155 |
+| Karl Barth             |   550 |  87846 |        160 |        109.5 |
+| Hans Küng              |   524 | 167706 |        320 |          249 |
+| Dietrich Bonhoeffer    |   506 | 101189 |        200 |          154 |
+| Ernst Modersohn        |   481 |  50808 |        106 |           69 |
+| Hans Urs von Balthasar |   442 |  85232 |        193 |          153 |
+| Augustine of Hippo     |   339 |  87041 |        257 |          199 |
+
+| poet                   | books |  pages | mean pages | median pages |
+|------------------------+-------+--------+------------+--------------|
+| Friedrich Schiller     |  2047 | 403714 |        197 |          146 |
+| Theodor Storm          |  1967 | 264590 |        135 |           91 |
+| Friedrich Nietzsche    |  1788 | 475373 |        266 |          235 |
+| Heinrich Heine         |  1388 | 324448 |        234 |          176 |
+| Wilhelm Hauff          |  1290 | 227500 |        176 |          121 |
+| Wilhelm Busch          |  1191 | 185402 |        156 |           95 |
+| Martin Heidegger       |   981 | 226911 |        231 |          206 |
+| Oscar Wilde            |   859 | 144464 |        168 |          107 |
+| Robert Louis Stevenson |   853 | 187073 |        219 |          206 |
+| Eduard Mörike          |   742 | 127261 |        172 |          100 |
+
+| art historian           | books |  pages | mean pages | median pages |
+|-------------------------+-------+--------+------------+--------------|
+| Hugo Schnell            |   365 |   7912 |         22 |           14 |
+| Jacob Burckhardt        |   297 | 119125 |        401 |          383 |
+| Heinrich Lützeler       |   182 |  17982 |         99 |           16 |
+| Wilhelm Hausenstein     |   116 |  18740 |        162 |        106.5 |
+| Heinrich Wölfflin       |   110 |  27116 |        247 |        283.5 |
+| Ernst Gombrich          |   104 |  33092 |        318 |          327 |
+| Max Hermann von Freeden |   103 |   5787 |         56 |           39 |
+| Werner Schmalenbach     |    92 |   7982 |         87 |           39 |
+| Karl Scheffler          |    92 |  17887 |        194 |          190 |
+| Paul Nizon              |    90 |  18043 |        200 |          178 |
+
+| screenwriter          | books |  pages | mean pages | median pages |
+|-----------------------+-------+--------+------------+--------------|
+| Siegfried Lenz        |   902 | 215600 |        239 |        180.5 |
+| Stephen King          |   811 | 388836 |        479 |          447 |
+| Vicki Baum            |   790 | 263396 |        333 |          307 |
+| Johannes Mario Simmel |   774 | 349431 |        451 |          495 |
+| Walt Disney           |   712 |  58865 |         83 |           60 |
+| Karl-Heinz Günther    |   554 |  91504 |        165 |          160 |
+| Astrid Lindgren       |   513 |  90417 |        176 |          157 |
+| Irina Korschunow      |   470 |  62985 |        134 |          117 |
+| Roald Dahl            |   388 |  73673 |        190 |          182 |
+| Felix Salten          |   387 |  82868 |        214 |          199 |
+
+| non-fiction writer     | books | pages | mean pages | median pages |
+|------------------------+-------+-------+------------+--------------|
+| Erich Fromm            |   439 | 96030 |        219 |          199 |
+| Kurt Tepperwein        |   399 | 84594 |        212 |          205 |
+| Alfred Adler           |   258 | 62170 |        241 |          235 |
+| Wilhelm Reich          |   257 | 65299 |        254 |          269 |
+| Helmut Schmidt         |   196 | 42050 |        215 |          243 |
+| Otto Mielke            |   190 | 14337 |         75 |           45 |
+| Horst-Eberhard Richter |   189 | 52814 |        279 |          280 |
+| Martin Selber          |   188 | 33577 |        179 |          122 |
+| Hans Zulliger          |   181 | 24953 |        138 |          135 |
+| Ulrich Beck            |   176 | 51207 |        291 |        289.5 |
+
+| translator                | books |  pages | mean pages | median pages |
+|---------------------------+-------+--------+------------+--------------|
+| Martin Luther             |  1590 | 206969 |        130 |           78 |
+| Fyodor Dostoyevsky        |  1088 | 530695 |        488 |          439 |
+| Jörg Zink                 |   614 |  75297 |        123 |           71 |
+| Martin Buber              |   483 | 101054 |        209 |          168 |
+| Lise Gast                 |   477 |  81613 |        171 |          155 |
+| Gina Ruck-Pauquèt         |   323 |  29692 |         92 |           94 |
+| Arno Schmidt              |   318 |  83856 |        264 |          189 |
+| Frederik Hetmann          |   306 |  71513 |        234 |          217 |
+| Käthe Recheis             |   282 |  43028 |        153 |          109 |
+| Janwillem van de Wetering |   260 |  50416 |        194 |          188 |
+
+| novelist              | books |  pages | mean pages | median pages |
+|-----------------------+-------+--------+------------+--------------|
+| Hermann Hesse         |  3362 | 738260 |        220 |          188 |
+| Thomas Mann           |  2609 | 960697 |        368 |          305 |
+| Franz Kafka           |  2020 | 538979 |        267 |          238 |
+| Karl May              |  1503 | 507174 |        337 |          341 |
+| Jules Verne           |   856 | 209769 |        245 |          222 |
+| Peter Handke          |   829 | 141812 |        171 |          130 |
+| Eleanor Hibbert       |   696 | 263183 |        378 |          367 |
+| Selma Lagerlöf        |   585 | 143503 |        245 |          219 |
+| Barbara Cartland      |   576 | 108242 |        188 |          160 |
+| Hugo von Hofmannsthal |   530 |  91294 |        172 |          111 |
+
+*** items vs. mean number of pages
 (Skipped:)
 #+BEGIN_SRC gnuplot :results silent
 reset

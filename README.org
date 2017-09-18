@@ -50,8 +50,8 @@ Read Before You Die"]].
 We restrict our analysis to works from the DNB dump which adhere to
 the following conditions:
 1. They were published in or after 1913 (~issued_norm~ >= 1913).
-2. At least one of their authors has a [[https://www.wikidata.org/wiki/Property:P227][GND id]] in Wikidata and a
-   [[https://www.wikidata.org/wiki/Help:Sitelinks][sitelink]] to Wikipedia.
+2. At least one of their authors has a [[https://www.wikidata.org/wiki/Property:P227][GND id]] and an [[https://www.wikidata.org/wiki/Property:P106][occupation]]
+   property in Wikidata and a [[https://www.wikidata.org/wiki/Help:Sitelinks][sitelink]] to Wikipedia.
 3. The work has an extractable page number (~extent~ matches the regex ~"\[?([0-9]+)\]? S(\.|eiten?);?~).
 4. The works DNB property [[http://www.rdaregistry.info/Elements/u/#P60526][P60493]] contains the character sequence
    "roman" or "Roman".

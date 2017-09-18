@@ -66,11 +66,11 @@ Checksums:
   done
 #+END_SRC
 
-| file name                            | size | date        | md5 hash                         |
-|--------------------------------------+------+-------------+----------------------------------|
-| DNBTitel.rdf.gz                      | 1.6G |             | e7242b1624bc22fc76aa7055234928c7 |
-| DNBTitel_normalised_enriched.json.gz | 1.1G | Sep 5 16:38 | 8e640bca81e6ac7504da00e223d766d1 |
-| gnditems_2017-09-05_14:59.json.gz    | 23M  | Sep 5 16:33 | 943a6a50e2c19afb73fb859b64b20f06 |
+| file name                            | size | date         | md5 hash                         |
+|--------------------------------------+------+--------------+----------------------------------|
+| DNBTitel.rdf.gz                      | 1.6G | May 12 13:52 | 4dce7ed7e38bdc5f61491861b4a1082c |
+| DNBTitel_normalised_enriched.json.gz | 1.1G | Sep 5 16:29  | 8e640bca81e6ac7504da00e223d766d1 |
+| gnditems_2017-09-05_14:59.json       | 102M | Sep 5 16:12  | 943a6a50e2c19afb73fb859b64b20f06 |
 
 * results
 ** DONE novels

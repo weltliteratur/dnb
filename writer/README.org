@@ -293,8 +293,8 @@ We do this with curl as before:
 
 ** DONE process dump
 
-Is done using Java (see ~WriterExtractor.java~ for the basic idea) and
- creates the file ~gndwriter.json~:
+Is done using Java (see ~WriterExtractor.java~ for the basic idea,
+full code in [[https://github.com/weltliteratur/wikidata][this repository]]) and creates the file ~gndwriter.json~:
 
 > Processed 32346937 entities in 2203 sec (14683 per second)
 > read 357423 items and 69577 property values with missing labels

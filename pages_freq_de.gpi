@@ -7,9 +7,9 @@ set logscale y
 set format y "10^%T"
 
 set xlabel 'Seitenanzahl'
-set ylabel 'Häufigkeit'
+set ylabel 'Bücher'
 
-plot 'pages_freq.tsv' using 1:2 with lines title ''
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
 
 set term pngcairo enhanced size 800,600
 set out 'img/pages_de.png'
@@ -24,9 +24,9 @@ set xtics 0,16
 set xrange [400:600]
 set term pngcairo enhanced size 800,600
 set out 'img/pages_400-600_de.png'
-plot 'pages_freq.tsv' using 1:2 with lines title ''
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
 
-set term svg enhanced size 800,600
+set term svg enhanced size 800,600 fsize 18
 set out 'img/pages_400-600_de.svg'
 replot
 
@@ -35,9 +35,9 @@ replot
 set xrange [200:400]
 set term pngcairo enhanced size 800,600
 set out 'img/pages_200-400_de.png'
-plot 'pages_freq.tsv' using 1:2 with lines title ''
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
 
-set term svg enhanced size 800,600
+set term svg enhanced size 800,600 fsize 18
 set out 'img/pages_200-400_de.svg'
 replot
 
@@ -46,8 +46,8 @@ replot
 set xrange [0:200]
 set term pngcairo enhanced size 800,600
 set out 'img/pages_000-200_de.png'
-plot 'pages_freq.tsv' using 1:2 with lines title ''
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
 
-set term svg enhanced size 800,600
+set term svg enhanced size 800,600 fsize 18
 set out 'img/pages_000-200_de.svg'
 replot

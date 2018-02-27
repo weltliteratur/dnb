@@ -300,24 +300,41 @@ Overall counts per year:
 reset
 set grid
 #set datafile separator ""
-set xlabel 'year'
-set ylabel 'books'
-set format y "%2.1f%%"
-#set key left
+set xlabel 'Jahr
+set ylabel 'Romane'
+set key left
 set xrange [1910:2020]
 set xtics 1910,10
 
+# absolute
 set term pngcairo enhanced size 800,600
 set out 'year_title.png'
-plot 'year_title_Liebe.tsv'   using 1:(($2/$3)*100) with line title 'Liebe',\
-     'year_title_Herz.tsv'    using 1:(($2/$3)*100) with line title 'Herz',\
-     'year_title_Leben.tsv'   using 1:(($2/$3)*100) with line title 'Leben',\
-     'year_title_Tod.tsv'     using 1:(($2/$3)*100) with line title 'Tod',\
-     'year_title_Krieg.tsv'   using 1:(($2/$3)*100) with line title 'Krieg',\
-     'year_title_Frieden.tsv' using 1:(($2/$3)*100) with line title 'Frieden'
+plot 'year_title_Liebe.tsv'   using 1:2 with line lw 2 title 'Liebe',\
+     'year_title_Herz.tsv'    using 1:2 with line lw 2 title 'Herz',\
+     'year_title_Leben.tsv'   using 1:2 with line lw 2 title 'Leben',\
+     'year_title_Tod.tsv'     using 1:2 with line lw 2 title 'Tod',\
+     'year_title_Krieg.tsv'   using 1:2 with line lw 2 title 'Krieg',\
+     'year_title_Frieden.tsv' using 1:2 with line lw 2 title 'Frieden'
 
-set term svg enhanced size 800,600
+set term svg enhanced size 800,600 fsize 18
 set out 'year_title.svg'
+replot
+
+# relative
+set key right
+set format y "%2.1f%%"
+set ylabel 'Anteil Romane'
+set term pngcairo enhanced size 800,600
+set out 'year_title_rel.png'
+plot 'year_title_Liebe.tsv'   using 1:(($2/$3)*100) with line lw 2 title 'Liebe',\
+     'year_title_Herz.tsv'    using 1:(($2/$3)*100) with line lw 2 title 'Herz',\
+     'year_title_Leben.tsv'   using 1:(($2/$3)*100) with line lw 2 title 'Leben',\
+     'year_title_Tod.tsv'     using 1:(($2/$3)*100) with line lw 2 title 'Tod',\
+     'year_title_Krieg.tsv'   using 1:(($2/$3)*100) with line lw 2 title 'Krieg',\
+     'year_title_Frieden.tsv' using 1:(($2/$3)*100) with line lw 2 title 'Frieden'
+
+set term svg enhanced size 800,600 fsize 18
+set out 'year_title_rel.svg'
 replot
 #+END_SRC
 

@@ -13,11 +13,11 @@ set term pngcairo enhanced size 800,600
 set out 'img/items_per_year_de.png'
 
 plot \
-  '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:2 with lines lw 2 axes x1y2 title 'Bücher mit Umfangsangabe (rechte y-Achse)',\
+  '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:2 with lines lw 2 lc rgbcolor '#feb24c' axes x1y2 title 'Bücher mit Umfangsangabe (rechte Achse)',\
   '< datamash -g1 count 1 < items_per_year-page_author.tsv'       using 1:2 with lines lw 2 title 'Bücher mit Umfangsangabe und Autor*in in Wikipedia',\
-  '< datamash -g1 count 1 < items_per_year-novel.tsv'             using 1:2 with lines lw 2 title 'Romane',\
-  '< datamash -g1 count 1 < items_per_year-novel_page.tsv'        using 1:2 with lines lw 2 title 'Romane mit Umfangsangabe',\
-  '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:2 with lines lw 2 title 'Romane mit Umfangsangabe und Autor*in in Wikipedia'
+  '< datamash -g1 count 1 < items_per_year-novel.tsv'             using 1:2 with lines lw 2 lc rgbcolor '#fc4e2a' title 'Romane',\
+  '< datamash -g1 count 1 < items_per_year-novel_page.tsv'        using 1:2 with lines lw 2 lc rgbcolor '#bc0026' title 'Romane mit Umfangsangabe',\
+  '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:2 with lines lw 2 lc rgbcolor '#59001a' title 'Romane mit Umfangsangabe und Autor*in in Wikipedia'
 
 set term svg enhanced size 800,600 fsize 17
 set out 'img/items_per_year_de.svg'

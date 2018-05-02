@@ -23,3 +23,8 @@ set key left
 set term svg enhanced size 800,600 fsize 18
 set out 'img/issued_pages_1913_de.svg'
 replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/issued_pages_1913_de_mono.png'
+replot

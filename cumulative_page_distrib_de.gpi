@@ -11,9 +11,15 @@ set logscale x
 
 # divide the y-value by the number of books in the dataset
 plot \
-  '../1001-books/counts.tsv' using 1:($2/1001) smooth cumulative with lines title '1001 Bücher',\
+  '1001-books/counts.tsv' using 1:($2/1001) dt 2 smooth cumulative with lines title '1001 Bücher',\
   'pages_freq.tsv' using 1:($2/180219) smooth cumulative with lines title 'DNB'
 
 set term svg enhanced size 800,600
 set out 'img/cumulative_page_distrib_de.svg'
+replot
+
+# print
+set key left
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/cumulative_page_distrib_de_mono.png'
 replot

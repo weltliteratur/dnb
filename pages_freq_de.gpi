@@ -41,6 +41,11 @@ set term svg enhanced size 800,600 fsize 18
 set out 'img/pages_200-400_de.svg'
 replot
 
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/pages_200-400_de_mono.png'
+replot
+
 
 # zoom into range 0 to 200 to see 16-patterns of pages
 set xrange [0:200]

@@ -18,6 +18,7 @@ set out 'number_of_books_de.png'
 replot
 
 
+
 reset
 set grid y
 set datafile separator '\t'
@@ -33,6 +34,11 @@ plot '1001-books_number_of_books_per_16-step_page_range.tsv' using 2:xticlabels(
 
 set term svg enhanced size 1000,600 font "Arial,10"
 set out 'number_of_books_16_de.svg'
+replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",18" dashed lw 2
+set out 'number_of_books_16_de_mono.png'
 replot
 
 

@@ -14,3 +14,8 @@ plot 'publisher_page_stats.tsv' using 2:4 with points pt 7 title ''
 set term svg enhanced size 800,600
 set out 'img/publisher_pages_de.svg'
 replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/publisher_pages_de_mono.png'
+replot

@@ -14,3 +14,8 @@ plot 'pages_freq_16.tsv' using 2:xticlabels(1) title ''
 set term svg enhanced size 1000,600 font "Arial,10"
 set out 'img/pages_16_de.svg'
 replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/pages_16_de_mono.png'
+replot

@@ -41,7 +41,7 @@ These are the different approaches we have tried, ordered chronologically:
 This page shows the results for the latest approach which uses the
 tools and methods developed before with different restrictions to
 authors and works. Details on data extraction, cleansing, and joining
-are described in [[wikide][one of the earlier documents]].
+are described in [[writer][one of the earlier documents]].
 
 We have also [[1001-books][compared page lengths against the "1001 Books You Must
 Read Before You Die"]].
@@ -937,6 +937,8 @@ Extract data:
       | awk -F'\t' '{if ($1 >= 1913 && $4 ~ /[rR]oman/ && $2 <= 5000) print $3"\t"$2}' \
       | sort -S1G > publisher.tsv
 #+END_SRC
+
+#+RESULTS:
 
 *** DONE by item count
 

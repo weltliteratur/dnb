@@ -1,0 +1,27 @@
+reset
+set encoding utf8
+set term pngcairo enhanced size 800,600
+set out 'img/issued_pages_encade_en.png'
+
+set grid
+set datafile separator "\t"
+set xlabel 'year'
+set ylabel 'number of pages'
+set term pngcairo enhanced size 800,600
+set out 'img/issued_pages_1913_en.png'
+
+plot \
+  'issued_pages_stats.tsv' using 1:7:8 with filledcurves fs transparent solid 0.2 noborder lc rgb "green" title '1st und 2nd quartile',\
+  'issued_pages_stats.tsv' using 1:2 with lines lw 2 lt 3 lc rgb "green" title 'Median'
+#,\
+#  'issued_pages_stats.tsv' using 1:3 with lines lw 2 lt 3 lc rgb "blue" title 'mean'
+
+set key left
+set term svg enhanced size 800,600 font ",18"
+set out 'img/issued_pages_1913_en.svg'
+replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/issued_pages_1913_en_mono.png'
+replot

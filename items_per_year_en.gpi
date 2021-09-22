@@ -1,0 +1,55 @@
+reset
+set encoding utf8
+set grid
+set datafile separator "\t"
+set xrange [1913:2017]
+set xtics 10,10
+set xlabel 'Jahr'
+set ylabel 'Bücher'
+set key left Left reverse
+set y2tics
+
+set term pngcairo enhanced size 800,600
+set out 'img/items_per_year_de.png'
+
+# define line styles
+set style line 1 dt 1 lw 2 lc rgb '#feb24c'
+set style line 2 dt 2 lw 2 lc rgb 'green'
+set style line 3 dt 3 lw 2 lc rgb '#fc4e2a'
+set style line 4 dt 4 lw 2 lc rgb '#bc0026'
+set style line 5 dt 5 lw 2 lc rgb '#59001a'
+
+plot \
+  '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:2 with lines ls 1 axes x1y2 title 'Bücher mit Umfangsangabe (rechte Achse)',\
+  '< datamash -g1 count 1 < items_per_year-page_author.tsv'       using 1:2 with lines ls 2 title 'Bücher mit Umfangsangabe und Autor in Wikipedia',\
+  '< datamash -g1 count 1 < items_per_year-novel.tsv'             using 1:2 with lines ls 3 title 'Romane',\
+  '< datamash -g1 count 1 < items_per_year-novel_page.tsv'        using 1:2 with lines ls 4 title 'Romane mit Umfangsangabe',\
+  '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:2 with lines ls 5 title 'Romane mit Umfangsangabe und Autor in Wikipedia'
+
+set term svg enhanced size 800,600 fsize 17
+set out 'img/items_per_year_de.svg'
+replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/items_per_year_de_mono.png'
+replot
+
+
+# relative frequency
+set ylabel 'Anteil Bücher'
+set format y "%2.0f%%"
+
+set term pngcairo enhanced size 800,600
+set out 'img/items_per_year_rel_de.png'
+
+plot \
+  '< datamash -g1 count 1 < items_per_year-page.tsv'              using 1:(100*($2/8346148)) with lines title 'Bücher mit Umfangsangabe',\
+  '< datamash -g1 count 1 < items_per_year-page_author.tsv'       using 1:(100*($2/1349949)) with lines title 'Bücher mit Umfangsangabe und Autor*in in Wikipedia',\
+  '< datamash -g1 count 1 < items_per_year-novel.tsv'             using 1:(100*($2/353498))  with lines title 'Romane',\
+  '< datamash -g1 count 1 < items_per_year-novel_page.tsv'        using 1:(100*($2/316518))  with lines title 'Romane mit Umfangsangabe',\
+  '< datamash -g1 count 1 < items_per_year-novel_page_author.tsv' using 1:(100*($2/180219))  with lines title 'Romane mit Umfangsangabe und Autor*in in Wikipedia'
+
+set term svg enhanced size 800,600
+set out 'img/items_per_year_rel_de.svg'
+replot

@@ -1,0 +1,58 @@
+reset
+set term svg enhanced size 800,600
+set out 'img/pages_en.svg'
+set grid
+set xrange [0:2000]
+set logscale y
+set format y "10^%T"
+
+set xlabel 'pages'
+set ylabel 'frequency'
+
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
+
+set term pngcairo enhanced size 800,600
+set out 'img/pages_en.png'
+replot
+
+# showing bogen boundaries
+unset logscale
+unset format y
+set xtics 0,16
+
+# zoom into range 400 to 600 to see 16-patterns of pages
+set xrange [400:600]
+set term pngcairo enhanced size 800,600
+set out 'img/pages_400-600_en.png'
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
+
+set term svg enhanced size 800,600 font ",18"
+set out 'img/pages_400-600_en.svg'
+replot
+
+
+# zoom into range 200 to 400 to see 16-patterns of pages
+set xrange [200:400]
+set term pngcairo enhanced size 800,600
+set out 'img/pages_200-400_en.png'
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
+
+set term svg enhanced size 800,600 font ",18"
+set out 'img/pages_200-400_en.svg'
+replot
+
+# print
+set term pngcairo enhanced size 1600,1200 font ",22" dashed lw 2
+set out 'img/pages_200-400_en_mono.png'
+replot
+
+
+# zoom into range 0 to 200 to see 16-patterns of pages
+set xrange [0:200]
+set term pngcairo enhanced size 800,600
+set out 'img/pages_000-200_en.png'
+plot 'pages_freq.tsv' using 1:2 with lines lw 2 title ''
+
+set term svg enhanced size 800,600 font ",18"
+set out 'img/pages_000-200_en.svg'
+replot

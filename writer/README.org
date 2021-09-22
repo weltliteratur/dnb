@@ -3292,8 +3292,8 @@ Extract author names together with occupation:
       echo
       echo "$writer\tbooks\tpages\tmean pages\tmedian pages"
       awk -F'\t' -v writer="$writer" '{if ($2 == writer) print $1"\t"$3}' author_occupations_name.tsv \
-	  | LC_ALL=C datamash -s -g1 count 2 sum 2 mean 2 median 2 \
-	  | sort -t$'\t' -nrk2 | head
+          | LC_ALL=C datamash -s -g1 count 2 sum 2 mean 2 median 2 \
+          | sort -t$'\t' -nrk2 | head
   done
 #+END_SRC
 

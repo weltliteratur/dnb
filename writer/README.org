@@ -39,7 +39,7 @@ We analyse the distribution of some metadata fields.
 ** pages
 ** extent
 #+BEGIN_SRC sh :results silent
-  ./json2json.py --norm --print "pages_norm,extent" DNBTitel.json.gz | sed "s/[0-9]/0/g" | gzip -c > pages_extent.tsv
+  ./json2json.py --norm --print "pages_norm,extent" DNBTitel.json.gz | sed "s/[0-9]/0/g" | gzip -c > pages_extent.tsv.gz
 #+END_SRC
 
 #+BEGIN_SRC sh :results raw
@@ -109,7 +109,7 @@ Get the valid years for the "Document" type:
   ./json2json.py --normalise --print "type,issued" DNBTitel.json.gz \
       | grep -E '^Document\s+[0-9][0-9][0-9][0-9]$' \
       | awk -F'\t' '{print $2}' | sort | uniq -c | awk '{print $2"\t"$1}' \
-						       > issued_document_distrib.tsv
+                                                       > issued_document_distrib.tsv
 #+END_SRC
 
 Let's plot the years for the "Document" type:
@@ -192,7 +192,7 @@ Extract, convert, and normalise data:
   ./rdf2json.py DNBTitel.rdf.gz | gzip -c > DNBTitel_P60493.json.gz
   ./json2json.py -n -w gnditems_2017-09-05_14:59.json DNBTitel_P60493.json.gz \
       | gzip -c \
-	     > DNBTitel_P60493_normalised_enriched.json.gz
+             > DNBTitel_P60493_normalised_enriched.json.gz
 #+END_SRC
 
 Get frequency of use:
@@ -371,7 +371,7 @@ writer with the ~--wikidata~ option.
 #+BEGIN_SRC sh
   ./json2json.py -n -w gnditems_2017-08-22_15:03.json DNBTitel.json.gz \
       | gzip -c \
-	     > DNBTitel_normalised_enriched.json.gz
+             > DNBTitel_normalised_enriched.json.gz
 #+END_SRC
 
 ** test enrichment
@@ -569,21 +569,21 @@ All media:
 With usable page numbers:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p type,pages_norm \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | cut -f1 | sort -S1G | uniq -c > media_with_pages_freq.tsv
 #+END_SRC
 
 With all data filters except >= 1912:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p "type,pages_norm,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | cut -f1 | sort -S1G | uniq -c > media_filtered_freq.tsv
 #+END_SRC
 
 With all data filters:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p "issued_norm,type,pages_norm,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $2}' \
       | sort -S1G | uniq -c > media_filtered_1912_freq.tsv
 #+END_SRC
@@ -623,14 +623,14 @@ All valid page counts:
 All valid page counts of known writers:
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{SUM+=$2; CTR+=1} END {print CTR"\t"SUM}'
 #+END_SRC
 
 Filter data:
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $2}' > pages.tsv
 #+END_SRC
 
@@ -736,16 +736,16 @@ replot
 
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" -c "creator_wd.*.name,creator_wd.*.occupation_writer"\
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
-	    > author_pages_stats.tsv
+            > author_pages_stats.tsv
 #+END_SRC
 
 *** by item count
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id" -c "creator_wd.*.occupation_writer,creator_wd.*.name,creator_wd.*.id"\
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print "[[https://www.wikidata.org/wiki/"$5"]["$4"]]"}' \
       | sort -S1G | uniq -c | sort -nr | head -n50
 #+END_SRC
@@ -903,7 +903,7 @@ replot
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,title,_id,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {print $2"\t[[http://d-nb.info/"$4"]["$3"]]"}}' \
       | sort -S1G -nr | head -n20
 #+END_SRC
@@ -971,7 +971,7 @@ replot
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $3}' \
       | sort -S1G | uniq -c | sort -S1G -nr | head -n20
 #+END_SRC
@@ -1005,7 +1005,7 @@ After normalisation (see below)
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nr | head -n20
 #+END_SRC
@@ -1036,7 +1036,7 @@ After normalisation (see below)
 Only items with no more than 5000 pages:
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912 && $2 <= 5000) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n",  sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nr | head -n20
 #+END_SRC
@@ -1068,7 +1068,7 @@ Only items with no more than 5000 pages:
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) {sum[$3]+=$2; count[$3]+=1}} END {for (p in sum) printf("%s\t%s\t%s\t%s\n", sum[p], count[p], int(sum[p]/count[p]), p)}' \
       | sort -S1G -nrk3 | head -n20
 #+END_SRC
@@ -1172,7 +1172,7 @@ be regarded the same publisher and then creating a big intermediate
 file:
 #+BEGIN_SRC sh
   ./json2json.py -m publisher_map.tsv -f -p "issued_norm,pages_norm,publisher_norm,title,_id,creator_wd.*.name,creator_wd.*.id,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $0}' \
   > publisher_data.tsv
 #+END_SRC
@@ -3025,8 +3025,8 @@ We see peaking page numbers between 250 and 260.
 Let's extract all items from 1955 and analyse them further:
 #+BEGIN_SRC sh
   ./json2json.py -f -p \
-		 "issued_norm,pages_norm,publisher,title,_id,creator_wd.*.name,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 "issued_norm,pages_norm,publisher,title,_id,creator_wd.*.name,creator_wd.*.occupation_writer" \
+                 DNBTitel_normalised_enriched.json.gz \
       | grep ^1955 > 1955.tsv
 #+END_SRC
 
@@ -3038,7 +3038,7 @@ Let's extract all items from 1955 and analyse them further:
 
 | publisher             | items |
 |-----------------------+-------|
-| Mülbüsch              |   407 |
+| Mülbüsch              |   407 |
 | Feldmann              |   246 |
 | Aufbau-Verl.          |   142 |
 | Insel-Verl.           |   104 |
@@ -3056,18 +3056,18 @@ Let us compare this with the year before and after 1955:
   awk -F'\t' '{print $3}' 1956.tsv | sort | uniq -c | sort -nr | head
 #+END_SRC
 
-| top publisher 1954    | items | top publisher 1956    | items |
-|-----------------------+-------+-----------------------+-------|
-| Aufbau-Verl.          |   142 | Aufbau-Verl.          |   108 |
-| Reclam                |   105 | Insel-Verl.           |    96 |
-| Insel-Verl.           |   103 | Reclam                |    95 |
-| Herder                |    94 | Herder                |    81 |
-| Bertelsmann           |    71 | Rowohlt               |    71 |
-| Dt. Buch-Gemeinschaft |    64 | Büchergilde Gutenberg |    70 |
-| Büchergilde Gutenberg |    61 | Desch                 |    65 |
-| Rowohlt               |    59 | Goldmann              |    59 |
-| Schöningh             |    56 | Kinderbuchverl.       |    54 |
-| Goldmann              |    53 | Verl. Neues Leben     |    53 |
+| top publisher 1954    | items | top publisher 1955    | items | top publisher 1956    | items |
+|-----------------------+-------+-----------------------+-------+-----------------------+-------|
+| Aufbau-Verl.          |   142 | Mülbüsch              |   407 | Aufbau-Verl.          |   108 |
+| Reclam                |   105 | Feldmann              |   246 | Insel-Verl.           |    96 |
+| Insel-Verl.           |   103 | Aufbau-Verl.          |   142 | Reclam                |    95 |
+| Herder                |    94 | Insel-Verl.           |   104 | Herder                |    81 |
+| Bertelsmann           |    71 | Reclam                |    85 | Rowohlt               |    71 |
+| Dt. Buch-Gemeinschaft |    64 | Herder                |    84 | Büchergilde Gutenberg |    70 |
+| Büchergilde Gutenberg |    61 | Dietz                 |    79 | Desch                 |    65 |
+| Rowohlt               |    59 | Büchergilde Gutenberg |    76 | Goldmann              |    59 |
+| Schöningh             |    56 | Bertelsmann           |    71 | Kinderbuchverl.       |    54 |
+| Goldmann              |    53 | Dt. Buch-Gemeinschaft |    64 | Verl. Neues Leben     |    53 |
 
 In 1955 two publishers clearly have an above-average number of items:
 Mülbüsch and Feldmann. Strangely, those two publishers do not even
@@ -3125,7 +3125,7 @@ disappear. Maybe the DNB stopped collecting them?
 
 #+BEGIN_SRC sh
   ./json2json.py -f -p "issued_norm,pages_norm,publisher,creator_wd.*.occupation_writer" \
-		 DNBTitel_normalised_enriched.json.gz \
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1912) print $1"\t"$2"\t"$3}' \
   > publisher_raw_data.tsv
 #+END_SRC
@@ -3204,11 +3204,11 @@ than 1000 pages vs. between 100 and 400 pages.
 Extract:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f \
-		 -p "issued_norm,pages_norm,creator_wd.*.id,creator_wd.*.occupation_writer" \
-		 -c "creator_wd.*.id,creator_wd.*.occupation_writer"\
-		 DNBTitel_normalised_enriched.json.gz \
+                 -p "issued_norm,pages_norm,creator_wd.*.id,creator_wd.*.occupation_writer" \
+                 -c "creator_wd.*.id,creator_wd.*.occupation_writer"\
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1913 && $2 <= 5000) {gsub(/,.*/, "", $4); print $3"\t"$4"\t"$2}}' \
-	    > author_occupations.tsv
+            > author_occupations.tsv
 #+END_SRC
 
 Count:
@@ -3278,11 +3278,11 @@ replot
 Extract author names together with occupation:
 #+BEGIN_SRC sh :results silent
   ./json2json.py -f \
-		 -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
-		 -c "creator_wd.*.occupation_writer,creator_wd.*.name"\
-		 DNBTitel_normalised_enriched.json.gz \
+                 -p "issued_norm,pages_norm,creator_wd.*.name,creator_wd.*.occupation_writer" \
+                 -c "creator_wd.*.occupation_writer,creator_wd.*.name"\
+                 DNBTitel_normalised_enriched.json.gz \
       | awk -F'\t' '{if ($1 >= 1913 && $2 <= 5000) {gsub(/,.*/, "", $4); print $3"\t"$4"\t"$2}}' \
-	    > author_occupations_name.tsv
+            > author_occupations_name.tsv
 #+END_SRC
 
 
@@ -3451,4 +3451,3 @@ set term svg enhanced size 800,600
 set out 'author_occupations.svg'
 replot
 #+END_SRC
-

@@ -1,0 +1,53 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: page lengths of novels in the DNB catalogue
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Robert
+    family-names: Jäschke
+    affiliation: Humboldt-Universität zu Berlin
+    email: robert.jaeschke@hu-berlin.de
+    orcid: 'https://orcid.org/0000-0003-3271-9653'
+  - given-names: Frank
+    family-names: Fischer
+    affiliation: Freie Universität Berlin
+    orcid: 'https://orcid.org/0000-0003-2419-6629'
+    email: fr.fischer@fu-berlin.de
+repository-code: 'https://github.com/weltliteratur/dnb'
+abstract: >-
+  We analyse the number of pages of novels (i.e., fictional
+  literary works) in the German National Library (DNB).
+
+
+  It is not trivial to extract all novels from a big
+  catalogue like that of the German National library.
+  “Librarians estimate that genre information is present in
+  the expected MARC field for less than a quarter of the
+  volumes in HathiTrust Digital Library,” (Underwood et al.
+  2013) and we encounter the same problem, which calls for
+  an innovative solution.
+
+
+  Our approach is to
+
+  1. extract a list of writers from Wikidata together with
+  their GND id
+
+  2. download linked data about the DNB books
+
+  3. join the writer list with the list of books using the
+  GND id
+
+
+  This repository documents the evolution of this process,
+  which turned out to be not as straightforward as it seems.
+  One reason is the size of the data and the complexity of
+  queries.
+license: GPL-3.0
+commit: e0a25ce6c35108dcb788c6eed1297e762d11317a
+date-released: '2021-09-22'
